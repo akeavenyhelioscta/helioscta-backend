@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd:*)",
+      "Bash(head:*)",
+      "Bash(find \"C:/Users/AidanKeaveny/Documents/github/helioscta-backend\" -type f -name \"*.py\" 2>/dev/null | xargs grep -l \"like.day\\\\|like-day\\\\|like_day\" 2>/dev/null)",
+      "Bash(echo No matches found:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(dbt run --select \"dbt_trades_v2_2026_feb_23\" --profiles-dir .)",
+      "Bash(where dbt)",
+      "Bash(conda info --envs)",
+      "Bash(pip show dbt-core)",
+      "Bash(conda run -n helioscta-backend dbt run --select \"dbt_trades_v2_2026_feb_23\" --profiles-dir /c/Users/AidanKeaveny/Documents/github/helioscta-backend/backend/dbt/dbt_azure_postgresql --project-dir /c/Users/AidanKeaveny/Documents/github/helioscta-backend/backend/dbt/dbt_azure_postgresql)",
+      "Bash(cmd.exe /c \"conda run -n helioscta-backend dbt --version\")",
+      "Bash(cmd.exe /c \"conda activate helioscta-backend && dbt --version\")",
+      "Bash(cmd.exe /c \"conda activate helioscta-backend && where dbt\")",
+      "Bash(cmd.exe /c \"conda run --no-banner -n helioscta-backend where dbt\")",
+      "Bash(powershell.exe -Command \"conda run --no-banner -n helioscta-backend dbt --version\")",
+      "Bash(tail:*)",
+      "Bash(done)",
+      "Bash(grep error TS:*)"
+    ]
+  }
+}

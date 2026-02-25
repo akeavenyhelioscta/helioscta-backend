@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+
+  - name: marex_v5
+    schema: marex
+    tables:
+      - name: marex_sftp_positions_v2_2026_feb_23
+
+  - name: nav_v5
+    schema: nav
+    tables:
+      - name: nav_sftp_positions_agr_v2_2026_feb_23
+      - name: nav_sftp_positions_moross_v2_2026_feb_23
+      - name: nav_sftp_positions_pnt_v2_2026_feb_23
+      - name: nav_sftp_positions_titan_v2_2026_feb_23
