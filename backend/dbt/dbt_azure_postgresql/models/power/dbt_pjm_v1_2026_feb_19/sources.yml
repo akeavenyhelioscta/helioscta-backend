@@ -1,0 +1,22 @@
+version: 2
+
+sources:
+  
+  - name: pjm_v1
+    schema: pjm
+    tables:
+      - name: hourly_load_metered
+      - name: hourly_load_prelim
+      - name: five_min_instantaneous_load_v1_2025_oct_15
+      - name: hrl_dmd_bids
+      - name: da_hrl_lmps
+      - name: rt_settlements_verified_hourly_lmps
+      - name: rt_unverified_hourly_lmps
+      - name: seven_day_outage_forecast
+      - name: five_min_tie_flows
+      - name: seven_day_load_forecast_v1_2025_08_13
+
+  - name: gridstatus_v1
+    schema: gridstatus
+    tables:
+      - name: pjm_load_forecast

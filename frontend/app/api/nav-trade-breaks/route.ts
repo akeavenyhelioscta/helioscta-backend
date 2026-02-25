@@ -62,9 +62,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Use provided date or default to today
-    const today = new Date().toISOString().slice(0, 10);
-    const selectedDate = navDateParam ?? today;
+    // Use provided date, or default to the most recent available date
+    const selectedDate = navDateParam ?? availableDates[0];
 
     const result = await query(DATA_SQL, [selectedDate]);
 

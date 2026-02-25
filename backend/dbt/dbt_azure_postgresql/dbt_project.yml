@@ -22,10 +22,18 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
 
-#-------------------------------------
-# models
-#-------------------------------------
+# ── triggers ────────────────────────────────────────────────────────────────────
+# Run triggers after every dbt run
+on-run-end:
+  - "{{ setup_postgres_triggers() }}"
 
+# ── seeds ────────────────────────────────────────────────────────────────────
+seeds:
+  dbt_azure_postgresql:
+    dbt_wsi_temps_v1_2026_feb_25:
+      +schema: dbt_wsi_temps_v1_2026_feb_25
+
+# ── Models ────────────────────────────────────────────────────────────────────
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
@@ -34,8 +42,13 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   dbt_azure_postgresql:
-    #-------------------------------------
-    #-------------------------------------
+  
+    # ── dbt ────────────────────────────────────────────────────────────────────
+    dbt:
+      +schema: dbt
+      +materialized: view
+
+    # ── Positions and Trades ────────────────────────────────────────────────────
     positions_and_trades:
       dbt_trades_v2_2026_feb_23:
         +schema: dbt_trades_v2_2026_feb_23
@@ -43,4 +56,16 @@ models:
 
       dbt_positions_v5_2026_feb_23:
         +schema: dbt_positions_v5_2026_feb_23
+        +materialized: view
+
+    # ── WSI ──────────────────────────────────────────────────────────────────
+    wsi:
+      dbt_wsi_temps_v1_2026_feb_25:
+        +schema: dbt_wsi_temps_v1_2026_feb_25
+        +materialized: view
+
+    # ── Power ──────────────────────────────────────────────────────────────────
+    power:
+      dbt_pjm_v1_2026_feb_19:
+        +schema: dbt_pjm_v1_2026_feb_19
         +materialized: view

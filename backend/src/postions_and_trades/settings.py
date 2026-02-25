@@ -12,7 +12,7 @@ logging.getLogger().handlers[0].setLevel(logging.INFO)
 """
 
 SENDER_EMAIL_ADDRESS: str = "admin@HeliosCTA.com"
-RECIPIENT_EMAIL_ADDRESSES: list[str] = ["Aidan.Keaveny@HeliosCTA.com"]
+RECIPIENT_EMAIL_ADDRESSES: list[str] = ["Aidan.Keaveny@HeliosCTA.com", "kapil.saxena@helioscta.com", "edi.lacic@helioscta.com", "HeliosCTA@navfundservices.com"]
 TEST_RECIPIENT_EMAIL_ADDRESSES: list[str] = ["Aidan.Keaveny@HeliosCTA.com"]
 
 ### ===================================

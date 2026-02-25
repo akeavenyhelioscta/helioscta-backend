@@ -95,14 +95,30 @@ const COLUMNS: Column[] = [
 
 const FILTERABLE_COLUMNS = COLUMNS.filter((c) => c.filterable);
 
+/** Generate the last 2 weeks of weekdays (Mon–Fri), most recent first. */
+function generateWeekdays(): string[] {
+  const dates: string[] = [];
+  const d = new Date();
+  // Walk backwards up to 14 calendar days, collecting weekdays
+  for (let i = 0; i < 14; i++) {
+    const cur = new Date(d);
+    cur.setDate(d.getDate() - i);
+    const day = cur.getDay(); // 0=Sun, 6=Sat
+    if (day !== 0 && day !== 6) {
+      dates.push(cur.toISOString().slice(0, 10));
+    }
+  }
+  return dates;
+}
+
+const WEEKDAY_DATES = generateWeekdays();
+
 export default function NavTradeBreaks() {
   const [data, setData] = useState<TradeBreakRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const today = new Date().toISOString().slice(0, 10);
-  const [availableDates, setAvailableDates] = useState<string[]>([]);
-  const [selectedDate, setSelectedDate] = useState<string>(today);
-  const [pendingDate, setPendingDate] = useState<string>(today);
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [pendingDate, setPendingDate] = useState<string>("");
   const [filters, setFilters] = useState<Filters>({});
 
   const setFilter = useCallback((key: keyof TradeBreakRow, value: string) => {
@@ -124,7 +140,7 @@ export default function NavTradeBreaks() {
     setError(null);
 
     const url = selectedDate
-      ? `/api/nav-trade-breaks?nav_date=${selectedDate}`
+      ? `/api/nav-trade-breaks?nav_date=${encodeURIComponent(selectedDate)}`
       : "/api/nav-trade-breaks";
 
     fetch(url, { signal: controller.signal })
@@ -136,10 +152,7 @@ export default function NavTradeBreaks() {
       .then((json) => {
         setData(json.rows);
         setFilters({});
-        if (json.available_dates) {
-          setAvailableDates(json.available_dates);
-        }
-        if (json.selected_date && !selectedDate) {
+        if (json.selected_date && json.selected_date !== selectedDate) {
           setSelectedDate(json.selected_date);
           setPendingDate(json.selected_date);
         }
@@ -216,39 +229,37 @@ export default function NavTradeBreaks() {
       </div>
 
       {/* Date filter */}
-      {availableDates.length > 0 && (
-        <div className="rounded-xl border border-gray-800 bg-[#0f1117] px-4 py-3">
-          <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">
-            Filters
-          </h3>
-          <div className="flex items-end gap-3">
-            <div className="flex flex-col gap-1">
-              <label htmlFor="nav-date-filter" className="text-[10px] font-medium text-gray-500 uppercase tracking-wider">
-                NAV Date
-              </label>
-              <select
-                id="nav-date-filter"
-                value={pendingDate}
-                onChange={(e) => setPendingDate(e.target.value)}
-                className="rounded-md border border-gray-700 bg-[#1a1d2e] px-3 py-1.5 text-sm text-gray-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              >
-                {availableDates.map((date) => (
-                  <option key={date} value={date}>
-                    {date}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button
-              onClick={() => setSelectedDate(pendingDate)}
-              disabled={pendingDate === selectedDate || loading}
-              className="rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+      <div className="rounded-xl border border-gray-800 bg-[#0f1117] px-4 py-3">
+        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">
+          Filters
+        </h3>
+        <div className="flex items-end gap-3">
+          <div className="flex flex-col gap-1">
+            <label htmlFor="nav-date-filter" className="text-[10px] font-medium text-gray-500 uppercase tracking-wider">
+              NAV Date
+            </label>
+            <select
+              id="nav-date-filter"
+              value={pendingDate}
+              onChange={(e) => setPendingDate(e.target.value)}
+              className="rounded-md border border-gray-700 bg-[#1a1d2e] px-3 py-1.5 text-sm text-gray-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
-              Apply
-            </button>
+              {WEEKDAY_DATES.map((date) => (
+                <option key={date} value={date}>
+                  {date}
+                </option>
+              ))}
+            </select>
           </div>
+          <button
+            onClick={() => setSelectedDate(pendingDate)}
+            disabled={pendingDate === selectedDate || loading}
+            className="rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            Apply
+          </button>
         </div>
-      )}
+      </div>
 
       {/* Broker badges */}
       {!loading && !error && brokerCounts.size > 0 && (
@@ -352,7 +363,9 @@ export default function NavTradeBreaks() {
       {!loading && !error && filteredData.length === 0 && (
         <div className="flex items-center justify-center h-48">
           <div className="text-gray-500">
-            {data.length > 0 ? "No trade breaks match the selected filters" : "No Trade Breaks"}
+            {data.length > 0
+              ? "No trade breaks match the selected filters"
+              : `No trade breaks for ${selectedDate}`}
           </div>
         </div>
       )}

@@ -16,7 +16,7 @@ notebook
 # python
 poetry==1.8.4
 python-dotenv==1.0.1
-numpy==2.0.2
+numpy
 pandas>=2.0.0
 pyarrow>=12.0.0
 tabulate
@@ -25,13 +25,10 @@ panel
 
 # gridstatus
 gridstatusio
+gridstatus==0.34.0
 
 # sftp
 paramiko
-
-# async
-asyncpg
-aiohttp
 
 # azure
 azure-storage-blob>=12.19.0
