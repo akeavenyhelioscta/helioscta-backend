@@ -1,4 +1,3 @@
-
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
@@ -50,22 +49,55 @@ models:
 
     # ── Positions and Trades ────────────────────────────────────────────────────
     positions_and_trades:
-      dbt_trades_v2_2026_feb_23:
-        +schema: dbt_trades_v2_2026_feb_23
-        +materialized: view
+      trades_cleaned:
+        +schema: trades_cleaned
+        +materialized: ephemeral
+        source:
+          +materialized: ephemeral
+        staging:
+          +materialized: ephemeral
+        marts:
+          +materialized: view
 
-      dbt_positions_v5_2026_feb_23:
-        +schema: dbt_positions_v5_2026_feb_23
-        +materialized: view
+      positions_cleaned:
+        +schema: positions_cleaned
+        +materialized: ephemeral
+        source:
+          +materialized: ephemeral
+        staging:
+          +materialized: ephemeral
+        marts:
+          +materialized: view
 
-    # ── WSI ──────────────────────────────────────────────────────────────────
-    wsi:
-      dbt_wsi_temps_v1_2026_feb_25:
-        +schema: dbt_wsi_temps_v1_2026_feb_25
+    # ── Meteologica ──────────────────────────────────────────────────────────────
+    meteologica:
+      meteologica_cleaned:
+        +schema: meteologica_cleaned
         +materialized: view
+        staging:
+          +materialized: ephemeral
+        marts:
+          +materialized: view
 
     # ── Power ──────────────────────────────────────────────────────────────────
     power:
-      dbt_pjm_v1_2026_feb_19:
-        +schema: dbt_pjm_v1_2026_feb_19
+      pjm_cleaned:
+        +schema: pjm_cleaned
+        +materialized: ephemeral
+        source:
+          +materialized: ephemeral
+        staging:
+          +materialized: ephemeral
+        queries:
+          +materialized: ephemeral
+        utils:
+          +materialized: ephemeral
+        marts:
+          +materialized: view
+
+    # ── Genscape ──────────────────────────────────────────────────────────────────
+    genscape:
+      genscape_cleaned:
+        +schema: genscape_cleaned
         +materialized: view
+

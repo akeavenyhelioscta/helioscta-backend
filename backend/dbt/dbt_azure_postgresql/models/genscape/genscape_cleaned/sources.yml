@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  
+  - name: genscape_v2
+    schema: genscape
+    description: '{{ doc("genscape_overview") }}'
+    tables:
+      - name: gas_production_forecast_v2_2025_09_23
+        description: '{{ doc("genscape_source") }}'
+
+      - name: daily_pipeline_production
+        description: '{{ doc("genscape_daily_pipeline_production_source") }}'

@@ -1,0 +1,124 @@
+version: 2
+
+models:
+  - name: staging_v2_genscape_gas_production_forecast
+    description: '{{ doc("genscape_gas_production_forecast") }}'
+    columns:
+      - name: year
+        description: "Forecast target year"
+        tests:
+          - not_null
+      - name: month
+        description: "Forecast target month (1-12)"
+        tests:
+          - not_null
+      - name: date
+        description: '{{ doc("genscape_col_date") }}'
+        tests:
+          - not_null
+      - name: report_date
+        description: '{{ doc("genscape_col_report_date") }}'
+        tests:
+          - not_null
+      - name: revision
+        description: '{{ doc("genscape_col_revision") }}'
+        tests:
+          - not_null
+      - name: max_revision
+        description: "Total number of forecast revisions available for this date"
+        tests:
+          - not_null
+      - name: lower_48_production
+        description: '{{ doc("genscape_col_production") }}'
+      - name: lower_48_dry_gas_production_yoy
+        description: '{{ doc("genscape_col_dry_gas_production_yoy") }}'
+      - name: lower_48_oil_rig_count
+        description: '{{ doc("genscape_col_oil_rig_count") }}'
+      - name: lower_48_gas_rig_count
+        description: '{{ doc("genscape_col_gas_rig_count") }}'
+
+  - name: staging_v2_daily_pipeline_production
+    description: '{{ doc("genscape_daily_pipeline_production_staging") }}'
+    columns:
+      - name: date
+        description: '{{ doc("genscape_dpp_col_date") }}'
+        tests:
+          - not_null
+      - name: report_date
+        description: '{{ doc("genscape_col_report_date") }}'
+        tests:
+          - not_null
+      - name: revision
+        description: '{{ doc("genscape_col_revision") }}'
+        tests:
+          - not_null
+      - name: max_revision
+        description: "Total number of report revisions available for this production date"
+        tests:
+          - not_null
+      - name: lower_48
+        description: '{{ doc("genscape_dpp_col_lower_48") }}'
+      - name: gulf_of_mexico
+        description: '{{ doc("genscape_dpp_col_gulf_of_mexico") }}'
+      - name: gulf_coast
+        description: "Composite: north_louisiana + south_louisiana + other_gulf_coast (MMCF/d)"
+      - name: north_louisiana
+        description: "Daily dry gas production in North Louisiana (MMCF/d)"
+      - name: south_louisiana
+        description: "Daily dry gas production in South Louisiana (MMCF/d)"
+      - name: other_gulf_coast
+        description: "Daily dry gas production in Other Gulf Coast regions (MMCF/d)"
+      - name: texas
+        description: '{{ doc("genscape_dpp_col_texas") }}'
+      - name: mid_con
+        description: "Composite: oklahoma + kansas + arkansas (MMCF/d)"
+      - name: oklahoma
+        description: "Daily dry gas production in Oklahoma (MMCF/d)"
+      - name: kansas
+        description: "Daily dry gas production in Kansas (MMCF/d)"
+      - name: arkansas
+        description: "Daily dry gas production in Arkansas (MMCF/d)"
+      - name: permian
+        description: "Composite: permian_nm + permian_tx (MMCF/d)"
+      - name: permian_nm
+        description: "Daily dry gas production in Permian New Mexico (MMCF/d)"
+      - name: permian_tx
+        description: "Daily dry gas production in Permian Texas (MMCF/d)"
+      - name: permian_flare_counts
+        description: "Count of observed flaring events in the Permian Basin"
+      - name: permian_flare_volume
+        description: "Estimated flaring volume in the Permian Basin (MMCF/d)"
+      - name: san_juan
+        description: '{{ doc("genscape_dpp_col_san_juan") }}'
+      - name: rockies
+        description: "Composite: piceance_basin + denver_julesberg + north_dakota_and_montana + uinta_basin + green_wind_river_wyoming + powder_river_basin + other_rockies (MMCF/d)"
+      - name: piceance_basin
+        description: "Daily dry gas production in Piceance Basin, CO (MMCF/d)"
+      - name: denver_julesberg
+        description: "Daily dry gas production in Denver-Julesberg Basin (MMCF/d)"
+      - name: north_dakota_and_montana
+        description: "Daily dry gas production in North Dakota and Montana (MMCF/d)"
+      - name: uinta_basin
+        description: "Daily dry gas production in Uinta Basin, UT (MMCF/d)"
+      - name: green_wind_river_wyoming
+        description: "Daily dry gas production in Green/Wind River, WY (MMCF/d)"
+      - name: powder_river_basin
+        description: "Daily dry gas production in Powder River Basin, WY (MMCF/d)"
+      - name: other_rockies
+        description: "Daily dry gas production in Other Rockies regions (MMCF/d)"
+      - name: west
+        description: '{{ doc("genscape_dpp_col_west") }}'
+      - name: east
+        description: "Composite: ohio + sw_pennsylvania + ne_pennsylvania + west_virginia + other_east (MMCF/d)"
+      - name: ohio
+        description: "Daily dry gas production in Ohio (MMCF/d)"
+      - name: sw_pennsylvania
+        description: "Daily dry gas production in Southwest Pennsylvania (MMCF/d)"
+      - name: ne_pennsylvania
+        description: "Daily dry gas production in Northeast Pennsylvania (MMCF/d)"
+      - name: west_virginia
+        description: "Daily dry gas production in West Virginia (MMCF/d)"
+      - name: other_east
+        description: "Daily dry gas production in Other East regions (MMCF/d)"
+      - name: western_canada
+        description: '{{ doc("genscape_dpp_col_western_canada") }}'

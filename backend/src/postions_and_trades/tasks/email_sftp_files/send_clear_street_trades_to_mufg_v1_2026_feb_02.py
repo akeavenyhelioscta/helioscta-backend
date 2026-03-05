@@ -33,7 +33,7 @@ LOGGING_OPERATION_TYPE = "consume"
 
 # SQL CONFIG
 SQL_FILENAME = "clear_street_trades_mufg_latest.sql"
-CSV_FILENAME_PATTERN = "clear_street_eod_trades"
+CSV_FILENAME_PATTERN = "Helios_Transactions"
 
 # logging
 logger = logging_utils.init_logging(
@@ -94,7 +94,7 @@ def _upload_trades_file(
     """"""
     # upload the trades file to the MUFG SFTP server
     with open(file_name, "rb") as f:
-        sftp.putfo(f, os.path.join(remote_dir, Path(file_name).name))
+        sftp.putfo(f, f"{remote_dir}/{Path(file_name).name}")
     logger.success(f"Uploaded {file_name} to {remote_dir} ..")
 
 
@@ -107,7 +107,7 @@ def main(
     mufg_password: str = secrets.MUFG_SFTP_PASSWORD,
     mufg_port: int = secrets.MUFG_SFTP_PORT,
     mufg_remote_dir: str = secrets.MUFG_SFTP_REMOTE_DIR,
-    validate_date: bool = True,
+    validate_date: bool = False,
     expected_date: date | None = None,
 ):
 

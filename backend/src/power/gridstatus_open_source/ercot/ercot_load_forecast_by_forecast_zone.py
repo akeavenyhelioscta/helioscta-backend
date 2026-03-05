@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import pandas as pd
-from prefect import flow
 import gridstatus
 from gridstatus.ercot import ERCOTSevenDayLoadForecastReport
 
@@ -143,7 +142,6 @@ def _upsert(
     )
 
 
-@flow(name=API_SCRAPE_NAME, retries=2, retry_delay_seconds=60, log_prints=True)
 def main(
         dates: list = [(datetime.now() - timedelta(days=1), datetime.now() + timedelta(days=7))],
     ):

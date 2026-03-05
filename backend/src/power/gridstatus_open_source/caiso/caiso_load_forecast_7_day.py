@@ -4,7 +4,6 @@ from dateutil.relativedelta import relativedelta
 
 import pandas as pd
 import gridstatus
-from prefect import flow
 
 from backend.utils import (
     azure_postgresql_utils as azure_postgresql,
@@ -150,7 +149,6 @@ def _upsert(
     )
 
 
-@flow(name=API_SCRAPE_NAME, retries=2, retry_delay_seconds=60, log_prints=True)
 def main(
         start_date: datetime = (datetime.now() - relativedelta(days=0)),
         end_date: datetime = (datetime.now() + relativedelta(days=7)),

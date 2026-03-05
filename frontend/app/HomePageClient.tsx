@@ -11,6 +11,8 @@ import PipelineRuns from "@/components/positions/PipelineRuns";
 import PositionFiles from "@/components/positions/PositionFiles";
 import WorkflowStatus from "@/components/positions/WorkflowStatus";
 import NavTradeBreaks from "@/components/trade-breaks/NavTradeBreaks";
+import ScrapeMonitoring from "@/components/monitoring/ScrapeMonitoring";
+import DataExplorer from "@/components/data-explorer/DataExplorer";
 
 const SECTION_META: Record<ActiveSection, { title: string; subtitle: string; footer: string }> = {
   "dashboard": {
@@ -48,10 +50,21 @@ const SECTION_META: Record<ActiveSection, { title: string; subtitle: string; foo
     subtitle: "Lifecycle events for all pipeline runs, categorized by success and errors.",
     footer: "Pipeline runs | Source: logging.pipeline_runs",
   },
+  "scrape-monitoring": {
+    title: "Scrape Monitoring",
+    subtitle:
+      "Health and freshness monitoring across power, positions/trades, and WSI scrape pipelines.",
+    footer: "Scrape monitoring | Sources: logging.pipeline_runs + generated scrape catalog",
+  },
   "nav-trade-breaks": {
     title: "NAV Trade Breaks",
     subtitle: "Trade breaks identified from NAV SFTP feed requiring review and resolution.",
     footer: "NAV trade breaks | Source: Azure PostgreSQL",
+  },
+  "data-explorer": {
+    title: "Data Explorer",
+    subtitle: "Browse database schemas, tables, and columns. Write SQL queries and visualize results.",
+    footer: "Data Explorer | Source: Azure PostgreSQL",
   },
 };
 
@@ -93,7 +106,9 @@ export default function HomePageClient() {
               </div>
             )}
             {activeSection === "pipeline-runs" && <PipelineRuns />}
+            {activeSection === "scrape-monitoring" && <ScrapeMonitoring />}
             {activeSection === "nav-trade-breaks" && <NavTradeBreaks />}
+            {activeSection === "data-explorer" && <DataExplorer />}
           </div>
           <p className="mt-6 text-center text-xs text-gray-600">{meta.footer}</p>
         </main>

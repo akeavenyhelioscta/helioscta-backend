@@ -46,3 +46,8 @@ export async function query<T extends QueryResultRow = QueryResultRow>(
 ): Promise<QueryResult<T>> {
   return pool.query<T>(sql, params);
 }
+
+/** Acquire a client from the pool for transaction-based queries. */
+export async function getClient() {
+  return pool.connect();
+}

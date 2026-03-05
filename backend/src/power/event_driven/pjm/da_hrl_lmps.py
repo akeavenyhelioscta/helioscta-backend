@@ -6,8 +6,6 @@ from dateutil.relativedelta import relativedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from prefect import flow
-
 import pandas as pd
 
 from backend import secrets
@@ -160,7 +158,6 @@ def handle_event(payload: dict) -> None:
     # Placeholder for downstream logic (e.g., dbt runs, alerts)
 
 
-@flow(name=API_SCRAPE_NAME, log_prints=True)
 def main(
     start_date: str = (datetime.now() + relativedelta(days=1)).strftime("%Y-%m-%d 00:00"),
     end_date: str = (datetime.now() + relativedelta(days=1)).strftime("%Y-%m-%d 23:00"),

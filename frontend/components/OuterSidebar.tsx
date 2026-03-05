@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 
-export type TopLevelSection = "positions";
+export type TopLevelSection = "positions" | "data-explorer";
 
-export type ActiveSection = "dashboard" | "grouped-positions" | "clear-street-trades" | "clear-street-intraday-trades" | "marex-allocated-trades" | "nav-product-code-matching" | "pipeline-runs" | "nav-trade-breaks";
+export type ActiveSection = "dashboard" | "grouped-positions" | "clear-street-trades" | "clear-street-intraday-trades" | "marex-allocated-trades" | "nav-product-code-matching" | "pipeline-runs" | "scrape-monitoring" | "nav-trade-breaks" | "data-explorer";
 
 interface OuterSidebarProps {
   topLevel: TopLevelSection;
@@ -38,6 +38,12 @@ const TOP_LEVEL_ITEMS: TopLevelItem[] = [
     label: "Positions",
     iconPath: "M3 10h11M9 21V3m0 0L4 8m5-5l5 5M13 14h8m-4-5v12m0 0l4-5m-4 5l-4-5",
     iconColor: "text-blue-400",
+  },
+  {
+    id: "data-explorer",
+    label: "Explorer",
+    iconPath: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4",
+    iconColor: "text-purple-400",
   },
 ];
 
@@ -108,6 +114,12 @@ const POSITIONS_SECTIONS: NavSection[] = [
     title: "Backend",
     items: [
       {
+        id: "scrape-monitoring",
+        label: "Scrape Monitoring",
+        iconPath: "M3 12h4m10 0h4M12 3v4m0 10v4M7.05 7.05l2.83 2.83m4.24 4.24l2.83 2.83m0-9.9l-2.83 2.83m-4.24 4.24L7.05 16.95M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+        iconColor: "text-cyan-400",
+      },
+      {
         id: "pipeline-runs",
         label: "Pipeline Runs",
         iconPath: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4",
@@ -117,10 +129,29 @@ const POSITIONS_SECTIONS: NavSection[] = [
   },
 ];
 
+const DATA_EXPLORER_SECTIONS: NavSection[] = [
+  {
+    title: "Data",
+    items: [
+      {
+        id: "data-explorer",
+        label: "Data Explorer",
+        iconPath: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4",
+        iconColor: "text-purple-400",
+      },
+    ],
+  },
+];
+
+const DEFAULT_SECTION: Record<TopLevelSection, ActiveSection> = {
+  positions: "dashboard",
+  "data-explorer": "data-explorer",
+};
+
 export default function OuterSidebar({ topLevel, onTopLevelChange, activeSection, onSectionChange }: OuterSidebarProps) {
   const [expanded, setExpanded] = useState(true);
 
-  const sections = topLevel === "positions" ? POSITIONS_SECTIONS : [];
+  const sections = topLevel === "positions" ? POSITIONS_SECTIONS : topLevel === "data-explorer" ? DATA_EXPLORER_SECTIONS : [];
 
   return (
     <aside className="flex border-r border-gray-800 bg-[#0b0d14]">
@@ -151,6 +182,7 @@ export default function OuterSidebar({ topLevel, onTopLevelChange, activeSection
               key={item.id}
               onClick={() => {
                 onTopLevelChange(item.id);
+                onSectionChange(DEFAULT_SECTION[item.id]);
                 if (!expanded) setExpanded(true);
               }}
               className={`flex flex-col items-center gap-1 rounded-lg px-2 py-2.5 transition-colors w-14 ${

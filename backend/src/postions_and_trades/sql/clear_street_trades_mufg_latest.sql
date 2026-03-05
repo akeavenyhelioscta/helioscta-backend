@@ -99,11 +99,11 @@ SELECT
     ,cme_product_code
     ,bbg_product_code
 
-FROM trades_v1_2026_feb_02.marts_v1_clear_street_trades
+FROM trades_cleaned.clear_street_trades
 
 WHERE 
     give_in_out_firm_num in ('ADU', '905')
-    AND sftp_date = (SELECT MAX(sftp_date) FROM trades_v1_2026_feb_02.marts_v1_clear_street_trades)
+    AND sftp_date = (SELECT MAX(sftp_date) FROM trades_cleaned.clear_street_trades)
 
 ORDER BY 
   sftp_date DESC, 

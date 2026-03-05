@@ -5,7 +5,6 @@ from pathlib import Path
 from dateutil.relativedelta import relativedelta
 
 import pandas as pd
-from prefect import flow
 
 from backend import secrets
 from backend.utils import (
@@ -29,8 +28,8 @@ logger = logging_utils.init_logging(
 """
 
 def _pull(
-        start_date: str,
-        end_date: str,
+        start_date: str = (datetime.now() - relativedelta(days=7)).strftime("%Y-%m-%d"),
+        end_date: str = (datetime.now() + relativedelta(days=1)).strftime("%Y-%m-%d"),
     ) -> pd.DataFrame:
     """
         https://dataminer2.pjm.com/feed/hrl_dmd_bids/definition
@@ -85,7 +84,6 @@ def _upsert(
     )
 
 
-@flow(name=API_SCRAPE_NAME, retries=2, retry_delay_seconds=60, log_prints=True)
 def main(
         start_date: str = (datetime.now() - relativedelta(days=7)).strftime("%Y-%m-%d"),
         end_date: str = (datetime.now() + relativedelta(days=1)).strftime("%Y-%m-%d"),

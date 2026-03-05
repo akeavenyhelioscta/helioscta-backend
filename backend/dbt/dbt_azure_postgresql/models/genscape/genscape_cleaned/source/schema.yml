@@ -1,0 +1,106 @@
+version: 2
+
+models:
+  - name: source_v2_genscape_gas_production_forecast
+    description: "Ephemeral source model that pivots raw item-value pairs into typed metric columns per region."
+    columns:
+      - name: report_date
+        description: '{{ doc("genscape_col_report_date") }}'
+      - name: date
+        description: '{{ doc("genscape_col_date") }}'
+      - name: region
+        description: '{{ doc("genscape_col_region") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - 'Lower 48'
+                - 'Gulf of Mexico - Deepwater'
+                - 'Gulf of Mexico - Shelf'
+                - 'Alabama'
+                - 'Florida'
+                - 'Mississippi'
+                - 'North Louisiana'
+                - 'South Louisiana'
+                - 'Texas Dist 1'
+                - 'Texas Dist 2'
+                - 'Texas Dist 3'
+                - 'Texas Dist 4'
+                - 'Texas Dist 5'
+                - 'Texas Dist 6'
+                - 'Texas Dist 7B'
+                - 'Texas Dist 7C'
+                - 'Texas Dist 8'
+                - 'Texas Dist 8A'
+                - 'Texas Dist 9'
+                - 'Texas Dist 10'
+                - 'Oklahoma'
+                - 'Kansas'
+                - 'Arkansas'
+                - 'Permian New Mexico'
+                - 'Colorado San Juan'
+                - 'New Mexico San Juan'
+                - 'Colorado Piceance'
+                - 'Colorado Denver Julesberg'
+                - 'Colorado Other'
+                - 'Montana'
+                - 'North Dakota'
+                - 'Utah Uinta'
+                - 'Utah Other'
+                - 'Other Rockies'
+                - 'Wyoming Big Horn'
+                - 'Wyoming Denver Julesberg'
+                - 'Wyoming Green/Wind/OT'
+                - 'Wyoming Powder'
+                - 'California'
+                - 'Other West'
+                - 'Kentucky'
+                - 'Michigan'
+                - 'New York'
+                - 'Ohio'
+                - 'Pennsylvania'
+                - 'Northeast Pennsylvania'
+                - 'Southwest Pennsylvania'
+                - 'Virginia'
+                - 'West Virginia'
+                - 'Other East'
+                - 'Alberta'
+                - 'British Columbia'
+                - 'Saskatchewan'
+                - 'Nova Scotia'
+                - 'Alaska'
+                - 'United States'
+
+  - name: source_v2_daily_pipeline_production
+    description: "Ephemeral source model that cleans raw columns, casts types, and computes composite regional aggregates from the daily pipeline production table."
+    columns:
+      - name: date
+        description: '{{ doc("genscape_dpp_col_date") }}'
+        tests:
+          - not_null
+      - name: report_date
+        description: '{{ doc("genscape_col_report_date") }}'
+        tests:
+          - not_null
+      - name: lower_48
+        description: '{{ doc("genscape_dpp_col_lower_48") }}'
+      - name: gulf_of_mexico
+        description: '{{ doc("genscape_dpp_col_gulf_of_mexico") }}'
+      - name: gulf_coast
+        description: "Composite: north_louisiana + south_louisiana + other_gulf_coast"
+      - name: texas
+        description: '{{ doc("genscape_dpp_col_texas") }}'
+      - name: mid_con
+        description: "Composite: oklahoma + kansas + arkansas"
+      - name: permian
+        description: "Composite: permian_nm + permian_tx"
+      - name: san_juan
+        description: '{{ doc("genscape_dpp_col_san_juan") }}'
+      - name: rockies
+        description: "Composite: piceance_basin + denver_julesberg + north_dakota_and_montana + uinta_basin + green_wind_river_wyoming + powder_river_basin + other_rockies"
+      - name: west
+        description: '{{ doc("genscape_dpp_col_west") }}'
+      - name: east
+        description: "Composite: ohio + sw_pennsylvania + ne_pennsylvania + west_virginia + other_east"
+      - name: western_canada
+        description: '{{ doc("genscape_dpp_col_western_canada") }}'

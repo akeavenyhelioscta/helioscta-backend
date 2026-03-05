@@ -28,7 +28,15 @@
       "Bash(cd /c/Users/AidanKeaveny/Documents/github/helioscta-backend && python -c \"\nimport glob\n\n# Only the direct pjm/ scripts have no settings usage\nfiles = [f for f in glob.glob\\('backend/src/power/pjm/*.py'\\) if '__init__' not in f]\n\nold_block = '''from backend import \\(\n    secrets as settings,\n\\)\n\n'''\n\nchanged = []\nfor f in sorted\\(files\\):\n    with open\\(f, 'r', encoding='utf-8'\\) as fh:\n        content = fh.read\\(\\)\n    if old_block in content:\n        new_content = content.replace\\(old_block, ''\\)\n        with open\\(f, 'w', encoding='utf-8'\\) as fh:\n            fh.write\\(new_content\\)\n        changed.append\\(f\\)\n\nprint\\(f'Removed unused settings import from {len\\(changed\\)} files'\\)\nfor f in changed:\n    print\\(f'  {f}'\\)\n\" 2>&1)",
       "Bash(python -c \":*)",
       "Bash(find:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "mcp__postgres__query",
+      "mcp__postgres__connect_db",
+      "Bash(python:*)",
+      "Bash(rm:*)",
+      "Bash(python3:*)",
+      "Bash(npx tsc:*)",
+      "Bash(xargs:*)",
+      "Bash(where python:*)"
     ]
   }
 }

@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import pandas as pd
-from prefect import flow
 import gridstatus
 
 from backend.utils import (
@@ -129,7 +128,6 @@ def _upsert(
 
 
 # NOTE: This data is ephemeral in that there is only one file available that is constantly updated. There is no historical data.
-@flow(name=API_SCRAPE_NAME, retries=2, retry_delay_seconds=60, log_prints=True)
 def main(
         dates: list = [None],
     ):

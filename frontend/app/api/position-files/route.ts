@@ -8,7 +8,7 @@ const DATA_SQL = `
       'MAREX - ACIM' as source
       ,MAX(sftp_date) as sftp_date
       ,MAX(sftp_upload_timestamp) as sftp_upload_timestamp
-  from dbt_positions_v5_2026_feb_23.source_v5_marex_positions
+  from positions_cleaned.marex_positions
   WHERE sftp_date >= current_date - 5
 
   UNION ALL
@@ -17,7 +17,7 @@ const DATA_SQL = `
       'NAV - PNT' as source
       ,MAX(sftp_date) as sftp_date
       ,MAX(sftp_upload_timestamp) as sftp_upload_timestamp
-  from dbt_positions_v5_2026_feb_23.source_v5_nav_positions_pnt
+  from positions_cleaned.nav_positions_pnt
   WHERE sftp_date >= current_date - 5
 
   UNION ALL
@@ -26,7 +26,7 @@ const DATA_SQL = `
       'NAV - DICKSON' as source
       ,MAX(sftp_date) as sftp_date
       ,MAX(sftp_upload_timestamp) as sftp_upload_timestamp
-  from dbt_positions_v5_2026_feb_23.source_v5_nav_positions_moross
+  from positions_cleaned.nav_positions_moross
   WHERE sftp_date >= current_date - 5
 
   UNION ALL
@@ -35,7 +35,7 @@ const DATA_SQL = `
       'NAV - TITAN' as source
       ,MAX(sftp_date) as sftp_date
       ,MAX(sftp_upload_timestamp) as sftp_upload_timestamp
-  from dbt_positions_v5_2026_feb_23.source_v5_nav_positions_titan
+  from positions_cleaned.nav_positions_titan
   WHERE sftp_date >= current_date - 5
 `;
 

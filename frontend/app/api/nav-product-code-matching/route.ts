@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 const DATES_SQL = `
   SELECT DISTINCT sftp_date::DATE as sftp_date
-  FROM dbt_positions_v5_2026_feb_23.staging_v5_nav_positions
+  FROM positions_cleaned.nav_positions
   WHERE exchange_code IS NULL
   ORDER BY sftp_date DESC
 `;
@@ -30,7 +30,7 @@ const DATA_SQL = `
       ,settlement_price
       ,trade_price
       ,market_value
-    FROM dbt_positions_v5_2026_feb_23.staging_v5_nav_positions
+    FROM positions_cleaned.nav_positions
     WHERE exchange_code IS NULL
       AND sftp_date = $1::DATE
   )

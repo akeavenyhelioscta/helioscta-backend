@@ -103,6 +103,7 @@ SELECT * FROM (
     (NULL, 'NPM', NULL, 'POWER_FUTURES', 'CAISO',                  'ICE NP 15 PEAK_416', 'CAISO NP15 PEAK FIXED'),
     
     -- PAC NW
+    (NULL, 'MDC', NULL, 'POWER_FUTURES', 'PAC_NW',                  'ICE MID-C PEAK', 'MID C FIN PEAK ELEC'),
     (NULL, 'MDC', NULL, 'POWER_FUTURES', 'PAC_NW',                  'ICE MID-C PEAK_400', 'MID C FIN PEAK ELEC'),
     (NULL, 'MDC', NULL, 'POWER_FUTURES', 'PAC_NW',                  'ICE MID-C PEAK_416', 'MID C FIN PEAK ELEC'),
     

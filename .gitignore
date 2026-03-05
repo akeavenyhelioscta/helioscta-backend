@@ -1,20 +1,6 @@
-.archive/*
-.test/*
-
 # Environment files (secrets)
 .env
 **/.env
-docs/_build/
-docs/build/
-
-# logs
-**/logs/*
-*.log
-
-# misc files
-*.pdf
-*.csv
-*.xlsx
 
 # Python build/dist directories
 dist/*
@@ -28,9 +14,13 @@ __pycache__/
 # Jupyter notebooks checkpoints
 .ipynb_checkpoints/
 
-# Logs
+# logs
+**/logs/*
+*.log
 
 # misc files
+.archive/*
+.test/*
 *.pdf
 *.csv
 *.xlsx

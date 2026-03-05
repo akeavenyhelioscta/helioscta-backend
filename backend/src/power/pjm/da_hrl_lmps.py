@@ -5,7 +5,6 @@ from pathlib import Path
 from dateutil.relativedelta import relativedelta
 
 import pandas as pd
-from prefect import flow
 
 from backend import secrets
 from backend.utils import (
@@ -78,7 +77,6 @@ def _upsert(
     )
 
 
-@flow(name=API_SCRAPE_NAME, retries=2, retry_delay_seconds=60, log_prints=True)
 def main(
         start_date: datetime = (datetime.now() - relativedelta(days=7)),
         end_date: datetime = (datetime.now() + relativedelta(days=1)),

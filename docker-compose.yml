@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgres:
     image: postgres:15
@@ -19,15 +17,15 @@ services:
     image: prefecthq/prefect:3-latest
     command: prefect server start --host 0.0.0.0
     ports:
-      - "4321:4321"
+      - "4322:4322"
     environment:
     - PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://prefect:prefect@postgres:5432/prefect
-    - PREFECT_SERVER_API_PORT=4321
+    - PREFECT_SERVER_API_PORT=4322
     depends_on:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:4321/api/health')"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:4322/api/health')"]
       interval: 5s
       timeout: 5s
       retries: 30
@@ -41,10 +39,20 @@ services:
       - -c
       - |
         prefect work-pool create default-agent-pool --type process || true
-        find /app/helioscta_api_scrapes -name 'prefect.yaml' -exec prefect deploy --all --prefect-file {} \;
+
+        # Deploy all prefect.yaml files
+        find /app -name 'prefect.yaml' -type f | while read -r yaml_file; do
+          echo "========================================="
+          echo "Deploying from: $$yaml_file"
+          echo "========================================="
+          prefect deploy --all --prefect-file "$$yaml_file" || echo "WARNING: Failed to deploy from $$yaml_file"
+        done
+
+        # Start worker
+        cd /app
         prefect worker start --pool default-agent-pool --work-queue default
     environment:
-      - PREFECT_API_URL=http://prefect-server:4321/api
+      - PREFECT_API_URL=http://prefect-server:4322/api
     depends_on:
       prefect-server:
         condition: service_healthy

@@ -1,0 +1,388 @@
+version: 2
+
+models:
+  - name: pjm_lmps_hourly
+    description: '{{ doc("pjm_mart_lmps_hourly") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: hour_ending
+        description: '{{ doc("col_hour_ending") }}'
+        tests:
+          - not_null
+      - name: hub
+        description: "PJM pricing hub name."
+        tests:
+          - not_null
+      - name: market
+        description: '{{ doc("col_market") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['da', 'rt', 'dart']
+
+  - name: pjm_lmps_daily
+    description: '{{ doc("pjm_mart_lmps_daily") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: hub
+        description: "PJM pricing hub name."
+        tests:
+          - not_null
+      - name: period
+        description: '{{ doc("col_period") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['flat', 'onpeak', 'offpeak']
+      - name: market
+        description: '{{ doc("col_market") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['da', 'rt', 'dart']
+
+  - name: pjm_load_da_hourly
+    description: '{{ doc("pjm_mart_load_da_hourly") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: hour_ending
+        description: '{{ doc("col_hour_ending") }}'
+        tests:
+          - not_null
+      - name: region
+        description: '{{ doc("col_region") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['RTO', 'MIDATL', 'WEST', 'SOUTH']
+
+  - name: pjm_load_da_daily
+    description: '{{ doc("pjm_mart_load_da_daily") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: region
+        description: '{{ doc("col_region") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['RTO', 'MIDATL', 'WEST', 'SOUTH']
+      - name: period
+        description: '{{ doc("col_period") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['flat', 'peak', 'onpeak', 'offpeak']
+
+  - name: pjm_load_rt_metered_hourly
+    description: '{{ doc("pjm_mart_load_rt_metered_hourly") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: hour_ending
+        description: '{{ doc("col_hour_ending") }}'
+        tests:
+          - not_null
+      - name: region
+        description: '{{ doc("col_region") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['RTO', 'MIDATL', 'WEST', 'SOUTH']
+
+  - name: pjm_load_rt_prelim_hourly
+    description: '{{ doc("pjm_mart_load_rt_prelim_hourly") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: hour_ending
+        description: '{{ doc("col_hour_ending") }}'
+        tests:
+          - not_null
+      - name: region
+        description: '{{ doc("col_region") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['RTO', 'MIDATL', 'WEST', 'SOUTH']
+
+  - name: pjm_load_forecast_hourly
+    description: '{{ doc("pjm_mart_load_forecast_hourly") }}'
+    columns:
+      - name: forecast_rank
+        description: '{{ doc("col_forecast_rank") }}'
+        tests:
+          - not_null
+      - name: forecast_date
+        description: "Target operating date being forecasted."
+        tests:
+          - not_null
+      - name: hour_ending
+        description: '{{ doc("col_hour_ending") }}'
+        tests:
+          - not_null
+      - name: region
+        description: '{{ doc("col_region") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['RTO', 'MIDATL', 'WEST', 'SOUTH']
+
+  - name: pjm_gridstatus_load_forecast_hourly
+    description: '{{ doc("pjm_mart_gridstatus_load_forecast_hourly") }}'
+    columns:
+      - name: forecast_rank
+        description: '{{ doc("col_forecast_rank") }}'
+        tests:
+          - not_null
+      - name: forecast_date
+        description: "Target operating date being forecasted."
+        tests:
+          - not_null
+      - name: hour_ending
+        description: '{{ doc("col_hour_ending") }}'
+        tests:
+          - not_null
+      - name: region
+        description: '{{ doc("col_region") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['RTO', 'MIDATL', 'WEST', 'SOUTH']
+
+  - name: pjm_fuel_mix_daily
+    description: '{{ doc("pjm_mart_fuel_mix_daily") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: period
+        description: '{{ doc("col_period") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['flat', 'peak', 'onpeak', 'offpeak']
+
+  - name: pjm_outages_actual_daily
+    description: '{{ doc("pjm_mart_outages_actual_daily") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: region
+        description: "PJM outage region."
+        tests:
+          - not_null
+
+  - name: pjm_fuel_mix_hourly
+    description: '{{ doc("pjm_mart_fuel_mix_hourly") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: hour_ending
+        description: '{{ doc("col_hour_ending") }}'
+        tests:
+          - not_null
+
+  - name: pjm_lmps_rt_hourly
+    description: '{{ doc("pjm_mart_lmps_rt_hourly") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: hour_ending
+        description: '{{ doc("col_hour_ending") }}'
+        tests:
+          - not_null
+      - name: hub
+        description: "PJM pricing hub name."
+        tests:
+          - not_null
+
+  - name: pjm_load_forecast_daily
+    description: '{{ doc("pjm_mart_load_forecast_daily") }}'
+    columns:
+      - name: forecast_rank
+        description: '{{ doc("col_forecast_rank") }}'
+        tests:
+          - not_null
+      - name: forecast_date
+        description: "Target operating date being forecasted."
+        tests:
+          - not_null
+      - name: region
+        description: '{{ doc("col_region") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['RTO', 'MIDATL', 'WEST', 'SOUTH']
+      - name: period
+        description: '{{ doc("col_period") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['flat', 'peak', 'onpeak', 'offpeak']
+
+  - name: pjm_load_rt_instantaneous_hourly
+    description: '{{ doc("pjm_mart_load_rt_instantaneous_hourly") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: hour_ending
+        description: '{{ doc("col_hour_ending") }}'
+        tests:
+          - not_null
+      - name: region
+        description: '{{ doc("col_region") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['RTO', 'MIDATL', 'WEST', 'SOUTH']
+
+  - name: pjm_load_rt_metered_daily
+    description: '{{ doc("pjm_mart_load_rt_metered_daily") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: region
+        description: '{{ doc("col_region") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['RTO', 'MIDATL', 'WEST', 'SOUTH']
+      - name: period
+        description: '{{ doc("col_period") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['flat', 'peak', 'onpeak', 'offpeak']
+
+  - name: pjm_load_rt_prelim_daily
+    description: '{{ doc("pjm_mart_load_rt_prelim_daily") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: region
+        description: '{{ doc("col_region") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['RTO', 'MIDATL', 'WEST', 'SOUTH']
+      - name: period
+        description: '{{ doc("col_period") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['flat', 'peak', 'onpeak', 'offpeak']
+
+  - name: pjm_outages_forecast_daily
+    description: '{{ doc("pjm_mart_outages_forecast_daily") }}'
+    columns:
+      - name: forecast_rank
+        description: '{{ doc("col_forecast_rank") }}'
+        tests:
+          - not_null
+      - name: forecast_execution_date
+        description: "Date the outage forecast run was issued."
+        tests:
+          - not_null
+      - name: forecast_date
+        description: "Target operating date in the outage forecast horizon."
+        tests:
+          - not_null
+      - name: region
+        description: "PJM outage forecast region."
+        tests:
+          - not_null
+
+  - name: pjm_tie_flows_hourly
+    description: '{{ doc("pjm_mart_tie_flows_hourly") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: hour_ending
+        description: '{{ doc("col_hour_ending") }}'
+        tests:
+          - not_null
+      - name: tie_flow_name
+        description: "PJM tie flow interface name."
+        tests:
+          - not_null
+
+  - name: pjm_tie_flows_daily
+    description: '{{ doc("pjm_mart_tie_flows_daily") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+      - name: tie_flow_name
+        description: "PJM tie flow interface name."
+        tests:
+          - not_null
+      - name: period
+        description: '{{ doc("col_period") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['flat', 'onpeak', 'offpeak']
+
+  - name: pjm_solar_forecast_hourly
+    description: '{{ doc("pjm_mart_solar_forecast_hourly") }}'
+    columns:
+      - name: forecast_rank
+        description: '{{ doc("col_forecast_rank") }}'
+        tests:
+          - not_null
+      - name: forecast_date
+        description: "Target operating date being forecasted."
+        tests:
+          - not_null
+      - name: hour_ending
+        description: '{{ doc("col_hour_ending") }}'
+        tests:
+          - not_null
+
+  - name: pjm_wind_forecast_hourly
+    description: '{{ doc("pjm_mart_wind_forecast_hourly") }}'
+    columns:
+      - name: forecast_rank
+        description: '{{ doc("col_forecast_rank") }}'
+        tests:
+          - not_null
+      - name: forecast_date
+        description: "Target operating date being forecasted."
+        tests:
+          - not_null
+      - name: hour_ending
+        description: '{{ doc("col_hour_ending") }}'
+        tests:
+          - not_null

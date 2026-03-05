@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 const DATES_SQL = `
   SELECT DISTINCT sftp_date::DATE as sftp_date
-  FROM dbt_trades_v2_2026_feb_23.marts_v2_clear_street_trades_grouped
+  FROM trades_cleaned.clear_street_trades_grouped
   ORDER BY sftp_date DESC
 `;
 
@@ -30,7 +30,7 @@ const DATA_SQL = `
       ,qty_pnt
       ,qty_dickson
       ,qty_titan
-    from dbt_trades_v2_2026_feb_23.marts_v2_clear_street_trades_grouped
+    from trades_cleaned.clear_street_trades_grouped
     WHERE sftp_date = $1::DATE
   )
   SELECT * FROM TRADES

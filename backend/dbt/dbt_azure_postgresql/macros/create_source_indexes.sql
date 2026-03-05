@@ -18,6 +18,10 @@
     {{ log("PJM indexes:", info=True) }}
     {{ create_pjm_indexes() }}
 
+    -- Meteologica PJM
+    {{ log("Meteologica PJM indexes:", info=True) }}
+    {{ create_meteologica_pjm_indexes() }}
+
     {{ log("=== All source indexes created successfully ===", info=True) }}
 
 {% endmacro %}
