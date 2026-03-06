@@ -15,7 +15,10 @@
       "Bash(dbt parse:*)",
       "Bash(dbt ls:*)",
       "Bash(python:*)",
-      "Bash(dbt show:*)"
+      "Bash(dbt show:*)",
+      "Bash(mv:*)",
+      "Bash(dbt build:*)",
+      "Bash(dbt:*)"
     ]
   }
 }

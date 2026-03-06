@@ -15,7 +15,7 @@ Raw WSI tables (wsi schema)
 
 ## Mart Views
 
-### wdd_observed
+### wdd_observed_daily
 
 | Field | Value |
 |-------|-------|
@@ -26,54 +26,41 @@ Raw WSI tables (wsi schema)
 | **Key Columns** | `date`, `region`, `electric_cdd`, `electric_hdd`, `gas_cdd`, `gas_hdd`, `population_cdd`, `population_hdd` |
 | **Use Cases** | Weather normalization, degree day tracking, historical baseline |
 | **Refresh** | View -- refreshes on query |
-| **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/wsi/wsi_cleaned/.docs/wdd_observed.sql) |
+| **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/wsi/wsi_cleaned/.docs/wdd_observed_daily.sql) |
 
-### wdd_normals
+### wdd_normals_daily
 
 | Field | Value |
 |-------|-------|
-| **Business Definition** | 10-year and 30-year WDD normals/min/max/stddev by calendar day and region. Feb 29 folded into Feb 28. |
-| **Grain** | One row per mm_dd x region |
-| **Primary Keys** | `mm_dd`, `region` |
+| **Business Definition** | 10-year and 30-year WDD normals in long format (one row per mm_dd x region x period). Includes avg, min, max, stddev for each WDD type. Feb 29 folded into Feb 28. |
+| **Grain** | One row per mm_dd x region x period |
+| **Primary Keys** | `mm_dd`, `region`, `period` |
 | **Materialization** | TABLE (full scan of 30-year history each run) |
 | **Upstream** | `source_v1_daily_observed_wdd` |
-| **Key Columns** | `mm_dd`, `month`, `region`, plus 70 aggregated columns (10yr/30yr normals, min, max, stddev for electric_cdd, electric_hdd, gas_cdd, gas_hdd, population_cdd, population_hdd, tdd) |
-| **Logic** | TDD = gas_hdd + population_cdd |
+| **Key Columns** | `mm_dd`, `month`, `region`, `period`, plus normal/min/max/stddev for electric_cdd, electric_hdd, gas_cdd, gas_hdd, population_cdd, population_hdd, tdd |
+| **Logic** | TDD = gas_hdd + population_cdd. Period: `10_year` (last 10 years) or `30_year` (last 30 years). |
 | **Use Cases** | Anomaly detection, weather vs normal comparisons |
 | **Refresh** | Full table rebuild on each dbt run |
-| **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/wsi/wsi_cleaned/.docs/wdd_normals.sql) |
+| **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/wsi/wsi_cleaned/.docs/wdd_normals_daily.sql) |
 
-### wdd_forecast_models
+### wdd_daily_forecasts
 
 | Field | Value |
 |-------|-------|
-| **Business Definition** | WDD forecasts from individual NWP models (GFS_OP, GFS_ENS, ECMWF_OP, ECMWF_ENS) at 00Z and 12Z cycles, ranked by recency |
+| **Business Definition** | Combined WDD forecasts from NWP models (GFS_OP, GFS_ENS, ECMWF_OP, ECMWF_ENS) and WSI proprietary blend. Includes forecast values, 10yr normals, run-over-run differences, departures from normal, and period totals. |
 | **Grain** | One row per forecast_execution_datetime x forecast_date x model x cycle x bias_corrected x region |
 | **Primary Keys** | `rank_forecast_execution_timestamps`, `forecast_execution_datetime`, `forecast_execution_date`, `cycle`, `forecast_date`, `model`, `bias_corrected`, `region` |
-| **Upstream** | `staging_v1_wdd_forecast_2_complete` |
-| **Key Columns** | `rank_forecast_execution_timestamps`, `labelled_forecast_execution_timestamp`, `forecast_execution_datetime`, `cycle`, `forecast_date`, `model`, `bias_corrected`, `region`, `tdd`, `gas_hdd`, `pw_cdd` |
-| **Logic** | Ranks forecasts by recency; labels: "Current Forecast" (rank 1), "12hrs Ago" (rank 2), "24hrs Ago" (rank 3), "Friday 12z" (special logic for DOW=5, hour=12) |
-| **Use Cases** | Model comparison, forecast vintage analysis |
+| **Upstream** | `staging_v1_wdd_forecast_models` (NWP), `staging_v1_wdd_forecast_wsi` (WSI blend) |
+| **Key Columns** | `rank_forecast_execution_timestamps`, `labelled_forecast_execution_timestamp`, `forecast_execution_datetime`, `cycle`, `forecast_date`, `model`, `bias_corrected`, `region`, `gas_hdd`, `pw_cdd`, `*_10_yr_normal`, `*_diff`, `*_departure`, `*_total` |
+| **Logic** | NWP models have 00Z/12Z cycles; WSI blend has cycle = NULL. Ranks forecasts by recency; labels: "Current Forecast" (rank 1), "12hrs Ago" (rank 2), "24hrs Ago" (rank 3), "Friday 12z" (special logic). |
+| **Use Cases** | Model comparison, forecast vintage analysis, primary weather forecast for trading decisions |
 | **Refresh** | View -- refreshes on query |
-| **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/wsi/wsi_cleaned/.docs/wdd_forecast_models.sql) |
-
-### wdd_forecast_wsi
-
-| Field | Value |
-|-------|-------|
-| **Business Definition** | WSI blended WDD forecast (proprietary blend of NWP models), ranked by recency |
-| **Grain** | One row per forecast_execution_datetime x forecast_date x bias_corrected x region |
-| **Primary Keys** | `rank_forecast_execution_timestamps`, `forecast_execution_datetime`, `forecast_execution_date`, `forecast_date`, `model`, `bias_corrected`, `region` |
-| **Upstream** | `staging_v1_wdd_forecast_2_complete` |
-| **Key Columns** | `rank_forecast_execution_timestamps`, `labelled_forecast_execution_timestamp`, `forecast_execution_datetime`, `forecast_date`, `model`, `bias_corrected`, `region`, `tdd`, `gas_hdd`, `pw_cdd` |
-| **Logic** | Filters to model = 'WSI' only; labels: "Current Forecast" (rank 1), "24hrs Ago" (rank 2), "Friday 12z" (DOW=5) |
-| **Use Cases** | Primary weather forecast for trading decisions, degree day outlook |
-| **Refresh** | View -- refreshes on query |
-| **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/wsi/wsi_cleaned/.docs/wdd_forecast_wsi.sql) |
+| **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/wsi/wsi_cleaned/.docs/wdd_daily_forecasts.sql) |
 
 ---
 
 ## Data Quality
 
 - Schema tests defined in `schema.yml` for primary keys (`dbt_utils.unique_combination_of_columns`) and not-null constraints
-- `wdd_normals` uses a validated unique combination test on (`mm_dd`, `region`)
+- `wdd_normals_daily` uses a unique combination test on (`mm_dd`, `region`, `period`)
+- `wdd_daily_forecasts` validates `accepted_values` on `model` (GFS_OP, GFS_ENS, ECMWF_OP, ECMWF_ENS, WSI) and `cycle` (00Z, 12Z)

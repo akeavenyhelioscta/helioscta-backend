@@ -1,6 +1,6 @@
 {{
   config(
-    materialized='view'
+    materialized='ephemeral'
   )
 }}
 
@@ -10,7 +10,7 @@
 
 WITH COMPLETE_FORECASTS AS (
     SELECT * FROM {{ ref('staging_v1_wdd_forecast_2_complete') }}
-    WHERE model IN ('GFS_OP', 'GFS_ENS', 'ECMWF_OP', 'ECMWF_ENS')
+    WHERE model IN ('GFS_OP', 'GFS_ENS', 'GEM_OP', 'GEM_ENS', 'ECMWF_OP', 'ECMWF_ENS', 'ECMWF_AIFS', 'ECMWF_AIFS_ENS')
         AND cycle IN ('00Z', '12Z')
 ),
 
@@ -19,22 +19,23 @@ WITH COMPLETE_FORECASTS AS (
 ---------------------------
 
 DISTINCT_EXECUTIONS AS (
-    SELECT DISTINCT forecast_execution_datetime
+    SELECT DISTINCT model, forecast_execution_datetime
     FROM COMPLETE_FORECASTS
 ),
 
 RANKED_EXECUTIONS AS (
     SELECT
+        model,
         forecast_execution_datetime,
-        MAX(forecast_execution_datetime) OVER () AS latest_forecast_execution_datetime,
-        DENSE_RANK() OVER (ORDER BY forecast_execution_datetime DESC) AS rank_forecast_execution_timestamps,
+        MAX(forecast_execution_datetime) OVER (PARTITION BY model) AS latest_forecast_execution_datetime,
+        DENSE_RANK() OVER (PARTITION BY model ORDER BY forecast_execution_datetime DESC) AS rank_forecast_execution_timestamps,
         forecast_execution_datetime::DATE <> (CURRENT_TIMESTAMP AT TIME ZONE 'MST')::DATE
             AND EXTRACT(DOW FROM forecast_execution_datetime::DATE) = 5
             AND EXTRACT(HOUR FROM forecast_execution_datetime::TIMESTAMP) = 12
             AND EXTRACT(MINUTE FROM forecast_execution_datetime::TIMESTAMP) = 0
         AS is_friday_12z,
         DENSE_RANK() OVER (
-            PARTITION BY (
+            PARTITION BY model, (
                 forecast_execution_datetime::DATE <> (CURRENT_TIMESTAMP AT TIME ZONE 'MST')::DATE
                 AND EXTRACT(DOW FROM forecast_execution_datetime::DATE) = 5
                 AND EXTRACT(HOUR FROM forecast_execution_datetime::TIMESTAMP) = 12
@@ -144,14 +145,6 @@ FINAL AS (
         f.pw_cdd_30hr_difference,
         f.pw_hdd_30hr_difference,
 
-        -- 36hr differences
-        f.electric_cdd_36hr_difference,
-        f.electric_hdd_36hr_difference,
-        f.gas_cdd_36hr_difference,
-        f.gas_hdd_36hr_difference,
-        f.pw_cdd_36hr_difference,
-        f.pw_hdd_36hr_difference,
-
         -- totals across forecast period
         SUM(f.electric_cdd) OVER (w_total) AS electric_cdd_total,
         SUM(f.electric_hdd) OVER (w_total) AS electric_hdd_total,
@@ -168,7 +161,7 @@ FINAL AS (
         SUM(f.pw_cdd_normal) OVER (w_total) AS pw_cdd_normal_total,
         SUM(f.pw_hdd_normal) OVER (w_total) AS pw_hdd_normal_total,
 
-        -- difference totals across forecast period
+        -- 12hr difference totals across forecast period
         SUM(f.electric_cdd_12hr_difference) OVER (w_total) AS electric_cdd_12hr_difference_total,
         SUM(f.electric_hdd_12hr_difference) OVER (w_total) AS electric_hdd_12hr_difference_total,
         SUM(f.gas_cdd_12hr_difference) OVER (w_total) AS gas_cdd_12hr_difference_total,
@@ -177,7 +170,9 @@ FINAL AS (
         SUM(f.pw_hdd_12hr_difference) OVER (w_total) AS pw_hdd_12hr_difference_total
 
     FROM COMPLETE_FORECASTS f
-    JOIN LABELLED_EXECUTIONS r ON f.forecast_execution_datetime = r.forecast_execution_datetime
+    JOIN LABELLED_EXECUTIONS r
+      ON f.model = r.model
+     AND f.forecast_execution_datetime = r.forecast_execution_datetime
     WINDOW w_total AS (
         PARTITION BY f.forecast_execution_datetime, f.model, f.cycle, f.bias_corrected, f.region
     )

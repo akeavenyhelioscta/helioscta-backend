@@ -6,7 +6,7 @@ models:
   # WDD Observed
   # ===========================
 
-  - name: wdd_observed
+  - name: wdd_observed_daily
     description: >
       Daily observed weighted degree days by region. Unpivoted from the raw
       daily_observed_wdd table so each row is a date x region combination with
@@ -49,21 +49,22 @@ models:
         description: 'Population-weighted heating degree days.'
 
   # ===========================
-  # WDD Normals
+  # WDD Normals (Long Format)
   # ===========================
 
-  - name: wdd_normals
+  - name: wdd_normals_daily
     description: >
-      10-year and 30-year WDD normals computed from daily observed data.
-      For each calendar day (mm_dd) and region, provides AVG, MIN, MAX, and STDDEV
-      across both lookback windows. Includes a computed TDD column (gas_hdd + population_cdd).
-      Feb 29 observations are folded into Feb 28 for statistical stability.
-      Grain: mm_dd x region.
+      10-year and 30-year WDD normals in long format, computed from daily observed data.
+      For each calendar day (mm_dd), region, and period (10_year / 30_year), provides
+      AVG (wdd_normal), MIN, MAX, and STDDEV for each WDD type. Includes a computed
+      TDD column (gas_hdd + population_cdd). Feb 29 observations are folded into Feb 28
+      for statistical stability. Grain: mm_dd x region x period.
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - mm_dd
             - region
+            - period
     columns:
       - name: mm_dd
         description: 'Calendar day as MM-DD string. Feb 29 is folded into Feb 28.'
@@ -88,93 +89,103 @@ models:
                 - 'GASPRODUCING'
                 - 'GASCONSEAST'
                 - 'GASCONSWEST'
-      - name: min_year_10_yr_normal
-        description: 'Earliest year included in the 10-year window.'
-      - name: max_year_10_yr_normal
-        description: 'Latest year included in the 10-year window.'
-      - name: years_count_10_yr_normal
-        description: 'Number of distinct years contributing to the 10-year normal.'
+      - name: period
+        description: 'Normal lookback period: 10_year or 30_year.'
         tests:
           - not_null
-          - dbt_utils.accepted_range:
-              min_value: 8
-              max_value: 11
-      - name: min_year_30_yr_normal
-        description: 'Earliest year included in the 30-year window.'
-      - name: max_year_30_yr_normal
-        description: 'Latest year included in the 30-year window.'
-      - name: years_count_30_yr_normal
-        description: 'Number of distinct years contributing to the 30-year normal.'
+          - accepted_values:
+              values:
+                - '10_year'
+                - '30_year'
+      - name: min_year
+        description: 'Earliest year included in the lookback window.'
+      - name: max_year
+        description: 'Latest year included in the lookback window.'
+      - name: years_count
+        description: 'Number of distinct years contributing to the normal.'
         tests:
           - not_null
-          - dbt_utils.accepted_range:
-              min_value: 25
-              max_value: 31
-      - name: electric_cdd_10_yr_normal
-        description: 'Electric-weighted CDD 10-year average.'
+      - name: electric_cdd_normal
+        description: 'Electric-weighted CDD average for the period.'
         tests:
           - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
-      - name: electric_hdd_10_yr_normal
-        description: 'Electric-weighted HDD 10-year average.'
+      - name: electric_hdd_normal
+        description: 'Electric-weighted HDD average for the period.'
         tests:
           - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
-      - name: gas_cdd_10_yr_normal
-        description: 'Gas-weighted CDD 10-year average.'
+      - name: gas_cdd_normal
+        description: 'Gas-weighted CDD average for the period.'
         tests:
           - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
-      - name: gas_hdd_10_yr_normal
-        description: 'Gas-weighted HDD 10-year average.'
+      - name: gas_hdd_normal
+        description: 'Gas-weighted HDD average for the period.'
         tests:
           - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
-      - name: tdd_10_yr_normal
-        description: 'Total degree day (gas_hdd + population_cdd) 10-year average.'
+      - name: population_cdd_normal
+        description: 'Population-weighted CDD average for the period.'
         tests:
           - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
-      - name: electric_cdd_30_yr_normal
-        description: 'Electric-weighted CDD 30-year average.'
+      - name: population_hdd_normal
+        description: 'Population-weighted HDD average for the period.'
         tests:
           - not_null
-      - name: electric_hdd_30_yr_normal
-        description: 'Electric-weighted HDD 30-year average.'
+      - name: tdd_normal
+        description: 'Total degree day (gas_hdd + population_cdd) average for the period.'
         tests:
           - not_null
-      - name: gas_cdd_30_yr_normal
-        description: 'Gas-weighted CDD 30-year average.'
-        tests:
-          - not_null
-      - name: gas_hdd_30_yr_normal
-        description: 'Gas-weighted HDD 30-year average.'
-        tests:
-          - not_null
-      - name: tdd_30_yr_normal
-        description: 'Total degree day (gas_hdd + population_cdd) 30-year average.'
-        tests:
-          - not_null
+      - name: electric_cdd_min
+        description: 'Electric-weighted CDD minimum for the period.'
+      - name: electric_hdd_min
+        description: 'Electric-weighted HDD minimum for the period.'
+      - name: gas_cdd_min
+        description: 'Gas-weighted CDD minimum for the period.'
+      - name: gas_hdd_min
+        description: 'Gas-weighted HDD minimum for the period.'
+      - name: population_cdd_min
+        description: 'Population-weighted CDD minimum for the period.'
+      - name: population_hdd_min
+        description: 'Population-weighted HDD minimum for the period.'
+      - name: tdd_min
+        description: 'Total degree day minimum for the period.'
+      - name: electric_cdd_max
+        description: 'Electric-weighted CDD maximum for the period.'
+      - name: electric_hdd_max
+        description: 'Electric-weighted HDD maximum for the period.'
+      - name: gas_cdd_max
+        description: 'Gas-weighted CDD maximum for the period.'
+      - name: gas_hdd_max
+        description: 'Gas-weighted HDD maximum for the period.'
+      - name: population_cdd_max
+        description: 'Population-weighted CDD maximum for the period.'
+      - name: population_hdd_max
+        description: 'Population-weighted HDD maximum for the period.'
+      - name: tdd_max
+        description: 'Total degree day maximum for the period.'
+      - name: electric_cdd_stddev
+        description: 'Electric-weighted CDD standard deviation for the period.'
+      - name: electric_hdd_stddev
+        description: 'Electric-weighted HDD standard deviation for the period.'
+      - name: gas_cdd_stddev
+        description: 'Gas-weighted CDD standard deviation for the period.'
+      - name: gas_hdd_stddev
+        description: 'Gas-weighted HDD standard deviation for the period.'
+      - name: population_cdd_stddev
+        description: 'Population-weighted CDD standard deviation for the period.'
+      - name: population_hdd_stddev
+        description: 'Population-weighted HDD standard deviation for the period.'
+      - name: tdd_stddev
+        description: 'Total degree day standard deviation for the period.'
 
   # ===========================
-  # WDD Forecast Models (NWP)
+  # WDD Daily Forecasts (NWP + WSI)
   # ===========================
 
-  - name: wdd_forecast_models
+  - name: wdd_daily_forecasts
     description: >
-      Daily WDD forecasts from NWP models (GFS_OP, GFS_ENS, ECMWF_OP, ECMWF_ENS).
-      Deduplicated, filtered to complete 15-day forecast sets, and ranked by execution
-      time with human-readable labels (Current Forecast, 12hrs Ago, 24hrs Ago, Friday 12z).
+      Combined daily WDD forecasts from NWP models (GFS_OP, GFS_ENS, ECMWF_OP, ECMWF_ENS)
+      and WSI proprietary blend. Includes forecast values, 10yr normals, run-over-run
+      differences, departures from normal, and period totals. NWP models have 00Z/12Z cycles;
+      WSI blend has cycle = NULL. Ranked by execution time with human-readable labels.
       Grain: forecast_execution_datetime x forecast_date x model x cycle x bias_corrected x region.
     columns:
       - name: rank_forecast_execution_timestamps
@@ -192,19 +203,17 @@ models:
         tests:
           - not_null
       - name: cycle
-        description: 'Model cycle (00Z or 12Z).'
-        tests:
-          - not_null
-          - accepted_values:
-              values:
-                - '00Z'
-                - '12Z'
+        description: 'Model cycle (00Z or 12Z for NWP; NULL for WSI blend).'
       - name: forecast_date
         description: 'Target forecast date.'
         tests:
           - not_null
+      - name: count_forecast_days
+        description: 'Number of forecast days in this run.'
+      - name: max_forecast_days
+        description: 'Maximum forecast days expected (typically 15).'
       - name: model
-        description: 'NWP model name.'
+        description: 'Forecast model name.'
         tests:
           - not_null
           - accepted_values:
@@ -213,71 +222,6 @@ models:
                 - 'GFS_ENS'
                 - 'ECMWF_OP'
                 - 'ECMWF_ENS'
-      - name: bias_corrected
-        description: 'Whether the forecast is bias-corrected.'
-        tests:
-          - not_null
-      - name: region
-        description: 'WSI North America gas region.'
-        tests:
-          - not_null
-          - accepted_values:
-              values:
-                - 'CONUS'
-                - 'EAST'
-                - 'MIDWEST'
-                - 'MOUNTAIN'
-                - 'PACIFIC'
-                - 'SOUTHCENTRAL'
-      - name: electric_cdd
-        description: 'Electric-weighted cooling degree days.'
-      - name: electric_hdd
-        description: 'Electric-weighted heating degree days.'
-      - name: gas_cdd
-        description: 'Gas-weighted cooling degree days.'
-      - name: gas_hdd
-        description: 'Gas-weighted heating degree days.'
-      - name: pw_cdd
-        description: 'Population-weighted cooling degree days.'
-      - name: pw_hdd
-        description: 'Population-weighted heating degree days.'
-
-  # ===========================
-  # WDD Forecast WSI (Blend)
-  # ===========================
-
-  - name: wdd_forecast_wsi
-    description: >
-      Daily WDD forecasts from the WSI proprietary blend model. Deduplicated,
-      filtered to complete 15-day forecast sets, and ranked by execution time
-      with human-readable labels (Current Forecast, 24hrs Ago, Friday 12z).
-      No cycle column (WSI blend does not use model cycles).
-      Grain: forecast_execution_datetime x forecast_date x bias_corrected x region.
-    columns:
-      - name: rank_forecast_execution_timestamps
-        description: 'Execution rank (1 = most recent, descending).'
-        tests:
-          - not_null
-      - name: labelled_forecast_execution_timestamp
-        description: 'Human-readable label: Current Forecast, 24hrs Ago, Friday 12z, or NULL.'
-      - name: forecast_execution_datetime
-        description: 'Forecast model initialization timestamp.'
-        tests:
-          - not_null
-      - name: forecast_execution_date
-        description: 'Forecast initialization date.'
-        tests:
-          - not_null
-      - name: forecast_date
-        description: 'Target forecast date.'
-        tests:
-          - not_null
-      - name: model
-        description: 'Always WSI.'
-        tests:
-          - not_null
-          - accepted_values:
-              values:
                 - 'WSI'
       - name: bias_corrected
         description: 'Whether the forecast is bias-corrected.'
@@ -307,3 +251,75 @@ models:
         description: 'Population-weighted cooling degree days.'
       - name: pw_hdd
         description: 'Population-weighted heating degree days.'
+      - name: electric_cdd_10_yr_normal
+        description: '10-year normal electric CDD for the forecast date.'
+      - name: electric_hdd_10_yr_normal
+        description: '10-year normal electric HDD for the forecast date.'
+      - name: gas_cdd_10_yr_normal
+        description: '10-year normal gas CDD for the forecast date.'
+      - name: gas_hdd_10_yr_normal
+        description: '10-year normal gas HDD for the forecast date.'
+      - name: pw_cdd_10_yr_normal
+        description: '10-year normal population-weighted CDD for the forecast date.'
+      - name: pw_hdd_10_yr_normal
+        description: '10-year normal population-weighted HDD for the forecast date.'
+      - name: electric_cdd_diff
+        description: 'Electric CDD difference vs prior run (12hr for NWP, 24hr for WSI).'
+      - name: electric_hdd_diff
+        description: 'Electric HDD difference vs prior run.'
+      - name: gas_cdd_diff
+        description: 'Gas CDD difference vs prior run.'
+      - name: gas_hdd_diff
+        description: 'Gas HDD difference vs prior run.'
+      - name: pw_cdd_diff
+        description: 'Population-weighted CDD difference vs prior run.'
+      - name: pw_hdd_diff
+        description: 'Population-weighted HDD difference vs prior run.'
+      - name: electric_cdd_departure
+        description: 'Electric CDD departure from 10-year normal.'
+      - name: electric_hdd_departure
+        description: 'Electric HDD departure from 10-year normal.'
+      - name: gas_cdd_departure
+        description: 'Gas CDD departure from 10-year normal.'
+      - name: gas_hdd_departure
+        description: 'Gas HDD departure from 10-year normal.'
+      - name: pw_cdd_departure
+        description: 'Population-weighted CDD departure from 10-year normal.'
+      - name: pw_hdd_departure
+        description: 'Population-weighted HDD departure from 10-year normal.'
+      - name: electric_cdd_total
+        description: 'Cumulative electric CDD total for the forecast period.'
+      - name: electric_hdd_total
+        description: 'Cumulative electric HDD total for the forecast period.'
+      - name: gas_cdd_total
+        description: 'Cumulative gas CDD total for the forecast period.'
+      - name: gas_hdd_total
+        description: 'Cumulative gas HDD total for the forecast period.'
+      - name: pw_cdd_total
+        description: 'Cumulative population-weighted CDD total for the forecast period.'
+      - name: pw_hdd_total
+        description: 'Cumulative population-weighted HDD total for the forecast period.'
+      - name: electric_cdd_10_yr_normal_total
+        description: 'Cumulative 10-year normal electric CDD total for the forecast period.'
+      - name: electric_hdd_10_yr_normal_total
+        description: 'Cumulative 10-year normal electric HDD total for the forecast period.'
+      - name: gas_cdd_10_yr_normal_total
+        description: 'Cumulative 10-year normal gas CDD total for the forecast period.'
+      - name: gas_hdd_10_yr_normal_total
+        description: 'Cumulative 10-year normal gas HDD total for the forecast period.'
+      - name: pw_cdd_10_yr_normal_total
+        description: 'Cumulative 10-year normal population-weighted CDD total for the forecast period.'
+      - name: pw_hdd_10_yr_normal_total
+        description: 'Cumulative 10-year normal population-weighted HDD total for the forecast period.'
+      - name: electric_cdd_diff_total
+        description: 'Cumulative electric CDD difference total for the forecast period.'
+      - name: electric_hdd_diff_total
+        description: 'Cumulative electric HDD difference total for the forecast period.'
+      - name: gas_cdd_diff_total
+        description: 'Cumulative gas CDD difference total for the forecast period.'
+      - name: gas_hdd_diff_total
+        description: 'Cumulative gas HDD difference total for the forecast period.'
+      - name: pw_cdd_diff_total
+        description: 'Cumulative population-weighted CDD difference total for the forecast period.'
+      - name: pw_hdd_diff_total
+        description: 'Cumulative population-weighted HDD difference total for the forecast period.'

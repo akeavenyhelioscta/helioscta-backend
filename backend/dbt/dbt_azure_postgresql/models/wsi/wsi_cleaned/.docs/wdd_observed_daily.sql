@@ -9,4 +9,4 @@ select
   ,oil_hdd
   ,population_cdd
   ,population_hdd
-from wsi_cleaned.wdd_observed
+from wsi_cleaned.wdd_observed_daily

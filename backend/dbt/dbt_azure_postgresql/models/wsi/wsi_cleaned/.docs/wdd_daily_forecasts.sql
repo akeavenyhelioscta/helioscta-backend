@@ -46,4 +46,10 @@ select
   ,gas_hdd_10_yr_normal_total
   ,pw_cdd_10_yr_normal_total
   ,pw_hdd_10_yr_normal_total
-from wsi_cleaned.wdd_forecast_models
+  ,electric_cdd_diff_total
+  ,electric_hdd_diff_total
+  ,gas_cdd_diff_total
+  ,gas_hdd_diff_total
+  ,pw_cdd_diff_total
+  ,pw_hdd_diff_total
+from wsi_cleaned.wdd_daily_forecasts

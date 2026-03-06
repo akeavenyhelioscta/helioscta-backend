@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Pre-commit hook: block commits that add files without updating docs.
+exec "$(git rev-parse --show-toplevel)/scripts/check-docs-updated.sh"
