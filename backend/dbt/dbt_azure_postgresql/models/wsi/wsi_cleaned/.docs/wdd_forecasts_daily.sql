@@ -1,6 +1,6 @@
 select
-  rank_forecast_execution_timestamps
-  ,labelled_forecast_execution_timestamp
+  forecast_rank
+  ,forecast_label
   ,forecast_execution_datetime
   ,forecast_execution_date
   ,cycle
@@ -16,40 +16,10 @@ select
   ,gas_hdd
   ,pw_cdd
   ,pw_hdd
-  ,electric_cdd_10_yr_normal
-  ,electric_hdd_10_yr_normal
-  ,gas_cdd_10_yr_normal
-  ,gas_hdd_10_yr_normal
-  ,pw_cdd_10_yr_normal
-  ,pw_hdd_10_yr_normal
-  ,electric_cdd_diff
-  ,electric_hdd_diff
-  ,gas_cdd_diff
-  ,gas_hdd_diff
-  ,pw_cdd_diff
-  ,pw_hdd_diff
-  ,electric_cdd_departure
-  ,electric_hdd_departure
-  ,gas_cdd_departure
-  ,gas_hdd_departure
-  ,pw_cdd_departure
-  ,pw_hdd_departure
-  ,electric_cdd_total
-  ,electric_hdd_total
-  ,gas_cdd_total
-  ,gas_hdd_total
-  ,pw_cdd_total
-  ,pw_hdd_total
-  ,electric_cdd_10_yr_normal_total
-  ,electric_hdd_10_yr_normal_total
-  ,gas_cdd_10_yr_normal_total
-  ,gas_hdd_10_yr_normal_total
-  ,pw_cdd_10_yr_normal_total
-  ,pw_hdd_10_yr_normal_total
-  ,electric_cdd_diff_total
-  ,electric_hdd_diff_total
-  ,gas_cdd_diff_total
-  ,gas_hdd_diff_total
-  ,pw_cdd_diff_total
-  ,pw_hdd_diff_total
+  ,electric_cdd_diff_run_over_run
+  ,electric_hdd_diff_run_over_run
+  ,gas_cdd_diff_run_over_run
+  ,gas_hdd_diff_run_over_run
+  ,pw_cdd_diff_run_over_run
+  ,pw_hdd_diff_run_over_run
 from wsi_cleaned.wdd_forecasts_daily

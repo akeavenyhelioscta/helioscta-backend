@@ -122,6 +122,16 @@ from pjm_cleaned.pjm_lmps_hourly
 
 When adding a new mart model, create a matching `.sql` file in the domain's `.docs/` folder.
 
+#### Keeping Docs in Sync with Mart Changes
+
+When a mart view is updated (columns added, removed, or renamed), you **must** update all related documentation:
+
+1. **`.docs/<mart_name>.sql`** — update the SELECT column list to match the new view
+2. **`.docs/README.md`** — update Key Columns, Transformation Notes, and any other affected sections
+3. **`schema.yml`** — add/remove/rename column entries and descriptions
+4. **`docs/domains/<domain>/dbt-views/`** — update the corresponding Docusaurus page (Business Definition, Key Columns, etc.)
+5. **`.sql_queries/`** — update any validation queries that reference changed columns
+
 #### README.md
 
 ```markdown
