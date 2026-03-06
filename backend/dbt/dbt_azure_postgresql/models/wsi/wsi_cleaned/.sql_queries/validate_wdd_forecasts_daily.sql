@@ -1,8 +1,8 @@
 /*
-    VALIDATION v1: wdd_daily_forecasts view
+    VALIDATION v1: wdd_forecasts_daily view
     Compare output against WSI Forecast Views reference (Gas Weighted HDD, CONUS, 10yr Avg).
 
-    Reads from the NEW mart view wsi_cleaned.wdd_daily_forecasts.
+    Reads from the NEW mart view wsi_cleaned.wdd_forecasts_daily.
     Pivots 15-day forecast window into day columns matching the reference layout.
 
     Sections:
@@ -20,7 +20,7 @@
 
 WITH current_forecast AS (
     SELECT *
-    FROM wsi_cleaned.wdd_daily_forecasts
+    FROM wsi_cleaned.wdd_forecasts_daily
     WHERE rank_forecast_execution_timestamps = 1
       AND region = 'CONUS'
       AND COALESCE(bias_corrected::TEXT, 'false') = 'false'
@@ -217,7 +217,7 @@ ORDER BY
     ECMWF_AIFS_ENS | Differences  | +1.8      | -
     NORMAL_10YR    | Normals      | 288.5     | (n/a)
 
-    KNOWN ISSUES in wdd_daily_forecasts.sql (pre-fix):
+    KNOWN ISSUES in wdd_forecasts_daily.sql (pre-fix):
     1. gas_hdd_diff_total column missing - diff totals won't appear
     2. WSI totals are NULL - WSI total will be NULL instead of 231.1
     3. WSI normals/diffs/departures NULL - staging provides real values

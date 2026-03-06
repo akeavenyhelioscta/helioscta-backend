@@ -180,7 +180,7 @@ models:
   # WDD Daily Forecasts (NWP + WSI)
   # ===========================
 
-  - name: wdd_daily_forecasts
+  - name: wdd_forecasts_daily
     description: >
       Combined daily WDD forecasts from NWP models (GFS_OP, GFS_ENS, ECMWF_OP, ECMWF_ENS)
       and WSI proprietary blend. Includes forecast values, 10yr normals, run-over-run

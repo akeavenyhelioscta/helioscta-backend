@@ -52,4 +52,4 @@ select
   ,gas_hdd_diff_total
   ,pw_cdd_diff_total
   ,pw_hdd_diff_total
-from wsi_cleaned.wdd_daily_forecasts
+from wsi_cleaned.wdd_forecasts_daily

@@ -10,7 +10,7 @@ Consumer-facing views and tables for WSI weather-driven weighted degree day (WDD
 |-------|-------|
 | `wdd_observed_daily` | `date x region` |
 | `wdd_normals_daily` | `mm_dd x region x period` (long format: 10_year / 30_year) |
-| `wdd_daily_forecasts` | `forecast_execution_datetime x forecast_date x model x cycle x bias_corrected x region` |
+| `wdd_forecasts_daily` | `forecast_execution_datetime x forecast_date x model x cycle x bias_corrected x region` |
 
 ## Source Relations
 
@@ -45,7 +45,7 @@ Consumer-facing views and tables for WSI weather-driven weighted degree day (WDD
 
 - `wdd_observed_daily` is a **view** directly over the source observed WDD table.
 - `wdd_normals_daily` is a **table** in long format (one row per `mm_dd x region x period`). Computes 10-year and 30-year rolling normals from observed history. Feb 29 values folded into Feb 28. Includes `normal`, `min`, `max`, `stddev`, and year count metadata per WDD type.
-- `wdd_daily_forecasts` is a **view** that unions NWP model forecasts (GFS/ECMWF with 00Z/12Z cycles) and WSI proprietary blend (no cycle). Includes 10yr normals, run-over-run diffs, departures from normal, and period totals. Ranked by execution time via `DENSE_RANK`.
+- `wdd_forecasts_daily` is a **view** that unions NWP model forecasts (GFS/ECMWF with 00Z/12Z cycles) and WSI proprietary blend (no cycle). Includes 10yr normals, run-over-run diffs, departures from normal, and period totals. Ranked by execution time via `DENSE_RANK`.
 
 ## Data Quality Checks
 

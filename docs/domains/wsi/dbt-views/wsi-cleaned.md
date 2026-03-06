@@ -43,7 +43,7 @@ Raw WSI tables (wsi schema)
 | **Refresh** | Full table rebuild on each dbt run |
 | **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/wsi/wsi_cleaned/.docs/wdd_normals_daily.sql) |
 
-### wdd_daily_forecasts
+### wdd_forecasts_daily
 
 | Field | Value |
 |-------|-------|
@@ -55,7 +55,7 @@ Raw WSI tables (wsi schema)
 | **Logic** | NWP models have 00Z/12Z cycles; WSI blend has cycle = NULL. Ranks forecasts by recency; labels: "Current Forecast" (rank 1), "12hrs Ago" (rank 2), "24hrs Ago" (rank 3), "Friday 12z" (special logic). |
 | **Use Cases** | Model comparison, forecast vintage analysis, primary weather forecast for trading decisions |
 | **Refresh** | View -- refreshes on query |
-| **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/wsi/wsi_cleaned/.docs/wdd_daily_forecasts.sql) |
+| **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/wsi/wsi_cleaned/.docs/wdd_forecasts_daily.sql) |
 
 ---
 
@@ -63,4 +63,4 @@ Raw WSI tables (wsi schema)
 
 - Schema tests defined in `schema.yml` for primary keys (`dbt_utils.unique_combination_of_columns`) and not-null constraints
 - `wdd_normals_daily` uses a unique combination test on (`mm_dd`, `region`, `period`)
-- `wdd_daily_forecasts` validates `accepted_values` on `model` (GFS_OP, GFS_ENS, ECMWF_OP, ECMWF_ENS, WSI) and `cycle` (00Z, 12Z)
+- `wdd_forecasts_daily` validates `accepted_values` on `model` (GFS_OP, GFS_ENS, ECMWF_OP, ECMWF_ENS, WSI) and `cycle` (00Z, 12Z)
