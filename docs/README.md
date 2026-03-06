@@ -1,3 +1,7 @@
+---
+slug: /
+---
+
 # HeliosCTA Docs
 
 Documentation for all data pipelines, raw tables, and dbt views in the HeliosCTA backend.

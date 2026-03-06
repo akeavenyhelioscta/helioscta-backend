@@ -1,0 +1,87 @@
+/* -- True-black dark theme -- */
+[data-theme="dark"] {
+  --ifm-background-color: #000;
+  --ifm-background-surface-color: #0a0a0a;
+  --ifm-color-primary: #6ea8fe;
+  --ifm-color-primary-dark: #5494ed;
+  --ifm-color-primary-darker: #4388e6;
+  --ifm-color-primary-darkest: #2470d4;
+  --ifm-color-primary-light: #88bcff;
+  --ifm-color-primary-lighter: #99c7ff;
+  --ifm-color-primary-lightest: #c2dfff;
+  --ifm-font-color-base: rgba(255, 255, 255, 0.92);
+  --ifm-font-color-secondary: rgba(255, 255, 255, 0.72);
+  --ifm-code-background: #0d0d0d;
+  --ifm-navbar-background-color: #000;
+  --ifm-footer-background-color: #000;
+  --ifm-toc-border-color: #222;
+  --ifm-table-stripe-background: #0a0a0a;
+  --ifm-table-border-color: #333;
+  --docusaurus-highlighted-code-line-bg: #1a1a1a;
+}
+
+/* -- Light theme -- */
+[data-theme="light"] {
+  --ifm-color-primary: #1a56db;
+  --ifm-color-primary-dark: #174cc5;
+  --ifm-color-primary-darker: #1548ba;
+  --ifm-color-primary-darkest: #113b99;
+  --ifm-color-primary-light: #1d60f1;
+  --ifm-color-primary-lighter: #2a6af3;
+  --ifm-color-primary-lightest: #5088f5;
+}
+
+/* -- Sidebar active state -- */
+[data-theme="dark"] .menu__link--active:not(.menu__link--sublist) {
+  color: #ffc245;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .menu__link--active:not(.menu__link--sublist)::after {
+  background-color: #ffc245;
+}
+
+/* -- Sidebar background -- */
+[data-theme="dark"] .menu {
+  background: #000;
+}
+
+[data-theme="dark"] nav.navbar {
+  border-bottom: 1px solid #222;
+}
+
+/* -- Full-width content -- */
+.container {
+  max-width: 100% !important;
+}
+
+article {
+  max-width: none;
+}
+
+/* -- Table improvements -- */
+[data-theme="dark"] table th {
+  background: #111;
+}
+
+[data-theme="dark"] table td,
+[data-theme="dark"] table th {
+  border-color: #333;
+}
+
+/* -- Admonition tweaks -- */
+[data-theme="dark"] .admonition {
+  background: #0d0d0d;
+  border-left-width: 4px;
+}
+
+/* -- Readable spacing -- */
+.markdown {
+  padding: 0 1rem;
+}
+
+@media (min-width: 997px) {
+  .markdown {
+    padding: 0 2rem;
+  }
+}

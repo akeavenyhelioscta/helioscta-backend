@@ -16,8 +16,9 @@ Pipeline ownership, freshness expectations, and escalation procedures.
 | Event-Driven Listener | TBD | TBD |
 | dbt Models | TBD | TBD |
 
-!!! note
-    Populate from the team's internal responsibility matrix.
+:::note
+Populate from the team's internal responsibility matrix.
+:::
 
 ## Freshness SLAs
 

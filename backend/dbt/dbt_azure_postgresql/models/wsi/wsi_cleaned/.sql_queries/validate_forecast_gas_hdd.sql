@@ -120,6 +120,7 @@ forecast_pivot AS (
         MAX(CASE WHEN forecast_date = CURRENT_DATE + 14 THEN gas_hdd END) AS day_15,
         ROUND(SUM(gas_hdd), 1) AS total
     FROM with_diff
+    WHERE forecast_date >= CURRENT_DATE AND forecast_date < CURRENT_DATE + 15
     GROUP BY model, init_time
 ),
 
@@ -149,6 +150,7 @@ diff_pivot AS (
         MAX(CASE WHEN forecast_date = CURRENT_DATE + 14 THEN diff_24h END) AS day_15,
         ROUND(SUM(diff_24h), 1) AS total
     FROM with_diff
+    WHERE forecast_date >= CURRENT_DATE AND forecast_date < CURRENT_DATE + 15
     GROUP BY model, init_time
 ),
 

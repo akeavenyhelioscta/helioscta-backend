@@ -48,7 +48,9 @@
       "Bash(do basename \"$d\")",
       "Bash(pip show:*)",
       "Bash(pip install:*)",
-      "Bash(mkdocs build:*)"
+      "Bash(mkdocs build:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)"
     ]
   }
 }

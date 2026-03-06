@@ -5,8 +5,11 @@
 # Python build/dist directories
 dist/*
 
-# MkDocs build output
-site/
+# Docusaurus
+node_modules/
+build/
+.docusaurus/
+.cache-loader/
 
 # Python cache files
 __pycache__/
