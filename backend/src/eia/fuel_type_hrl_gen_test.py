@@ -365,3 +365,5 @@ if __name__ == "__main__":
     # Bypass Prefect @flow decorator for local runs (no server required)
     df = main.fn()
     # backfill()
+
+    test = df[(df['respondent'] == 'US48') & (df['date'] >= '2026-03-05')]

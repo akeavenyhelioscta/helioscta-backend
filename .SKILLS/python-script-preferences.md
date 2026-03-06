@@ -1,5 +1,7 @@
 # Python Script Preferences
 
+> **Canonical reference implementation:** [`backend/src/power/pjm/`](../backend/src/power/pjm/) — all new PJM scripts must follow this pattern (e.g., `da_hrl_lmps.py`).
+
 ## Imports (every file)
 
 When refactoring existing scripts, update old-style imports to this format:
@@ -77,6 +79,21 @@ def _upsert(
         data_types=data_types, primary_key=primary_keys,
     )
 ```
+
+## Folder Orchestration Files
+
+Every source subfolder should include both:
+
+- `runs.py` - runner entry points for that folder's scripts
+- `flows.py` - Prefect flow wrappers for those scripts (using lazy `importlib` loading)
+
+Use `backend/src/power/pjm/` as the canonical structure for both files.
+
+For `backend/src/wsi`, orchestration is subfolder-only. Do not add or retain
+module-level orchestration files at:
+
+- `backend/src/wsi/run.py`
+- `backend/src/wsi/flows.py`
 
 ## No Prefect in Scripts
 

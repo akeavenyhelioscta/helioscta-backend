@@ -1,0 +1,98 @@
+version: 2
+
+models:
+  - name: source_v1_daily_observed_wdd
+    description: >
+      Unpivots the raw daily_observed_wdd table from wide format (regions as columns,
+      data_type as rows) into long format (region as a row dimension, data types as columns).
+      Grain: date x region.
+    columns:
+      - name: date
+        description: 'Observation date.'
+        tests:
+          - not_null
+      - name: region
+        description: 'WSI North America gas region.'
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - 'EAST'
+                - 'MIDWEST'
+                - 'MOUNTAIN'
+                - 'PACIFIC'
+                - 'SOUTHCENTRAL'
+                - 'CONUS'
+                - 'GASPRODUCING'
+                - 'GASCONSEAST'
+                - 'GASCONSWEST'
+      - name: electric_cdd
+        description: 'Electric-weighted cooling degree days.'
+      - name: electric_hdd
+        description: 'Electric-weighted heating degree days.'
+      - name: gas_cdd
+        description: 'Gas-weighted cooling degree days.'
+      - name: gas_hdd
+        description: 'Gas-weighted heating degree days.'
+      - name: oil_cdd
+        description: 'Oil-weighted cooling degree days.'
+      - name: oil_hdd
+        description: 'Oil-weighted heating degree days.'
+      - name: population_cdd
+        description: 'Population-weighted cooling degree days.'
+      - name: population_hdd
+        description: 'Population-weighted heating degree days.'
+
+  - name: source_v1_daily_forecast_wdd
+    description: >
+      UNION ALL of all per-model WDD forecast tables (WSI, GFS_OP, GFS_ENS,
+      ECMWF_OP, ECMWF_ENS). Selects and casts all degree-day columns,
+      derives cycle from init_time hour, and applies a 365-day lookback and region filter.
+      Grain: forecast_execution_datetime x forecast_date x model x cycle x bias_corrected x region.
+    columns:
+      - name: forecast_execution_datetime
+        description: 'Forecast model initialization timestamp.'
+        tests:
+          - not_null
+      - name: forecast_execution_date
+        description: 'Forecast initialization date (derived from forecast_execution_datetime).'
+        tests:
+          - not_null
+      - name: forecast_date
+        description: 'Target forecast date.'
+        tests:
+          - not_null
+      - name: model
+        description: 'Forecast model name (WSI, GFS_OP, GFS_ENS, ECMWF_OP, ECMWF_ENS).'
+        tests:
+          - not_null
+      - name: cycle
+        description: 'Model cycle (e.g. 00Z, 12Z). NULL for WSI blend.'
+      - name: bias_corrected
+        description: 'Whether the forecast is bias-corrected.'
+        tests:
+          - not_null
+      - name: region
+        description: 'WSI North America gas region.'
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - 'CONUS'
+                - 'EAST'
+                - 'MIDWEST'
+                - 'MOUNTAIN'
+                - 'PACIFIC'
+                - 'SOUTHCENTRAL'
+      - name: electric_cdd
+        description: 'Electric-weighted cooling degree days.'
+      - name: electric_hdd
+        description: 'Electric-weighted heating degree days.'
+      - name: gas_cdd
+        description: 'Gas-weighted cooling degree days.'
+      - name: gas_hdd
+        description: 'Gas-weighted heating degree days.'
+      - name: pw_cdd
+        description: 'Population-weighted cooling degree days (aliased from population_cdd).'
+      - name: pw_hdd
+        description: 'Population-weighted heating degree days (aliased from population_hdd).'

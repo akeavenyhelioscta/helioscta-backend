@@ -1,0 +1,87 @@
+site_name: HeliosCTA Docs
+site_description: Data catalog, pipelines, and dbt views for HeliosCTA
+repo_url: https://github.com/helioscta/helioscta-backend
+docs_dir: docs
+
+theme:
+  name: material
+  palette:
+    - scheme: slate
+      primary: black
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - scheme: default
+      primary: indigo
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - toc.integrate
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - search
+
+markdown_extensions:
+  - tables
+  - toc:
+      permalink: true
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+nav:
+  - Home: README.md
+  - Data Catalog: dbt-cleaned-catalog.md
+  - Summary: executive-summary.md
+  - Reference:
+    - Glossary: glossary.md
+    - Owners & SLAs: owners-and-slas.md
+  - Power:
+    - Overview: domains/power/overview.md
+    - Scrapes:
+      - DA LMPs: domains/power/scrapes/pjm-da-hrl-lmps.md
+      - RT LMPs (Unverified): domains/power/scrapes/pjm-rt-unverified-lmps.md
+      - RT LMPs (Verified): domains/power/scrapes/pjm-rt-verified-lmps.md
+      - Load (Metered): domains/power/scrapes/pjm-hourly-load-metered.md
+      - Load (Prelim): domains/power/scrapes/pjm-hourly-load-prelim.md
+      - Load (5-Min): domains/power/scrapes/pjm-five-min-load.md
+      - DA Demand Bids: domains/power/scrapes/pjm-hrl-dmd-bids.md
+      - Load Forecast: domains/power/scrapes/pjm-seven-day-load-forecast.md
+      - Outage Forecast: domains/power/scrapes/pjm-seven-day-outage-forecast.md
+      - Tie Flows: domains/power/scrapes/pjm-five-min-tie-flows.md
+      - GridStatus: domains/power/scrapes/gridstatus-overview.md
+    - dbt Views: domains/power/dbt-views/pjm-cleaned.md
+  - Meteologica:
+    - Overview: domains/meteologica/overview.md
+    - Scrapes: domains/meteologica/scrapes/meteologica-scrapes.md
+    - dbt Views: domains/meteologica/dbt-views/meteologica-cleaned.md
+  - Weather (WSI):
+    - Overview: domains/wsi/overview.md
+    - Scrapes: domains/wsi/scrapes/wsi-scrapes.md
+    - dbt Views: domains/wsi/dbt-views/wsi-cleaned.md
+  - EIA:
+    - Overview: domains/eia/overview.md
+    - Scrapes:
+      - Fuel Mix: domains/eia/scrapes/fuel-type-hrl-gen.md
+      - Gas Storage: domains/eia/scrapes/weekly-underground-storage.md
+      - Form 860: domains/eia/scrapes/eia-860.md
+  - Genscape:
+    - Overview: domains/genscape/overview.md
+    - Scrapes: domains/genscape/scrapes/genscape-scrapes.md
+    - dbt Views: domains/genscape/dbt-views/genscape-cleaned.md
+  - Positions & Trades:
+    - Overview: domains/positions-and-trades/overview.md
+    - Scrapes: domains/positions-and-trades/scrapes/positions-and-trades-scrapes.md
+    - dbt Views: domains/positions-and-trades/dbt-views/positions-and-trades-cleaned.md

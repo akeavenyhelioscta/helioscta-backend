@@ -95,6 +95,18 @@ models:
         marts:
           +materialized: view
 
+    # ── WSI ────────────────────────────────────────────────────────────────────
+    wsi:
+      wsi_cleaned:
+        +schema: wsi_cleaned
+        +materialized: ephemeral
+        source:
+          +materialized: ephemeral
+        staging:
+          +materialized: ephemeral
+        marts:
+          +materialized: view
+
     # ── Genscape ──────────────────────────────────────────────────────────────────
     genscape:
       genscape_cleaned:

@@ -37,7 +37,18 @@
       "Bash(npx tsc:*)",
       "Bash(xargs:*)",
       "Bash(where python:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(for d in backend/src/power/gridstatus_open_source/*/)",
+      "Bash(do echo \"=== $d ===\")",
+      "Read(//c/Users/AidanKeaveny/Documents/github/helioscta-backend/**)",
+      "Bash(for d in backend/src/power/gridstatusio_api_key/*/)",
+      "Bash(for d in backend/src/meteologica/*/)",
+      "Bash(do basename \"$d\")",
+      "Bash(pip show:*)",
+      "Bash(pip install:*)",
+      "Bash(mkdocs build:*)"
     ]
   }
 }

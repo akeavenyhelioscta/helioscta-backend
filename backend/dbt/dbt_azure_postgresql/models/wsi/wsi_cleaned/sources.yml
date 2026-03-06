@@ -1,0 +1,36 @@
+version: 2
+
+sources:
+  - name: wsi_v1
+    schema: wsi
+    description: 'WSI Trader API scrapes — weighted degree day observed and forecast data.'
+    tables:
+
+      # ── Observed ──────────────────────────────────────────────
+      - name: daily_observed_wdd
+        description: >
+          Daily observed weighted degree days from WSI GetHistoricalObservations
+          (HISTORICAL_WEIGHTED_DEGREEDAYS). Wide format with regions as columns
+          and data_type as a row discriminator. PK: (date, data_type).
+
+      # ── Forecasts (consolidated) ─────────────────────────────
+      - name: daily_forecast_wdd
+        description: >
+          Consolidated daily WDD forecast table containing all models
+          (WSI, GFS_OP, GFS_ENS, ECMWF_OP, ECMWF_ENS). Each row is a
+          single forecast day for a model/region/init_time combination.
+
+      # ── Forecasts (per-model, legacy) ────────────────────────
+      - name: wsi_wdd_day_forecast_v2_2025_dec_17
+        description: 'WSI blend model daily WDD forecast.'
+      - name: gfs_op_wdd_day_forecast_v2_2025_dec_17
+        description: 'GFS operational model daily WDD forecast.'
+      - name: gfs_ens_wdd_day_forecast_v2_2025_dec_17
+        description: 'GFS ensemble model daily WDD forecast.'
+      - name: ecmwf_op_wdd_day_forecast_v2_2025_dec_17
+        description: 'ECMWF operational model daily WDD forecast.'
+      - name: ecmwf_ens_wdd_day_forecast_v2_2025_dec_17
+        description: 'ECMWF ensemble model daily WDD forecast.'
+      # NOTE: aifs_ens table does not exist yet — uncomment when deployed
+      # - name: aifs_ens_wdd_day_forecast_v1_2026_feb_12
+      #   description: 'AIFS ensemble model daily WDD forecast.'

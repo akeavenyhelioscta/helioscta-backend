@@ -1,0 +1,309 @@
+version: 2
+
+models:
+
+  # ===========================
+  # WDD Observed
+  # ===========================
+
+  - name: wdd_observed
+    description: >
+      Daily observed weighted degree days by region. Unpivoted from the raw
+      daily_observed_wdd table so each row is a date x region combination with
+      data type values as columns. Grain: date x region.
+    columns:
+      - name: date
+        description: 'Observation date.'
+        tests:
+          - not_null
+      - name: region
+        description: 'WSI North America gas region.'
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - 'EAST'
+                - 'MIDWEST'
+                - 'MOUNTAIN'
+                - 'PACIFIC'
+                - 'SOUTHCENTRAL'
+                - 'CONUS'
+                - 'GASPRODUCING'
+                - 'GASCONSEAST'
+                - 'GASCONSWEST'
+      - name: electric_cdd
+        description: 'Electric-weighted cooling degree days.'
+      - name: electric_hdd
+        description: 'Electric-weighted heating degree days.'
+      - name: gas_cdd
+        description: 'Gas-weighted cooling degree days.'
+      - name: gas_hdd
+        description: 'Gas-weighted heating degree days.'
+      - name: oil_cdd
+        description: 'Oil-weighted cooling degree days.'
+      - name: oil_hdd
+        description: 'Oil-weighted heating degree days.'
+      - name: population_cdd
+        description: 'Population-weighted cooling degree days.'
+      - name: population_hdd
+        description: 'Population-weighted heating degree days.'
+
+  # ===========================
+  # WDD Normals
+  # ===========================
+
+  - name: wdd_normals
+    description: >
+      10-year and 30-year WDD normals computed from daily observed data.
+      For each calendar day (mm_dd) and region, provides AVG, MIN, MAX, and STDDEV
+      across both lookback windows. Includes a computed TDD column (gas_hdd + population_cdd).
+      Feb 29 observations are folded into Feb 28 for statistical stability.
+      Grain: mm_dd x region.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - mm_dd
+            - region
+    columns:
+      - name: mm_dd
+        description: 'Calendar day as MM-DD string. Feb 29 is folded into Feb 28.'
+        tests:
+          - not_null
+      - name: month
+        description: 'Calendar month number extracted from mm_dd.'
+        tests:
+          - not_null
+      - name: region
+        description: 'WSI North America gas region.'
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - 'EAST'
+                - 'MIDWEST'
+                - 'MOUNTAIN'
+                - 'PACIFIC'
+                - 'SOUTHCENTRAL'
+                - 'CONUS'
+                - 'GASPRODUCING'
+                - 'GASCONSEAST'
+                - 'GASCONSWEST'
+      - name: min_year_10_yr_normal
+        description: 'Earliest year included in the 10-year window.'
+      - name: max_year_10_yr_normal
+        description: 'Latest year included in the 10-year window.'
+      - name: years_count_10_yr_normal
+        description: 'Number of distinct years contributing to the 10-year normal.'
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 8
+              max_value: 11
+      - name: min_year_30_yr_normal
+        description: 'Earliest year included in the 30-year window.'
+      - name: max_year_30_yr_normal
+        description: 'Latest year included in the 30-year window.'
+      - name: years_count_30_yr_normal
+        description: 'Number of distinct years contributing to the 30-year normal.'
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 25
+              max_value: 31
+      - name: electric_cdd_10_yr_normal
+        description: 'Electric-weighted CDD 10-year average.'
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: electric_hdd_10_yr_normal
+        description: 'Electric-weighted HDD 10-year average.'
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: gas_cdd_10_yr_normal
+        description: 'Gas-weighted CDD 10-year average.'
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: gas_hdd_10_yr_normal
+        description: 'Gas-weighted HDD 10-year average.'
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: tdd_10_yr_normal
+        description: 'Total degree day (gas_hdd + population_cdd) 10-year average.'
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: electric_cdd_30_yr_normal
+        description: 'Electric-weighted CDD 30-year average.'
+        tests:
+          - not_null
+      - name: electric_hdd_30_yr_normal
+        description: 'Electric-weighted HDD 30-year average.'
+        tests:
+          - not_null
+      - name: gas_cdd_30_yr_normal
+        description: 'Gas-weighted CDD 30-year average.'
+        tests:
+          - not_null
+      - name: gas_hdd_30_yr_normal
+        description: 'Gas-weighted HDD 30-year average.'
+        tests:
+          - not_null
+      - name: tdd_30_yr_normal
+        description: 'Total degree day (gas_hdd + population_cdd) 30-year average.'
+        tests:
+          - not_null
+
+  # ===========================
+  # WDD Forecast Models (NWP)
+  # ===========================
+
+  - name: wdd_forecast_models
+    description: >
+      Daily WDD forecasts from NWP models (GFS_OP, GFS_ENS, ECMWF_OP, ECMWF_ENS).
+      Deduplicated, filtered to complete 15-day forecast sets, and ranked by execution
+      time with human-readable labels (Current Forecast, 12hrs Ago, 24hrs Ago, Friday 12z).
+      Grain: forecast_execution_datetime x forecast_date x model x cycle x bias_corrected x region.
+    columns:
+      - name: rank_forecast_execution_timestamps
+        description: 'Execution rank (1 = most recent, descending).'
+        tests:
+          - not_null
+      - name: labelled_forecast_execution_timestamp
+        description: 'Human-readable label: Current Forecast, 12hrs Ago, 24hrs Ago, Friday 12z, or NULL.'
+      - name: forecast_execution_datetime
+        description: 'Forecast model initialization timestamp.'
+        tests:
+          - not_null
+      - name: forecast_execution_date
+        description: 'Forecast initialization date.'
+        tests:
+          - not_null
+      - name: cycle
+        description: 'Model cycle (00Z or 12Z).'
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - '00Z'
+                - '12Z'
+      - name: forecast_date
+        description: 'Target forecast date.'
+        tests:
+          - not_null
+      - name: model
+        description: 'NWP model name.'
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - 'GFS_OP'
+                - 'GFS_ENS'
+                - 'ECMWF_OP'
+                - 'ECMWF_ENS'
+      - name: bias_corrected
+        description: 'Whether the forecast is bias-corrected.'
+        tests:
+          - not_null
+      - name: region
+        description: 'WSI North America gas region.'
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - 'CONUS'
+                - 'EAST'
+                - 'MIDWEST'
+                - 'MOUNTAIN'
+                - 'PACIFIC'
+                - 'SOUTHCENTRAL'
+      - name: electric_cdd
+        description: 'Electric-weighted cooling degree days.'
+      - name: electric_hdd
+        description: 'Electric-weighted heating degree days.'
+      - name: gas_cdd
+        description: 'Gas-weighted cooling degree days.'
+      - name: gas_hdd
+        description: 'Gas-weighted heating degree days.'
+      - name: pw_cdd
+        description: 'Population-weighted cooling degree days.'
+      - name: pw_hdd
+        description: 'Population-weighted heating degree days.'
+
+  # ===========================
+  # WDD Forecast WSI (Blend)
+  # ===========================
+
+  - name: wdd_forecast_wsi
+    description: >
+      Daily WDD forecasts from the WSI proprietary blend model. Deduplicated,
+      filtered to complete 15-day forecast sets, and ranked by execution time
+      with human-readable labels (Current Forecast, 24hrs Ago, Friday 12z).
+      No cycle column (WSI blend does not use model cycles).
+      Grain: forecast_execution_datetime x forecast_date x bias_corrected x region.
+    columns:
+      - name: rank_forecast_execution_timestamps
+        description: 'Execution rank (1 = most recent, descending).'
+        tests:
+          - not_null
+      - name: labelled_forecast_execution_timestamp
+        description: 'Human-readable label: Current Forecast, 24hrs Ago, Friday 12z, or NULL.'
+      - name: forecast_execution_datetime
+        description: 'Forecast model initialization timestamp.'
+        tests:
+          - not_null
+      - name: forecast_execution_date
+        description: 'Forecast initialization date.'
+        tests:
+          - not_null
+      - name: forecast_date
+        description: 'Target forecast date.'
+        tests:
+          - not_null
+      - name: model
+        description: 'Always WSI.'
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - 'WSI'
+      - name: bias_corrected
+        description: 'Whether the forecast is bias-corrected.'
+        tests:
+          - not_null
+      - name: region
+        description: 'WSI North America gas region.'
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - 'CONUS'
+                - 'EAST'
+                - 'MIDWEST'
+                - 'MOUNTAIN'
+                - 'PACIFIC'
+                - 'SOUTHCENTRAL'
+      - name: electric_cdd
+        description: 'Electric-weighted cooling degree days.'
+      - name: electric_hdd
+        description: 'Electric-weighted heating degree days.'
+      - name: gas_cdd
+        description: 'Gas-weighted cooling degree days.'
+      - name: gas_hdd
+        description: 'Gas-weighted heating degree days.'
+      - name: pw_cdd
+        description: 'Population-weighted cooling degree days.'
+      - name: pw_hdd
+        description: 'Population-weighted heating degree days.'

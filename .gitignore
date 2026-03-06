@@ -5,6 +5,9 @@
 # Python build/dist directories
 dist/*
 
+# MkDocs build output
+site/
+
 # Python cache files
 __pycache__/
 **/__pycache__/*

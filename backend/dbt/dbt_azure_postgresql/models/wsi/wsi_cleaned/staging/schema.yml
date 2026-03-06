@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: staging_v1_wdd_forecast_1_deduplicated
+    description: >
+      Deduplicates WDD forecasts by keeping only the latest revision per
+      (region, forecast_execution_datetime, forecast_date, model, bias_corrected).
+      Orders by updated_at DESC to retain the most recent row.
+    columns:
+      - name: forecast_execution_datetime
+        description: 'Forecast model initialization timestamp.'
+        tests:
+          - not_null
+      - name: forecast_date
+        description: 'Target forecast date.'
+        tests:
+          - not_null
+      - name: model
+        description: 'Forecast model name.'
+        tests:
+          - not_null
+      - name: region
+        description: 'WSI North America gas region.'
+        tests:
+          - not_null
+      - name: bias_corrected
+        description: 'Whether the forecast is bias-corrected.'
+        tests:
+          - not_null
+
+  - name: staging_v1_wdd_forecast_2_complete
+    description: >
+      Filters to complete 15-day forecast sets. A forecast execution is considered
+      complete when its max day span (forecast_date - forecast_execution_date + 1)
+      equals 15 across all rows for that execution/model/region/bias_corrected partition.
+    columns:
+      - name: forecast_execution_datetime
+        description: 'Forecast model initialization timestamp.'
+        tests:
+          - not_null
+      - name: count_forecast_days
+        description: 'Day number within the forecast horizon (1-15).'
+        tests:
+          - not_null
+      - name: max_forecast_days
+        description: 'Maximum day span for this forecast execution partition. Always 15 after filtering.'
+        tests:
+          - not_null

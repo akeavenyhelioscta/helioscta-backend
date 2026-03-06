@@ -9,7 +9,11 @@
       "Bash(cat:*)",
       "Bash(dbt compile:*)",
       "Bash(dbt run:*)",
-      "Bash(psql:*)"
+      "Bash(psql:*)",
+      "Bash(PGPASSWORD=$AZURE_PG_PASSWORD psql:*)",
+      "Bash(mkdir:*)",
+      "Bash(dbt parse:*)",
+      "Bash(dbt ls:*)"
     ]
   }
 }
