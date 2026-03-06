@@ -1,6 +1,6 @@
 site_name: HeliosCTA Docs
 site_description: Data catalog, pipelines, and dbt views for HeliosCTA
-repo_url: https://github.com/helioscta/helioscta-backend
+repo_url: https://github.com/akeavenyhelioscta/helioscta-backend
 docs_dir: docs
 
 theme:
