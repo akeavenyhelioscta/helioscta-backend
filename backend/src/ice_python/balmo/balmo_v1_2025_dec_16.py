@@ -18,31 +18,47 @@ logger = logging_utils.init_logging(
     delete_if_no_errors=True,
 )
 
-ICE_SYMBOLS: dict[str, dict[str, str]] = {
-    "HH_BALMO": {"symbol": "HHD B0-IUS"},
-    "TRANSCO_ST85": {"symbol": "TRW B0-IUS"},
-    "FGT_Z3": {"symbol": "FTS B0-IUS"},
-    "COLUMBIA_GULF (MAINLINE)": {"symbol": "CGR B0-IUS"},
-    "ANR_SE_T": {"symbol": "APS B0-IUS"},
-    "PINE_PRARIE": {"symbol": "CVK B0-IUS"},
-    "TETCO_WLA": {"symbol": "CVP B0-IUS"},
-    "HSC": {"symbol": "UCS B0-IUS"},
-    "WAHA": {"symbol": "WAS B0-IUS"},
-    "NGPL_TXOK": {"symbol": "NTS B0-IUS"},
-    "AGT": {"symbol": "ALS B0-IUS"},
-    "TETCO_M3": {"symbol": "TSS B0-IUS"},
-    "TRANSCO_Z5": {"symbol": "DKS B0-IUS"},
-    "TRANSCO_Z5_SOUTH": {"symbol": "T5C B0-IUS"},
-    "IROQUOIS_Z2": {"symbol": "IZS B0-IUS"},
-    "TRANSCO_Z6_NY": {"symbol": "ZSS B0-IUS"},
-    "DOMINION_SOUTH (EASTERN GAS-SOUTH)": {"symbol": "DSS B0-IUS"},
-    "SOCAL_CG": {"symbol": "SCS B0-IUS"},
-    "PG&E_CG": {"symbol": "PIG B0-IUS"},
-    "CIG_MAINLINE": {"symbol": "CRS B0-IUS"},
-    "NGPL_MIDCON": {"symbol": "MTS B0-IUS"},
-    "MICHCON": {"symbol": "NMS B0-IUS"},
+
+# NOTE: NG Swing GDD Futures
+ICE_SYMBOLS: dict = {
+    'HH_BALMO': {'symbol': 'HHD B0-IUS'},
+
+    # SOUTHEAST
+    'TRANSCO_ST85': {'symbol': 'TRW B0-IUS'},
+    'FGT_Z3': {'symbol': 'FTS B0-IUS'},
+    'COLUMBIA_GULF (MAINLINE)': {'symbol': 'CGR B0-IUS'},
+    'ANR_SE_T': {'symbol': 'APS B0-IUS'},
+    'PINE_PRARIE': {'symbol': 'CVK B0-IUS'},
+    'TETCO_WLA': {'symbol': 'CVP B0-IUS'},
+
+    # EAST TEXAS
+    'HSC': {'symbol': 'UCS B0-IUS'},
+    'WAHA': {'symbol': 'WAS B0-IUS'},
+    'NGPL_TXOK': {'symbol': 'NTS B0-IUS'},
+    
+    # Northeast
+    'AGT': {'symbol': 'ALS B0-IUS'},
+    'TETCO_M3': {'symbol': 'TSS B0-IUS'},
+    'TRANSCO_Z5': {'symbol': 'DKS B0-IUS'},
+    'TRANSCO_Z5_SOUTH': {'symbol': 'T5C B0-IUS'},
+    'IROQUOIS_Z2': {'symbol': 'IZS B0-IUS'},
+    'TRANSCO_Z6_NY': {'symbol': 'ZSS B0-IUS'},
+    'DOMINION_SOUTH (EASTERN GAS-SOUTH)': {'symbol': 'DSS B0-IUS'},
+
+    # Southwest
+    'SOCAL_CG': {'symbol': 'SCS B0-IUS'},
+    'PG&E_CG': {'symbol': 'PIG B0-IUS'},
+
+    # Rockies/Northwest
+    'CIG_MAINLINE': {'symbol': 'CRS B0-IUS'},  # NOTE: Colorado Interstate Gas Company - Mainline (sellers' choice non-lateral from Muddy Creek to Cheyenne, excluding pool gas) 
+
+    # Midwest
+    'NGPL_MIDCON': {'symbol': 'MTS B0-IUS'},
+    'MICHCON': {'symbol': 'NMS B0-IUS'},
 }
 
+"""
+"""
 
 def _pull(
     symbol: str,

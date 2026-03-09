@@ -1,6 +1,6 @@
 # EIA
 
-Public U.S. energy data from the EIA Open Data API. Currently covers hourly generation by fuel type, weekly gas storage, and generator attributes (Form 860). No dbt cleaned views yet -- consumed raw.
+Public U.S. energy data from the EIA Open Data API. Currently covers hourly generation by fuel type (EIA-930) and weekly gas storage. EIA-930 data has full dbt cleaned views (hourly + daily marts); gas storage is consumed raw.
 
 **Use this page** to find EIA scrape scripts and raw table details.
 
@@ -12,11 +12,10 @@ Public U.S. energy data from the EIA Open Data API. Currently covers hourly gene
 
 ## Scrape Inventory
 
-| Script | Table | Description | Source Endpoint |
-|--------|-------|-------------|-----------------|
-| [fuel_type_hrl_gen_test](scrapes/fuel-type-hrl-gen.md) | `eia.fuel_type_hrl_gen_test` | Hourly electricity generation by fuel type and respondent | `/electricity/rto/fuel-type-data` |
-| [weekly_underground_storage_test](scrapes/weekly-underground-storage.md) | `eia.weekly_underground_storage_test` | Weekly natural gas underground storage by region | `/natural-gas/stor/wkly` |
-| [eia_860_test](scrapes/eia-860.md) | `eia.eia_860_test` | Generator attributes (capacity, fuel type, status) -- mirrors fuel_type format | `/electricity/rto/fuel-type-data` |
+| Script | Table | Description | Source Endpoint | dbt Views |
+|--------|-------|-------------|-----------------|-----------|
+| [fuel_type_hrl_gen_v3_2026_mar_09](scrapes/fuel-type-hrl-gen.md) | `eia.fuel_type_hrl_gen_v3_2026_mar_09` | Hourly electricity generation by fuel type and respondent | `/electricity/rto/fuel-type-data` | `eia_930_hourly`, `eia_930_daily` |
+| [weekly_underground_storage](scrapes/weekly-underground-storage.md) | `eia.weekly_underground_storage` | Weekly natural gas underground storage by region | `/natural-gas/stor/wkly` | None (raw) |
 
 ## Fuel Type Hourly Generation -- Detail
 
@@ -49,11 +48,21 @@ Track weekly natural gas in underground storage by region. This is a closely wat
 - **Frequency:** Weekly
 - **Freshness:** T+0 (same day as EIA release)
 
+## dbt Cleaned Views
+
+EIA-930 generation data now has a full dbt pipeline (`eia_cleaned` schema):
+
+| View | Description |
+|------|-------------|
+| `eia_930_hourly` | Hourly generation by respondent, converted UTC→EST, with composite metrics (total, renewables, thermal) |
+| `eia_930_daily` | Daily average generation by respondent with thermal % breakdowns |
+
+Pipeline: `source → utils (respondent lookup) → staging (UTC→EST, normalization) → marts (hourly + daily views)`
+
 ## Known Caveats
 
-- Scripts have `_test` suffix -- these are production scripts despite the naming convention
 - EIA API uses pagination (5,000 row limit per request); scripts handle this automatically
-- No dbt cleaning views exist for EIA data -- consumed raw
+- Weekly gas storage is still consumed as a raw table (no dbt views)
 
 ## Owner
 

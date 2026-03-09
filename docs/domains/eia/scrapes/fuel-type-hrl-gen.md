@@ -4,10 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Script** | `backend/src/eia/fuel_type_hrl_gen_test.py` |
+| **Script** | `backend/src/eia/fuel_type_hrl_gen_v3_2026_mar_09.py` |
 | **Source** | EIA Open Data API v2 (`/electricity/rto/fuel-type-data`) |
-| **Target Table** | `eia.fuel_type_hrl_gen_test` |
+| **Target Table** | `eia.fuel_type_hrl_gen_v3_2026_mar_09` |
 | **Schema** | `eia` |
+| **dbt Views** | `eia_cleaned.eia_930_hourly`, `eia_cleaned.eia_930_daily` |
 | **Trigger** | Scheduled (Prefect) |
 | **Default Pull Window** | Last 3 days |
 | **Freshness** | ~1 hour lag |
@@ -59,7 +60,6 @@ Provides a comprehensive view of U.S. electricity generation broken down by fuel
 
 ## Known Caveats
 
-- Script name ends in `_test` but this is the production script
 - EIA API paginated at 5,000 rows; script handles pagination automatically
 - Some respondents may have duplicate fuel type columns (e.g., two "pumped_storage" columns); the script sums duplicates
 - Backfill available from 2019 onward via `backfill()` function

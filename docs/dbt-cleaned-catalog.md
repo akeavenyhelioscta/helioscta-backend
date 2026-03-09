@@ -96,15 +96,13 @@ Click any link in the Source Scrape or dbt View columns for details. Terms uncle
 
 ---
 
-## EIA -- Government Energy Data (Raw Tables Only)
-
-These datasets do not yet have dbt cleaned views. They are consumed directly from raw tables.
+## EIA -- Government Energy Data
 
 | Model / Table | Plain-English Purpose | Business Question Answered | Source Scrape(s) | Related dbt View(s) | Refresh Frequency | Owner |
 |---|---|---|---|---|---|---|
-| `eia.fuel_type_hrl_gen_test` | Hourly electricity generation by fuel type across all U.S. regions | "How much gas-fired generation is running in PJM right now?" | [Fuel Type Hourly Gen](domains/eia/scrapes/fuel-type-hrl-gen.md) | None (raw table) | Hourly (~1-hr lag) | TBD |
-| `eia.weekly_underground_storage_test` | Weekly natural gas in underground storage by region | "How does this week's gas storage compare to last year?" | [Weekly Gas Storage](domains/eia/scrapes/weekly-underground-storage.md) | None (raw table) | Weekly (Thursday) | TBD |
-| `eia.eia_860_test` | Power plant and generator attributes (capacity, fuel, status) | "What is the installed capacity of wind in PJM?" | [EIA Form 860](domains/eia/scrapes/eia-860.md) | None (raw table) | Periodic | TBD |
+| `eia_930_hourly` | Hourly electricity generation by fuel type across all U.S. regions (60+ BAs), converted to EST | "How much gas-fired generation is running in PJM right now?" | [Fuel Type Hourly Gen](domains/eia/scrapes/fuel-type-hrl-gen.md) | [eia_930_hourly](domains/eia/dbt-views/eia-cleaned.md#eia_930_hourly) | Hourly (~1-hr lag) | TBD |
+| `eia_930_daily` | Daily average generation by fuel type and respondent with thermal % breakdowns | "What was yesterday's average gas vs coal generation in ERCOT?" | [Fuel Type Hourly Gen](domains/eia/scrapes/fuel-type-hrl-gen.md) | [eia_930_daily](domains/eia/dbt-views/eia-cleaned.md#eia_930_daily) | Hourly (~1-hr lag) | TBD |
+| `eia.weekly_underground_storage` | Weekly natural gas in underground storage by region | "How does this week's gas storage compare to last year?" | [Weekly Gas Storage](domains/eia/scrapes/weekly-underground-storage.md) | None (raw table) | Weekly (Thursday) | TBD |
 
 ---
 
@@ -118,8 +116,8 @@ These datasets do not yet have dbt cleaned views. They are consumed directly fro
 | Genscape | `genscape_cleaned` | 2 | Fully cleaned |
 | Positions | `positions_cleaned` | 8 | Fully cleaned |
 | Trades | `trades_cleaned` | 6 | Fully cleaned |
-| EIA | -- | 0 | Raw tables only |
-| **Total** | | **44 views + 3 raw** | |
+| EIA | `eia_cleaned` | 2 | EIA-930 hourly + daily cleaned; storage raw |
+| **Total** | | **46 views + 1 raw** | |
 
 ---
 

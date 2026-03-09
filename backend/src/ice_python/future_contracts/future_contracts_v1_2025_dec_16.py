@@ -19,8 +19,45 @@ logger = logging_utils.init_logging(
     delete_if_no_errors=True,
 )
 
+
+# NOTE: NG LD1 Futures
 ICE_PRODUCTS: list[str] = [
-    "PMI",
+    "HNG",  # HH Nat Gas  .. https://www.ice.com/products/6590258
+
+    # SOUTHEAST
+    "TRZ",   # 'TRANSCO_ST85'
+    "CGB",   # 'COLUMBIA_GULF 
+    "CGM",   # 'ANR_SE_T'
+    "TWB",   # 'TETCO_WLA'
+
+    # EAST TEXAS
+    "HXS",  # HSC Basis Future .. https://www.ice.com/products/6590137
+    "WAH",  # Waha Basis Future .. https://www.ice.com/products/6590171
+    "NTO",  # NGPL TXOK Basis Future .. https://www.ice.com/products/6590143
+
+    # Northeast - BASIS
+    "ALQ",  # Algonquin Citygates Basis Future .. https://www.ice.com/products/6590124
+    "TMT",  # TETCO M3 Basis Future .. https://www.ice.com/products/6590161
+    "T5B",  # Transco Zone 5 South Basis Future .. https://www.ice.com/products/82270888
+    "IZB",  # Iroquois-Z2 Basis (Platts) Future .. https://www.ice.com/products/21587547
+    "TZS", # TRANSCO_Z6_NY
+    "DOM", # DOMINION_SOUTH
+    
+    # Southwest
+    "SCB",  # 'SOCAL_CG'
+    "PGE",  # 'PG&E_CG'
+
+    # Rockies/Northwest
+    "CRI", # 'CIG_MAINLINE'
+
+    # TODO:
+    # "NMC",  # Michcon Basis Future .. https://www.ice.com/products/6590140
+    # "DGD",  # Chicago Basis Future .. https://www.ice.com/products/6590132
+    # "AEC",  # AB NIT Basis Future .. https://www.ice.com/products/6590123
+
+    # # POWER
+    'PMI',  # PJM Western Hub RT Peak (1 MW) .. https://www.ice.com/products/6590369/PJM-Western-Hub-Real-Time-Peak-1-MW-Fixed-Price-Future
+    'ERN',  # PJM Western Hub RT Peak (1 MW) .. https://www.ice.com/products/6590369/PJM-Western-Hub-Real-Time-Peak-1-MW-Fixed-Price-Future
 ]
 
 STRIP_MAPPING = {
@@ -38,6 +75,8 @@ STRIP_MAPPING = {
     12: "Z",
 }
 
+"""
+"""
 
 def get_relevant_strips(
     contract_year: int,

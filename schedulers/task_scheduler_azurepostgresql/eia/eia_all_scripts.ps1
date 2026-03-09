@@ -3,7 +3,7 @@ $runScript = "C:\Users\AidanKeaveny\Documents\github\helioscta-backend\backend\s
 
 $action = New-ScheduledTaskAction `
     -Execute "cmd.exe" `
-    -Argument "/k `"call `"$condaPath`" helioscta-backend && python `"$runScript`" all`""
+    -Argument "/c `"call `"$condaPath`" helioscta-backend && python `"$runScript`" all`""
 
 # Run daily at the required trigger times.
 $triggerTimes = @(

@@ -10,7 +10,7 @@ One-page overview of what HeliosCTA ingests, how it flows, and how fresh it is. 
 | **Power Forecasts** -- demand, generation, DA price forecasts | Meteologica xTraders API | ~374 |
 | **Weather** -- temp forecasts, HDD/CDD, observations | WSI Trader API | ~15 |
 | **Natural Gas** -- production forecasts, pipeline flows, storage | Genscape API, EIA API | ~4 |
-| **EIA** -- hourly generation by fuel type, Form 860 | EIA Open Data API | ~3 |
+| **EIA** -- hourly generation by fuel type, gas storage | EIA Open Data API | ~2 |
 | **Positions & Trades** -- daily positions, trade confirmations | SFTP (Marex, NAV, Clear Street) | ~8 |
 
 ## Data Flow
@@ -43,7 +43,8 @@ One-page overview of what HeliosCTA ingests, how it flows, and how fresh it is. 
 | `genscape_cleaned` | 2 | Gas production forecast + daily pipeline |
 | `positions_cleaned` | 8 | Combined Marex + NAV positions |
 | `trades_cleaned` | 6 | Clear Street + Marex trade confirmations |
-| **Total** | **44** | EIA has no cleaned views yet |
+| `eia_cleaned` | 2 | EIA-930 hourly + daily generation |
+| **Total** | **46** | |
 
 ## Next Steps
 

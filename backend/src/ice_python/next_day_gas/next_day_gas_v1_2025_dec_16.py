@@ -18,31 +18,49 @@ logger = logging_utils.init_logging(
     delete_if_no_errors=True,
 )
 
-ICE_SYMBOLS: dict[str, dict[str, str]] = {
-    "HENRY_HUB": {"symbol": "XGF D1-IPG"},
-    "TRANSCO_ST85": {"symbol": "XVA D1-IPG"},
-    "FGT_Z3": {"symbol": "YHV D1-IPG"},
-    "COLUMBIA_GULF (MAINLINE)": {"symbol": "XLA D1-IPG"},
-    "ANR_SE_T": {"symbol": "XTA D1-IPG"},
-    "PINE_PRARIE": {"symbol": "YV7 D1-IPG"},
-    "TETCO_WLA": {"symbol": "XT6 D1-IPG"},
-    "HSC": {"symbol": "XYZ D1-IPG"},
-    "WAHA": {"symbol": "XT6 D1-IPG"},
-    "NGPL_TXOK": {"symbol": "XIT D1-IPG"},
-    "AGT_CG (non-G)": {"symbol": "X7F D1-IPG"},
-    "TETCO_M3": {"symbol": "XZR D1-IPG"},
-    "TRANSCO_Z5_SOUTH": {"symbol": "YFF D1-IPG"},
-    "TRANSCO_Z5_NORTH": {"symbol": "Z2Y D1-IPG"},
-    "IROQUOIS_Z2": {"symbol": "YP8 D1-IPG"},
-    "TRANSCO_Z6_NY": {"symbol": "XWK D1-IPG"},
-    "DOMINION_SOUTH (EASTERN GAS-SOUTH)": {"symbol": "XJL D1-IPG"},
-    "SOCAL_CG": {"symbol": "XKF D1-IPG"},
-    "PG&E_CG": {"symbol": "XGV D1-IPG"},
-    "CIG_MAINLINE": {"symbol": "YKL D1-IPG"},
-    "NGPL_MIDCON": {"symbol": "XJR D1-IPG"},
-    "MICHCON": {"symbol": "XJZ D1-IPG"},
+# NOTE: NG Firm Phys, FP
+ICE_SYMBOLS: dict = {
+    # LOUISIANA
+    'HENRY_HUB': {'symbol': 'XGF D1-IPG'},
+    
+    # SOUTHEAST
+    'TRANSCO_ST85': {'symbol': 'XVA D1-IPG'},
+    'FGT_Z3': {'symbol': 'YHV D1-IPG'},
+    'COLUMBIA_GULF (MAINLINE)': {'symbol': 'XLA D1-IPG'},
+    'ANR_SE_T': {'symbol': 'XTA D1-IPG'},
+    'PINE_PRARIE': {'symbol': 'YV7 D1-IPG'},
+    'TETCO_WLA': {'symbol': 'XT6 D1-IPG'},
+
+    # EAST TEXAS
+    'HSC': {'symbol': 'XYZ D1-IPG'},
+    'WAHA': {'symbol': 'XT6 D1-IPG'},
+    'NGPL_TXOK': {'symbol': 'XIT D1-IPG'},
+
+    # NORTHEAST
+    ### TODO: not working from ICE
+    ### 'AGT_CG': {'symbol': 'YI0 D1-IPG'},       # NOTE: Algonquin Citygates Algonquin Citygates (Excluding J-Lateral deliveries)
+    'AGT_CG (non-G)': {'symbol': 'X7F D1-IPG'},   # NOTE: Algonquin Citygates (Excluding J-Lateral and G-Lateral deliveries and Brookfield)
+    'TETCO_M3': {'symbol': 'XZR D1-IPG'},
+    'TRANSCO_Z5_SOUTH': {'symbol': 'YFF D1-IPG'},
+    'TRANSCO_Z5_NORTH': {'symbol': 'Z2Y D1-IPG'},
+    'IROQUOIS_Z2': {'symbol': 'YP8 D1-IPG'},
+    'TRANSCO_Z6_NY': {'symbol': 'XWK D1-IPG'},
+    'DOMINION_SOUTH (EASTERN GAS-SOUTH)': {'symbol': 'XJL D1-IPG'},
+
+    # Southwest
+    'SOCAL_CG': {'symbol': 'XKF D1-IPG'},
+    'PG&E_CG': {'symbol': 'XGV D1-IPG'},
+
+    # Rockies/Northwest
+    'CIG_MAINLINE': {'symbol': 'YKL D1-IPG'},  # NOTE: Colorado Interstate Gas Company - Mainline (sellers' choice non-lateral from Muddy Creek to Cheyenne, excluding pool gas) 
+    
+    # Midwest
+    'NGPL_MIDCON': {'symbol': 'XJR D1-IPG'},
+    'MICHCON': {'symbol': 'XJZ D1-IPG'},
 }
 
+"""
+"""
 
 def _pull(
     symbol: str,
