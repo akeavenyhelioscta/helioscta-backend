@@ -126,3 +126,17 @@ models:
           +materialized: ephemeral
         marts:
           +materialized: view
+
+    # ── ICE Python ──────────────────────────────────────────────────────────
+    ice_python:
+      ice_python_cleaned:
+        +schema: ice_python_cleaned
+        +materialized: ephemeral
+        source:
+          +materialized: ephemeral
+        staging:
+          +materialized: ephemeral
+        utils:
+          +materialized: ephemeral
+        marts:
+          +materialized: view

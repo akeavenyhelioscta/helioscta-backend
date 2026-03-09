@@ -96,6 +96,16 @@ Click any link in the Source Scrape or dbt View columns for details.
 
 ---
 
+## ICE -- Natural Gas & Power Derivatives
+
+| Model / Table | Plain-English Purpose | Business Question Answered | Source Scrape(s) | Related dbt View(s) | Refresh Frequency | Owner |
+|---|---|---|---|---|---|---|
+| `ice_python_balmo` | Daily BALMO gas swap settle prices across 15 U.S. hubs | "What is the remaining-month gas basis at Henry Hub vs Waha?" | [ICE Scrapes](domains/ice/scrapes/ice-scrapes.md#balmo) | [ice_python_balmo](domains/ice/dbt-views/ice-python-cleaned.md#ice_python_balmo) | Daily | TBD |
+| `ice_python_next_day_gas_hourly` | Hourly next-day firm physical gas prices at 15 hubs | "What is the current intraday gas price at Henry Hub?" | [ICE Scrapes](domains/ice/scrapes/ice-scrapes.md#next-day-gas) | [ice_python_next_day_gas_hourly](domains/ice/dbt-views/ice-python-cleaned.md#ice_python_next_day_gas_hourly) | Intraday | TBD |
+| `ice_python_next_day_gas_daily` | Daily next-day gas cash prices (10 AM snapshot) at 15 hubs | "What was the daily gas settlement at each hub?" | [ICE Scrapes](domains/ice/scrapes/ice-scrapes.md#next-day-gas) | [ice_python_next_day_gas_daily](domains/ice/dbt-views/ice-python-cleaned.md#ice_python_next_day_gas_daily) | Daily | TBD |
+
+---
+
 ## EIA -- Government Energy Data
 
 | Model / Table | Plain-English Purpose | Business Question Answered | Source Scrape(s) | Related dbt View(s) | Refresh Frequency | Owner |
@@ -128,8 +138,9 @@ Click any link in the Source Scrape or dbt View columns for details.
 | Positions | `positions_cleaned` | 8 | Fully cleaned |
 | Trades | `trades_cleaned` | 6 | Fully cleaned |
 | EIA | `eia_cleaned` | 2 | EIA-930 hourly + daily cleaned; storage raw |
+| ICE | `ice_python_cleaned` | 3 | BALMO, next-day gas hourly + daily |
 | Utils | `dbt` | 2 | Date spines; NERC holidays pending |
-| **Total** | | **48 views + 1 raw** | |
+| **Total** | | **51 views + 1 raw** | |
 
 ---
 

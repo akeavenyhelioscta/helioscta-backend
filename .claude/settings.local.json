@@ -59,7 +59,8 @@
       "Bash(dbt ls:*)",
       "Bash(sed:*)",
       "Bash(bash:*)",
-      "Bash(git mv:*)"
+      "Bash(git mv:*)",
+      "Bash(dbt parse:*)"
     ]
   }
 }

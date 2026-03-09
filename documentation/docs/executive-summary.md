@@ -11,6 +11,7 @@ One-page overview of what HeliosCTA ingests, how it flows, and how fresh it is. 
 | **Weather** -- temp forecasts, HDD/CDD, observations | WSI Trader API | ~15 |
 | **Natural Gas** -- production forecasts, pipeline flows, storage | Genscape API, EIA API | ~4 |
 | **EIA** -- hourly generation by fuel type, gas storage | EIA Open Data API | ~2 |
+| **ICE** -- next-day gas, BALMO swaps, NG & power futures | ICE Python API | ~3 |
 | **Positions & Trades** -- daily positions, trade confirmations | SFTP (Marex, NAV, Clear Street) | ~8 |
 
 ## Data Flow
@@ -31,6 +32,7 @@ One-page overview of what HeliosCTA ingests, how it flows, and how fresh it is. 
 | Positions (NAV/Marex) | End-of-day files | T+1 |
 | Trades (Clear Street) | Intraday + end-of-day | Intraday + T+1 |
 | EIA generation mix | ~1 hour lag | Hourly |
+| ICE gas/power derivatives | End-of-day settle | Daily |
 | Gas storage | Weekly (Thursday) | Weekly |
 
 ## dbt View Summary
@@ -44,7 +46,8 @@ One-page overview of what HeliosCTA ingests, how it flows, and how fresh it is. 
 | `positions_cleaned` | 8 | Combined Marex + NAV positions |
 | `trades_cleaned` | 6 | Clear Street + Marex trade confirmations |
 | `eia_cleaned` | 2 | EIA-930 hourly + daily generation |
-| **Total** | **46** | |
+| `ice_python_cleaned` | 3 | BALMO, next-day gas hourly + daily |
+| **Total** | **49** | |
 
 ## Next Steps
 

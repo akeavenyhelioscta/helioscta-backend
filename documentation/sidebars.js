@@ -157,6 +157,28 @@ const sidebars = {
     },
     {
       type: "category",
+      label: "ICE",
+      collapsed: true,
+      items: [
+        {
+          type: "doc",
+          id: "domains/ice/overview",
+          label: "Overview",
+        },
+        {
+          type: "doc",
+          id: "domains/ice/scrapes/ice-scrapes",
+          label: "Scrapes",
+        },
+        {
+          type: "doc",
+          id: "domains/ice/dbt-views/ice-python-cleaned",
+          label: "dbt Views",
+        },
+      ],
+    },
+    {
+      type: "category",
       label: "Genscape",
       collapsed: true,
       items: [
