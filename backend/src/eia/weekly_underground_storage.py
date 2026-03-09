@@ -6,7 +6,6 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 import pandas as pd
-from prefect import flow
 
 from backend import secrets
 from backend.utils import (
@@ -16,7 +15,7 @@ from backend.utils import (
 )
 
 # SCRAPE
-API_SCRAPE_NAME = "weekly_underground_storage_test"
+API_SCRAPE_NAME = "weekly_underground_storage"
 
 # logging
 logger = logging_utils.init_logging(
@@ -125,11 +124,7 @@ def _pull(
     if not all_data:
         raise RuntimeError(f"No data found for {start_date} to {end_date}")
 
-    # concat and format data
-    df = pd.concat(all_data, ignore_index=True)
-    df = _format(df)
-
-    return df
+    return pd.concat(all_data, ignore_index=True)
 
 
 def _upsert(
@@ -152,11 +147,10 @@ def _upsert(
         df = df,
         columns = df.columns.tolist(),
         data_types = data_types,
-        primary_key = ["eia_week_ending", "series", "series_description"],
+        primary_key = ["eia_week_ending", "region"],
     )
 
 
-@flow(name=API_SCRAPE_NAME, retries=2, retry_delay_seconds=60, log_prints=True)
 def main(
         start_date: str = (datetime.now() - timedelta(days=61)).strftime("%Y-%m-%d"),
         end_date: str = (datetime.now()).strftime("%Y-%m-%d"),
@@ -181,6 +175,10 @@ def main(
             start_date=start_date,
             end_date=end_date,
         )
+
+        # format
+        logger.section(f"Formatting {len(df)} rows...")
+        df = _format(df)
 
         # upsert
         logger.section(f"Upserting {len(df)} rows...")
@@ -207,5 +205,4 @@ def main(
 """
 
 if __name__ == "__main__":
-    # Bypass Prefect @flow decorator for local runs (no server required)
-    df = main.fn()
+    df = main()

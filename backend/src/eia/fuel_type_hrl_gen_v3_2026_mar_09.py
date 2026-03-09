@@ -7,7 +7,6 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 import pandas as pd
-from prefect import flow
 
 from backend import secrets
 from backend.utils import (
@@ -17,7 +16,7 @@ from backend.utils import (
 )
 
 # SCRAPE
-API_SCRAPE_NAME = "eia_860_test"
+API_SCRAPE_NAME = "fuel_type_hrl_gen_v3_2026_mar_09"
 
 # logging
 logger = logging_utils.init_logging(
@@ -47,16 +46,25 @@ def _format(df: pd.DataFrame) -> pd.DataFrame:
     df["date"] = df["datetime_utc"].dt.date
     df["hour"] = df["datetime_utc"].dt.hour
 
-    # handle duplicate pumped_storage columns
-    if "pumped_storage" in df.columns and type(df["pumped_storage"]) == pd.DataFrame:
-        df["pumped_storage1"] = df["pumped_storage"].astype(float).sum(axis=1)
-        df.drop(columns=['pumped_storage'], inplace=True)
-        df.rename(columns={'pumped_storage1': 'pumped_storage'}, inplace=True)
-
+    # NOTE: Check cols
+    primary_keys = ['datetime_utc', 'date', 'hour', 'respondent']
     gen_mix_cols = [
-        'wind', 'solar', 'solar_battery', 'solar_with_integrated_battery_storage',
-        'battery', 'battery_storage', 'hydro', 'pumped_storage',
-        'nuclear', 'other', 'natural_gas', 'coal', 'petroleum',
+        'battery_storage',
+        'coal',
+        'geothermal',
+        'hydro',
+        'natural_gas',
+        'nuclear',
+        'other',
+        'other_energy_storage',
+        'petroleum',
+        'pumped_storage',
+        'solar',
+        'solar_with_integrated_battery_storage',
+        'unknown',
+        'unknown_energy_storage',
+        'wind',
+        'wind_with_integrated_battery_storage',
     ]
 
     for col in gen_mix_cols:
@@ -65,8 +73,12 @@ def _format(df: pd.DataFrame) -> pd.DataFrame:
         else:
             df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
 
+    # raise error if any cols are missing
+    missing_cols = set(gen_mix_cols) - set(df.columns)
+    if missing_cols:
+        raise ValueError(f"Missing columns: {missing_cols}")
+
     # select cols
-    primary_keys = ['datetime_utc', 'date', 'hour', 'respondent']
     cols = primary_keys + gen_mix_cols
     df = df[cols]
 
@@ -75,6 +87,22 @@ def _format(df: pd.DataFrame) -> pd.DataFrame:
         df[col] = df[col].astype(str)
     for col in gen_mix_cols:
         df[col] = df[col].astype(float)
+
+    # merge duplicate gen_mix_cols
+    logger.info("Merging duplicate gen_mix_cols ...")
+    logger.info(f"Before: {df.columns}")
+    unique_cols = df.columns.unique()
+    result = pd.DataFrame(index=df.index)
+    for col in unique_cols:
+        if df.columns.tolist().count(col) > 1 and col in gen_mix_cols:
+            # Sum duplicate columns
+            result[col] = df.loc[:, df.columns == col].sum(axis=1)
+        else:
+            # Keep single columns as-is
+            result[col] = df[col]
+    logger.info(f"After: {df.columns}")
+
+    df = result.copy()
 
     return df
 
@@ -135,6 +163,7 @@ def _pull(
         # TEX
         "facets[respondent][]=ERCO&"
         # NW
+        "facets[respondent][]=NW&"
         "facets[respondent][]=AVA&"
         "facets[respondent][]=AVRN&"
         "facets[respondent][]=BPAT&"
@@ -157,6 +186,7 @@ def _pull(
         "facets[respondent][]=WAUW&"
         "facets[respondent][]=WWA&"
         # SW
+        "facets[respondent][]=SW&"
         "facets[respondent][]=AZPS&"
         "facets[respondent][]=DEAA&"
         "facets[respondent][]=EPE&"
@@ -225,11 +255,7 @@ def _pull(
     if not all_data:
         raise RuntimeError(f"No data found for {start_date} to {end_date}")
 
-    # format data
-    df = pd.concat(all_data, ignore_index=True)
-    df = _format(df)
-
-    return df
+    return pd.concat(all_data, ignore_index=True)
 
 
 def _upsert(
@@ -272,7 +298,7 @@ def backfill(
         }
         print(f"Upserting from {params['start_date']} to {params['end_date']} ...")
 
-        main.fn(
+        main(
             start_date=params['start_date'],
             end_date=params['end_date'],
         )
@@ -280,9 +306,8 @@ def backfill(
         current_date += delta
 
 
-@flow(name=API_SCRAPE_NAME, retries=2, retry_delay_seconds=60, log_prints=True)
 def main(
-        start_date: str = (datetime.now() - timedelta(days=14)).strftime("%Y-%m-%d"),
+        start_date: str = (datetime.now() - timedelta(days=3)).strftime("%Y-%m-%d"),
         end_date: str = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d"),
     ):
 
@@ -305,6 +330,10 @@ def main(
             start_date=start_date,
             end_date=end_date,
         )
+
+        # format
+        logger.section(f"Formatting {len(df)} rows...")
+        df = _format(df)
 
         # upsert
         logger.section(f"Upserting {len(df)} rows...")
@@ -331,6 +360,5 @@ def main(
 """
 
 if __name__ == "__main__":
-    # Bypass Prefect @flow decorator for local runs (no server required)
-    df = main.fn()
+    df = main()
     # backfill()

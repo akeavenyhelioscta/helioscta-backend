@@ -3,7 +3,8 @@
 # Run this script as Administrator to register the scheduled tasks
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$allScripts = Get-ChildItem -Path $scriptDir -Filter "*.ps1" -Recurse | Where-Object { $_.Name -ne "register_all_tasks.ps1" }
+$excludedScripts = @("register_all_tasks.ps1", "delete_all_tasks.ps1")
+$allScripts = Get-ChildItem -Path $scriptDir -Filter "*.ps1" -Recurse | Where-Object { $_.Name -notin $excludedScripts }
 
 Write-Host "Found $($allScripts.Count) task scripts to register:" -ForegroundColor Cyan
 Write-Host ""

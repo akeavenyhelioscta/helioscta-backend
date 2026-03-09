@@ -13,6 +13,28 @@ const sidebars = {
     },
     {
       type: "category",
+      label: "Reference",
+      collapsed: false,
+      items: [
+        {
+          type: "doc",
+          id: "task-scheduling",
+          label: "Task Scheduling",
+        },
+        {
+          type: "doc",
+          id: "owners-and-slas",
+          label: "Owners & SLAs",
+        },
+        {
+          type: "doc",
+          id: "glossary",
+          label: "Glossary",
+        },
+      ],
+    },
+    {
+      type: "category",
       label: "Weather (WSI)",
       collapsed: true,
       items: [

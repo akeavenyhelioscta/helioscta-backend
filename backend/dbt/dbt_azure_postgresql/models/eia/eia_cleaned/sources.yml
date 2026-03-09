@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+
+  - name: eia_v1
+    schema: eia
+    description: '{{ doc("eia_overview") }}'
+    tables:
+      - name: fuel_type_hrl_gen_v3_2026_mar_09
+        description: '{{ doc("eia_930_source") }}'

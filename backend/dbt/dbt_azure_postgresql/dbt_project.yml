@@ -113,3 +113,16 @@ models:
         +schema: genscape_cleaned
         +materialized: view
 
+    # ── EIA ──────────────────────────────────────────────────────────────────
+    eia:
+      eia_cleaned:
+        +schema: eia_cleaned
+        +materialized: ephemeral
+        source:
+          +materialized: ephemeral
+        staging:
+          +materialized: ephemeral
+        utils:
+          +materialized: ephemeral
+        marts:
+          +materialized: view

@@ -16,9 +16,12 @@ else
   ALL_CHANGED=$(git diff --cached --name-only)
 fi
 
-# --- Split into docs vs non-docs ---
+# --- Files that never require docs updates ---
+IGNORE_PATTERN='^(\.claude/|\.github/|\.githooks/|\.gitattributes|\.gitignore|\.env|\.vscode/|\.SKILLS/|scripts/check-docs-updated\.sh|package-lock\.json|\.pre-commit-config\.yaml)'
+
+# --- Split into docs vs non-docs, filtering out ignored files ---
 DOCS_CHANGED=$(echo "$ALL_CHANGED" | grep -E '^(docs/|README\.md)' || true)
-NON_DOCS_CHANGED=$(echo "$ALL_CHANGED" | grep -vE '^(docs/|README\.md)' || true)
+NON_DOCS_CHANGED=$(echo "$ALL_CHANGED" | grep -vE '^(docs/|README\.md)' | grep -vE "$IGNORE_PATTERN" || true)
 
 # --- No non-docs files changed? Pass (docs-only commit). ---
 if [ -z "$NON_DOCS_CHANGED" ]; then
