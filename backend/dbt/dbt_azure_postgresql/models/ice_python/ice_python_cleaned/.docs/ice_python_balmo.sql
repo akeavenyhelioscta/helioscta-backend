@@ -1,6 +1,5 @@
 select
-  date
-  ,gas_day
+  gas_day
   ,trade_date
   ,hh_balmo
   ,transco_st85_balmo
