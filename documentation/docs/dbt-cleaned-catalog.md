@@ -2,7 +2,7 @@
 
 Central reference for every dataset in HeliosCTA. Find any table by name, see what it answers, where data comes from, and how fresh it is.
 
-Click any link in the Source Scrape or dbt View columns for details. Terms unclear? See the [Glossary](glossary.md).
+Click any link in the Source Scrape or dbt View columns for details.
 
 ---
 
@@ -100,9 +100,9 @@ Click any link in the Source Scrape or dbt View columns for details. Terms uncle
 
 | Model / Table | Plain-English Purpose | Business Question Answered | Source Scrape(s) | Related dbt View(s) | Refresh Frequency | Owner |
 |---|---|---|---|---|---|---|
-| `eia_930_hourly` | Hourly electricity generation by fuel type across all U.S. regions (60+ BAs), converted to EST | "How much gas-fired generation is running in PJM right now?" | [Fuel Type Hourly Gen](domains/eia/scrapes/fuel-type-hrl-gen.md) | [eia_930_hourly](domains/eia/dbt-views/eia-cleaned.md#eia_930_hourly) | Hourly (~1-hr lag) | TBD |
-| `eia_930_daily` | Daily average generation by fuel type and respondent with thermal % breakdowns | "What was yesterday's average gas vs coal generation in ERCOT?" | [Fuel Type Hourly Gen](domains/eia/scrapes/fuel-type-hrl-gen.md) | [eia_930_daily](domains/eia/dbt-views/eia-cleaned.md#eia_930_daily) | Hourly (~1-hr lag) | TBD |
-| `eia.weekly_underground_storage` | Weekly natural gas in underground storage by region | "How does this week's gas storage compare to last year?" | [Weekly Gas Storage](domains/eia/scrapes/weekly-underground-storage.md) | None (raw table) | Weekly (Thursday) | TBD |
+| `eia_930_hourly` | Hourly electricity generation by fuel type across all U.S. regions (60+ BAs), converted to EST | "How much gas-fired generation is running in PJM right now?" | [EIA Scrapes](domains/eia/scrapes/eia-scrapes.md#hourly-generation-by-fuel-type) | [eia_930_hourly](domains/eia/dbt-views/eia-cleaned.md#eia_930_hourly) | Hourly (~1-hr lag) | TBD |
+| `eia_930_daily` | Daily average generation by fuel type and respondent with thermal % breakdowns | "What was yesterday's average gas vs coal generation in ERCOT?" | [EIA Scrapes](domains/eia/scrapes/eia-scrapes.md#hourly-generation-by-fuel-type) | [eia_930_daily](domains/eia/dbt-views/eia-cleaned.md#eia_930_daily) | Hourly (~1-hr lag) | TBD |
+| `eia.weekly_underground_storage` | Weekly natural gas in underground storage by region | "How does this week's gas storage compare to last year?" | [EIA Scrapes](domains/eia/scrapes/eia-scrapes.md#weekly-natural-gas-underground-storage) | None (raw table) | Weekly (Thursday) | TBD |
 
 ---
 
@@ -144,5 +144,3 @@ Click any link in the Source Scrape or dbt View columns for details. Terms uncle
 ## Next Steps
 
 - [Summary](executive-summary.md) -- high-level overview of all sources and freshness
-- [Glossary](glossary.md) -- term definitions (ISO, LMP, WDD, etc.)
-- [Owners & SLAs](owners-and-slas.md) -- who owns each pipeline, escalation procedures

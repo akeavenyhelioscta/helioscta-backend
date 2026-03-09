@@ -14,8 +14,8 @@ Public U.S. energy data from the EIA Open Data API. Currently covers hourly gene
 
 | Script | Table | Description | Source Endpoint | dbt Views |
 |--------|-------|-------------|-----------------|-----------|
-| [fuel_type_hrl_gen_v3_2026_mar_09](scrapes/fuel-type-hrl-gen.md) | `eia.fuel_type_hrl_gen_v3_2026_mar_09` | Hourly electricity generation by fuel type and respondent | `/electricity/rto/fuel-type-data` | `eia_930_hourly`, `eia_930_daily` |
-| [weekly_underground_storage](scrapes/weekly-underground-storage.md) | `eia.weekly_underground_storage` | Weekly natural gas underground storage by region | `/natural-gas/stor/wkly` | None (raw) |
+| [fuel_type_hrl_gen_v3_2026_mar_09](scrapes/eia-scrapes.md#hourly-generation-by-fuel-type) | `eia.fuel_type_hrl_gen_v3_2026_mar_09` | Hourly electricity generation by fuel type and respondent | `/electricity/rto/fuel-type-data` | `eia_930_hourly`, `eia_930_daily` |
+| [weekly_underground_storage](scrapes/eia-scrapes.md#weekly-natural-gas-underground-storage) | `eia.weekly_underground_storage` | Weekly natural gas underground storage by region | `/natural-gas/stor/wkly` | None (raw) |
 
 ## Fuel Type Hourly Generation -- Detail
 

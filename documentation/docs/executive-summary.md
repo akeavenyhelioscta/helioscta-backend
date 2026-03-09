@@ -49,5 +49,3 @@ One-page overview of what HeliosCTA ingests, how it flows, and how fresh it is. 
 ## Next Steps
 
 - [Data Catalog](dbt-cleaned-catalog.md) -- find any specific dataset
-- [Glossary](glossary.md) -- term definitions
-- [Owners & SLAs](owners-and-slas.md) -- pipeline ownership and escalation

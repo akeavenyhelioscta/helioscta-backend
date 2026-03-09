@@ -14,9 +14,6 @@ Documentation for all data pipelines, raw tables, and dbt views in the HeliosCTA
 |-------------|---------------|
 | [Data Catalog](dbt-cleaned-catalog.md) | Find any dataset -- purpose, source, freshness, owner |
 | [Summary](executive-summary.md) | One-page overview of all sources and data freshness |
-| [Task Scheduling](task-scheduling.md) | Add or change Windows Task Scheduler PowerShell runners |
-| [Glossary](glossary.md) | Look up ISO, LMP, WDD, and other terms |
-| [Owners & SLAs](owners-and-slas.md) | Pipeline ownership, expected freshness, escalation |
 
 ## Domains
 
@@ -49,5 +46,3 @@ Pipeline health is tracked via `PipelineRunLogger` in the `pipeline_runs` table.
 
 - **New here?** Read the [Summary](executive-summary.md) first, then browse the [Data Catalog](dbt-cleaned-catalog.md).
 - **Looking for a table?** Go directly to the [Data Catalog](dbt-cleaned-catalog.md).
-- **Registering or editing schedules?** Use the [Task Scheduling](task-scheduling.md) reference.
-- **Debugging a pipeline?** Check [Owners & SLAs](owners-and-slas.md) for escalation steps.
