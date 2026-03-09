@@ -16,7 +16,7 @@ All views are materialized in the `eia_cleaned` schema.
 | **Upstream** | `staging_v1_eia_930_hourly` |
 | **Use Cases** | Track real-time generation mix by BA, gas vs coal switching analysis |
 | **Refresh** | View -- refreshes on query |
-| **Reference SQL** | `models/eia/eia_cleaned/.docs/eia_930_hourly.sql` |
+| **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/eia/eia_cleaned/.docs/eia_930_hourly.sql) |
 
 ### eia_930_daily
 
@@ -28,4 +28,4 @@ All views are materialized in the `eia_cleaned` schema.
 | **Upstream** | `staging_v1_eia_930_daily` |
 | **Use Cases** | Daily generation trend analysis, thermal mix monitoring |
 | **Refresh** | View -- refreshes on query |
-| **Reference SQL** | `models/eia/eia_cleaned/.docs/eia_930_daily.sql` |
+| **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/eia/eia_cleaned/.docs/eia_930_daily.sql) |

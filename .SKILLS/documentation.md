@@ -85,7 +85,27 @@ One-two sentence summary of what data this domain covers and why it matters.
 ## Known Caveats
 ```
 
-### dbt Mart Documentation
+### dbt Mart View Card (Docusaurus)
+
+Every mart view listed on a Docusaurus dbt-views page (`documentation/docs/domains/<domain>/dbt-views/`) must use this table format:
+
+```markdown
+### <mart_name>
+
+| Field | Value |
+|-------|-------|
+| **Business Definition** | One-sentence description |
+| **Grain** | One row per ... |
+| **Primary Keys** | `col_a`, `col_b`, `col_c` |
+| **Upstream** | `staging_v1_<model>` |
+| **Use Cases** | Comma-separated use cases |
+| **Refresh** | View -- refreshes on query |
+| **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/<domain>/<domain>_cleaned/.docs/<mart_name>.sql) |
+```
+
+**Row order is strict** — do not reorder or omit rows. The `**SQL**` row is required and must link to the corresponding `.docs/<mart_name>.sql` file on GitHub.
+
+### dbt Mart Documentation (`.docs/` folder)
 
 Each dbt domain has a `.docs/` folder at the `<domain>_cleaned` level containing SQL reference files and a README:
 
@@ -130,7 +150,7 @@ When a mart view is updated (columns added, removed, or renamed), you **must** u
 1. **`.docs/<mart_name>.sql`** — update the SELECT column list to match the new view
 2. **`.docs/README.md`** — update Key Columns, Transformation Notes, and any other affected sections
 3. **`schema.yml`** — add/remove/rename column entries and descriptions
-4. **`documentation/docs/domains/<domain>/dbt-views/`** — update the corresponding Docusaurus page (Business Definition, Key Columns, etc.)
+4. **`documentation/docs/domains/<domain>/dbt-views/`** — update the corresponding Docusaurus page (Business Definition, Key Columns, `**SQL**` GitHub link, etc.)
 5. **`.sql_queries/`** — update any validation queries that reference changed columns
 
 #### README.md
