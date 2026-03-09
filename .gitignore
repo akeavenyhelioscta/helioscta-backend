@@ -7,9 +7,10 @@ dist/*
 
 # Docusaurus
 node_modules/
-build/
-.docusaurus/
-.cache-loader/
+documentation/build/
+documentation/.docusaurus/
+documentation/.cache-loader/
+site/
 
 # Python cache files
 __pycache__/

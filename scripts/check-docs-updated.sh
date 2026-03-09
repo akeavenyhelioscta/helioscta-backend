@@ -17,11 +17,11 @@ else
 fi
 
 # --- Files that never require docs updates ---
-IGNORE_PATTERN='^(\.claude/|\.github/|\.githooks/|\.gitattributes|\.gitignore|\.env|\.vscode/|\.SKILLS/|scripts/check-docs-updated\.sh|package-lock\.json|\.pre-commit-config\.yaml)'
+IGNORE_PATTERN='^(\.claude/|\.github/|\.githooks/|\.gitattributes|\.gitignore|\.env|\.vscode/|\.SKILLS/|scripts/check-docs-updated\.sh|documentation/package-lock\.json|\.pre-commit-config\.yaml|documentation/(docusaurus\.config\.js|sidebars\.js|package\.json|vercel\.json|src/|static/|vendor-docs/|working-notes/))'
 
 # --- Split into docs vs non-docs, filtering out ignored files ---
-DOCS_CHANGED=$(echo "$ALL_CHANGED" | grep -E '^(docs/|README\.md)' || true)
-NON_DOCS_CHANGED=$(echo "$ALL_CHANGED" | grep -vE '^(docs/|README\.md)' | grep -vE "$IGNORE_PATTERN" || true)
+DOCS_CHANGED=$(echo "$ALL_CHANGED" | grep -E '^(documentation/docs/|README\.md)' || true)
+NON_DOCS_CHANGED=$(echo "$ALL_CHANGED" | grep -vE '^(documentation/docs/|README\.md)' | grep -vE "$IGNORE_PATTERN" || true)
 
 # --- No non-docs files changed? Pass (docs-only commit). ---
 if [ -z "$NON_DOCS_CHANGED" ]; then
@@ -46,7 +46,7 @@ echo "$NON_DOCS_CHANGED" | sed 's/^/  - /'
 echo ""
 echo "To pass this check, also update at least one of:"
 echo "  - README.md  (repo root)"
-echo "  - docs/*     (any file under docs/)"
+echo "  - documentation/docs/*  (any file under documentation/docs/)"
 echo ""
 echo "============================================================"
 exit 1

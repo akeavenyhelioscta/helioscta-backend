@@ -18,7 +18,7 @@ For every new scheduled workflow:
    `schedulers/task_scheduler_azurepostgresql/<domain>/`.
 3. If the workflow supports an `all` command, keep a folder-level aggregate runner such as
    `eia/eia_all_scripts.ps1`.
-4. At least one file under `docs/` is updated in the same change.
+4. At least one file under `documentation/docs/` is updated in the same change.
 5. Bulk helper scripts are excluded from `register_all_tasks.ps1`.
 
 ## PowerShell Runner Pattern
@@ -34,7 +34,7 @@ For every new scheduled workflow:
 
 ## Documentation Requirement
 
-Any new or modified `.ps1` must update at least one file under `docs/`.
+Any new or modified `.ps1` must update at least one file under `documentation/docs/`.
 
 Minimum documentation fields:
 
@@ -46,8 +46,8 @@ Minimum documentation fields:
 
 Preferred documentation targets:
 
-- The relevant domain page under `docs/domains/<domain>/`
-- `docs/task-scheduling.md` for repo-wide scheduler conventions or helper-script changes
+- The relevant domain page under `documentation/docs/domains/<domain>/`
+- `documentation/docs/task-scheduling.md` for repo-wide scheduler conventions or helper-script changes
 
 ## Implementation Checklist
 
@@ -56,11 +56,11 @@ Preferred documentation targets:
    `schedulers/task_scheduler_azurepostgresql/...`.
 3. If you add a control script that should never be scheduled, update
    `register_all_tasks.ps1` so bulk registration skips it.
-4. Update `docs/` in the same change.
+4. Update `documentation/docs/` in the same change.
 5. Verify paths, task names, and trigger definitions match the intended runtime behavior.
 
 ## Canonical References
 
 - Repo policy: `AGENTS.md`
-- Operator reference: `docs/task-scheduling.md`
+- Operator reference: `documentation/docs/task-scheduling.md`
 - Docs conventions: `.SKILLS/documentation.md`

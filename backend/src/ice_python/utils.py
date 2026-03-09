@@ -107,6 +107,26 @@ def combine_frames(
     return pd.concat(materialized, ignore_index=True)
 
 
+_dtype_cache: dict[tuple[str, str, str], list[str] | None] = {}
+
+
+def get_cached_table_dtypes(
+    columns: list[str],
+    schema: str,
+    table_name: str,
+    database: str = DEFAULT_DATABASE,
+) -> list[str] | None:
+    cache_key = (database, schema, table_name)
+    if cache_key not in _dtype_cache:
+        _dtype_cache[cache_key] = get_table_dtypes(
+            columns=columns,
+            schema=schema,
+            table_name=table_name,
+            database=database,
+        )
+    return _dtype_cache[cache_key]
+
+
 def get_table_dtypes(
     columns: list[str],
     schema: str,
@@ -143,7 +163,7 @@ def upsert_timeseries(
 
     columns = df.columns.tolist()
     primary_key = primary_key or [DEFAULT_DATE_COLUMN, "symbol", "data_type"]
-    data_types = get_table_dtypes(
+    data_types = get_cached_table_dtypes(
         columns=columns,
         database=database,
         schema=schema,

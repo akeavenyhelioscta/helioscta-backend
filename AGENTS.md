@@ -21,7 +21,7 @@ Project-specific conventions and preferences for Codex.
 | Logging | [.SKILLS/logging.md](.SKILLS/logging.md) | Logging and pipeline run tracking conventions |
 | Task Scheduling | [.SKILLS/task_scheduling.md](.SKILLS/task_scheduling.md) | Windows Task Scheduler PowerShell runner conventions, bulk registration rules, and required docs updates |
 | Scheduled vs Event-Driven | [.SKILLS/scheduled_vs_event_driven.md](.SKILLS/scheduled_vs_event_driven.md) | Prompt template and decision framework for API scrape orchestration |
-| Documentation | [.SKILLS/documentation.md](.SKILLS/documentation.md) | MkDocs site conventions: theme, nav structure, content templates, QA checklist |
+| Documentation | [.SKILLS/documentation.md](.SKILLS/documentation.md) | Docusaurus site conventions: theme, nav structure, content templates, QA checklist |
 
 ## API Orchestration Decision Standard
 
@@ -38,7 +38,7 @@ All new or modified Windows Task Scheduler scripts under `schedulers/task_schedu
 [.SKILLS/task_scheduling.md](.SKILLS/task_scheduling.md).
 
 - Required: every scheduled Python entrypoint must have a matching `.ps1` registration script.
-- Required: every new or modified `.ps1` must update at least one file under `docs/` in the same change.
+- Required: every new or modified `.ps1` must update at least one file under `documentation/docs/` in the same change.
 - Required: bulk helper scripts such as `register_all_tasks.ps1` and `delete_all_tasks.ps1` must not be auto-registered as scheduled tasks.
 
 ## PJM Script Standard

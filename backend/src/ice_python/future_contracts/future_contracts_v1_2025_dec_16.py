@@ -231,6 +231,8 @@ def main(
             )
 
             for strip, _, strip_name in strips_to_pull:
+                strip_batch: list[pd.DataFrame] = []
+
                 for ice_product in ICE_PRODUCTS:
                     symbol = _build_ice_symbol(
                         ice_product=ice_product,
@@ -258,13 +260,35 @@ def main(
                             skipped_contracts += 1
                             continue
 
-                        _upsert(df=df, table_name=API_SCRAPE_NAME)
+                        strip_batch.append(df)
                         frames.append(df)
                         total_rows += len(df)
                         pulled_contracts += 1
                     except Exception as exc:
                         logger.error(f"Failed to pull {symbol}: {exc}")
                         skipped_contracts += 1
+
+                # Flush batch at strip boundary
+                if strip_batch:
+                    try:
+                        combined = pd.concat(strip_batch, ignore_index=True)
+                        _upsert(df=combined, table_name=API_SCRAPE_NAME)
+                        logger.info(
+                            f"Upserted {len(combined)} rows "
+                            f"({len(strip_batch)} contracts) for "
+                            f"{strip_name} {contract_year}"
+                        )
+                    except Exception as exc:
+                        logger.warning(
+                            f"Batch upsert failed for {strip_name} {contract_year}: "
+                            f"{exc} — falling back to per-contract upserts"
+                        )
+                        for batch_df in strip_batch:
+                            try:
+                                _upsert(df=batch_df, table_name=API_SCRAPE_NAME)
+                            except Exception as inner_exc:
+                                sym = batch_df["symbol"].iloc[0]
+                                logger.error(f"Fallback upsert failed for {sym}: {inner_exc}")
 
         run.success(
             rows_processed=total_rows,
