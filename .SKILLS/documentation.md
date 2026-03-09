@@ -159,6 +159,7 @@ When a mart view is updated (columns added, removed, or renamed), you **must** u
 
 | Mart | Marts Path | Docs Path |
 |------|-----------|-----------|
+| eia_cleaned | `models/eia/eia_cleaned/marts/` | `models/eia/eia_cleaned/.docs/` |
 | pjm_cleaned | `models/power/pjm_cleaned/marts/` | `models/power/pjm_cleaned/.docs/` |
 | meteologica_cleaned | `models/meteologica/meteologica_cleaned/marts/` | `models/meteologica/meteologica_cleaned/.docs/` |
 | genscape_cleaned | `models/genscape/genscape_cleaned/marts/` | `models/genscape/genscape_cleaned/.docs/` |
