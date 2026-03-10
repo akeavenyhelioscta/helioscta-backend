@@ -17,7 +17,7 @@ PROJECT_ROOT = SCRIPT_DIR.parent.parent.parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from backend.utils.runner_utils import RunnerConfig, runner_main, run_script_pull_format_upsert
+from backend.utils.runner_utils import RunnerConfig, runner_main, run_script_main_only
 
 
 def discover_scripts() -> list[Path]:
@@ -43,7 +43,7 @@ def main():
         discover=discover_scripts,
         display=display_menu,
         display_name=lambda p: p.stem,
-        adapter=run_script_pull_format_upsert,
+        adapter=run_script_main_only,
     )
     runner_main(config)
 

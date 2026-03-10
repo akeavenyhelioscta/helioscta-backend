@@ -99,16 +99,35 @@ def _upsert(
 
 Every source subfolder should include both:
 
-- `runs.py` - runner entry points for that folder's scripts
+- `runs.py` - manual runner that always calls each script's `main()` function
 - `flows.py` - Prefect flow wrappers for those scripts (using lazy `importlib` loading)
 
-Use `backend/src/power/pjm/` as the canonical structure for both files.
+Use `backend/src/power/ercot/` as the canonical structure for both files.
 
-For `backend/src/wsi`, orchestration is subfolder-only. Do not add or retain
-module-level orchestration files at:
+### `runs.py` must use `run_script_main_only`
 
-- `backend/src/wsi/runs.py`
-- `backend/src/wsi/flows.py`
+Runners must always call `main()` — never `_pull()` directly. Set `adapter=run_script_main_only` in the `RunnerConfig` so the runner exercises the full production path (date windows, multi-entity loops, logging, pipeline tracking).
+
+```python
+from backend.utils.runner_utils import RunnerConfig, runner_main, run_script_main_only
+
+config = RunnerConfig(
+    name="ERCOT",
+    project_root=PROJECT_ROOT,
+    discover=discover_scripts,
+    display=display_menu,
+    display_name=lambda p: p.name,
+    adapter=run_script_main_only,
+)
+runner_main(config)
+```
+
+Do **not** rely on `detect_adapter()` auto-detection, which may pick `run_script_pull_upsert` and bypass `main()` entirely — skipping date-range loops, multi-entity iteration, and pipeline run logging.
+
+### WSI structure
+
+Each WSI domain subfolder (e.g. `weighted_degree_day/`) has its own `runs.py` and `flows.py`.
+A top-level `backend/src/wsi/runs.py` also exists to run all scripts across subfolders.
 
 ## No Prefect in Scripts
 

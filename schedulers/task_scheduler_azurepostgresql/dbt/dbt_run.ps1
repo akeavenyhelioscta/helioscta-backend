@@ -17,7 +17,7 @@ foreach ($day in $days) {
     }
 
     Register-ScheduledTask `
-        -TaskName "dbt run_$($day)" `
+        -TaskName "dbt run (Azure PostgreSQL) ($($day))" `
         -Action $action `
         -Trigger $triggers `
         -TaskPath "\helioscta-backend\dbt" `

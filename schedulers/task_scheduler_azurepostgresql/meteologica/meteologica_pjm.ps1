@@ -9,7 +9,7 @@ $action = New-ScheduledTaskAction `
 $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).Date -RepetitionInterval (New-TimeSpan -Hours 1)
 
 Register-ScheduledTask `
-    -TaskName "PJM - Meteologica" `
+    -TaskName "PJM (Meteologica API)" `
     -Action $action `
     -Trigger $trigger `
     -TaskPath "\helioscta-backend\Meteologica\" `

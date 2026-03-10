@@ -39,3 +39,24 @@ in the `eia_cleaned` schema.
 [EIA Grid Monitor Expanded View](https://www.eia.gov/electricity/gridmonitor/expanded-view/custom/pending/RegionBaEnergymix-14).
 
 {% enddocs %}
+
+
+{% docs eia_nat_gas_consumption_mart %}
+
+Monthly natural gas consumption by end-use sector and state, materialized as
+a view in the `eia_cleaned` schema.
+
+**Grain:** One row per year × month × state/area.
+
+**Key columns:**
+- `year` / `month` — Calendar period of the observation
+- `area_name_standardized` — US state or `US48` for the national aggregate
+- `consumption_unit` — Always `MMCF` (million cubic feet)
+- 8 end-use columns: `lease_and_plant_fuel`, `pipeline_and_distribution_use`,
+  `volumes_delivered_to_consumers`, `residential`, `commercial`, `industrial`,
+  `vehicle_fuel`, `electric_power`
+
+**Validation:** Compare against
+[EIA Natural Gas Consumption](https://www.eia.gov/dnav/ng/ng_cons_sum_dcu_nus_m.htm).
+
+{% enddocs %}

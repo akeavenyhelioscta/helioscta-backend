@@ -24,3 +24,29 @@ with respondent codes normalized and fuel types aggregated.
 **Grain:** One row per EST hour per respondent.
 
 {% enddocs %}
+
+
+{% docs eia_nat_gas_consumption_staging %}
+
+Monthly EIA natural gas consumption by end use, with area names standardized
+and consumption categories pivoted into columns.
+
+**Key transformations:**
+
+1. **Period parsing** — Splits `YYYY-MM` period string into integer `year` and
+   `month` columns.
+
+2. **Area name standardization** — Joins with the area name lookup utility to
+   map EIA area codes to full uppercase state names (e.g., `USA-AL` → `ALABAMA`,
+   `U.S.` → `US48`).
+
+3. **Consumption type standardization** — Maps raw `process_name` values to
+   shorter labels (e.g., `Residential Consumption` → `Residential`).
+
+4. **Pivot** — Transforms the row-per-category structure into one row per
+   year/month/area with separate columns for each end-use category. Uses
+   `AVG()` as the aggregate function to handle potential duplicates safely.
+
+**Grain:** One row per year × month × state/area × consumption unit.
+
+{% enddocs %}

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import importlib
+import logging
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Iterable
@@ -14,6 +16,8 @@ DEFAULT_SCHEMA = "ice_python"
 DEFAULT_DATE_COLUMN = "trade_date"
 DEFAULT_DATE_FORMAT = "%Y-%m-%d"
 DEFAULT_LOOKBACK_DAYS = 30
+
+_logger = logging.getLogger(__name__)
 DEFAULT_ICE_XL_BIN_PATH = Path(
     r"C:\Users\AidanKeaveny\AppData\Local\ICE Data Services\ICE XL\bin"
 )
@@ -79,7 +83,15 @@ def format_timeseries(
     df: pd.DataFrame,
     date_col: str = DEFAULT_DATE_COLUMN,
     date_format: str = DEFAULT_DATE_FORMAT,
+    keep_zeros: bool = False,
 ) -> pd.DataFrame:
+    """Format raw ICE timeseries data.
+
+    Args:
+        keep_zeros: If True, retain rows where value == 0.0. This is important
+            for basis futures where zero is a legitimate settlement price (hub
+            at parity). Default False for backward compatibility.
+    """
     if df.empty:
         return empty_timeseries_frame(date_col=date_col)
 
@@ -91,10 +103,55 @@ def format_timeseries(
     ).dt.date
     formatted["value"] = pd.to_numeric(formatted["value"], errors="coerce")
     formatted = formatted.dropna(subset=[date_col, "value"])
-    formatted = formatted[formatted["value"] != 0.0]
+    if not keep_zeros:
+        formatted = formatted[formatted["value"] != 0.0]
 
     columns = [date_col, "symbol", "data_type", "value"]
     return formatted[columns]
+
+
+def get_timeseries_with_retry(
+    symbol: str,
+    data_type: str,
+    granularity: str,
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
+    date_col: str = DEFAULT_DATE_COLUMN,
+    date_format: str = DEFAULT_DATE_FORMAT,
+    max_retries: int = 3,
+    backoff_base: float = 2.0,
+) -> pd.DataFrame:
+    """Wrapper around get_timeseries with bounded exponential backoff.
+
+    Returns an empty frame after all retries are exhausted (never raises).
+    Logs each retry attempt.
+    """
+    last_exc: Exception | None = None
+    for attempt in range(1, max_retries + 1):
+        try:
+            return get_timeseries(
+                symbol=symbol,
+                data_type=data_type,
+                granularity=granularity,
+                start_date=start_date,
+                end_date=end_date,
+                date_col=date_col,
+                date_format=date_format,
+            )
+        except Exception as exc:
+            last_exc = exc
+            if attempt < max_retries:
+                wait = backoff_base ** attempt
+                _logger.warning(
+                    f"Attempt {attempt}/{max_retries} failed for {symbol}: {exc}. "
+                    f"Retrying in {wait:.1f}s..."
+                )
+                time.sleep(wait)
+            else:
+                _logger.error(
+                    f"All {max_retries} attempts failed for {symbol}: {exc}"
+                )
+    return empty_timeseries_frame(date_col=date_col)
 
 
 def combine_frames(

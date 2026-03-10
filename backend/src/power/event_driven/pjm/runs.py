@@ -17,7 +17,7 @@ PROJECT_ROOT = SCRIPT_DIR.parent.parent.parent.parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from backend.utils.runner_utils import RunnerConfig, runner_main
+from backend.utils.runner_utils import RunnerConfig, runner_main, run_script_main_only
 
 NAME = "Event Driven PJM"
 
@@ -43,6 +43,7 @@ def main():
         discover=discover_scripts,
         display=display_menu,
         display_name=lambda p: p.name,
+        adapter=run_script_main_only,
     )
     runner_main(config)
 

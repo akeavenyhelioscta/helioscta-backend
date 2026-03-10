@@ -187,8 +187,7 @@ def main(
     finally:
         logging_utils.close_logging()
 
-    if 'df' in locals() and df is not None:
-        return df
+    return total_rows
 
 """
 """

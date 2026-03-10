@@ -22,7 +22,7 @@ PROJECT_ROOT = SCRIPT_DIR.parent.parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from backend.utils.runner_utils import RunnerConfig, runner_main, run_script_pull_format_upsert
+from backend.utils.runner_utils import RunnerConfig, runner_main, run_script_main_only
 
 EXCLUDE = {"__init__.py", "auth.py", "run.py", "runs.py", "flows.py"}
 REGIONS = ["l48", "caiso", "ercot", "isone", "miso", "nyiso", "pjm", "spp"]
@@ -94,7 +94,7 @@ def main():
         discover=discover_scripts,
         display=display_menu,
         display_name=lambda p: p.stem,
-        adapter=run_script_pull_format_upsert,
+        adapter=run_script_main_only,
         handle_cli_args=handle_cli_args,
     )
     runner_main(config)

@@ -20,63 +20,59 @@ logger = logging_utils.init_logging(
 )
 
 
-# NOTE: NG LD1 Futures
-ICE_PRODUCTS: list[str] = [
-    "HNG",  # HH Nat Gas  .. https://www.ice.com/products/6590258
+# -- Product registry ---------------------------------------------------------
+
+# Gas products: basis futures where zero is a valid settlement (hub at parity).
+GAS_PRODUCTS: list[str] = [
+    "HNG",  # HH Nat Gas .. https://www.ice.com/products/6590258
 
     # SOUTHEAST
-    "TRZ",   # 'TRANSCO_ST85'
-    "CGB",   # 'COLUMBIA_GULF 
-    "CGM",   # 'ANR_SE_T'
-    "TWB",   # 'TETCO_WLA'
+    "TRZ",   # TRANSCO_ST85
+    "CGB",   # COLUMBIA_GULF
+    "CGM",   # ANR_SE_T
+    "TWB",   # TETCO_WLA
 
     # EAST TEXAS
-    "HXS",  # HSC Basis Future .. https://www.ice.com/products/6590137
-    "WAH",  # Waha Basis Future .. https://www.ice.com/products/6590171
-    "NTO",  # NGPL TXOK Basis Future .. https://www.ice.com/products/6590143
+    "HXS",  # HSC Basis .. https://www.ice.com/products/6590137
+    "WAH",  # Waha Basis .. https://www.ice.com/products/6590171
+    "NTO",  # NGPL TXOK Basis .. https://www.ice.com/products/6590143
 
-    # Northeast - BASIS
-    "ALQ",  # Algonquin Citygates Basis Future .. https://www.ice.com/products/6590124
-    "TMT",  # TETCO M3 Basis Future .. https://www.ice.com/products/6590161
-    "T5B",  # Transco Zone 5 South Basis Future .. https://www.ice.com/products/82270888
-    "IZB",  # Iroquois-Z2 Basis (Platts) Future .. https://www.ice.com/products/21587547
-    "TZS", # TRANSCO_Z6_NY
-    "DOM", # DOMINION_SOUTH
-    
-    # Southwest
-    "SCB",  # 'SOCAL_CG'
-    "PGE",  # 'PG&E_CG'
+    # NORTHEAST
+    "ALQ",  # Algonquin Citygates Basis .. https://www.ice.com/products/6590124
+    "TMT",  # TETCO M3 Basis .. https://www.ice.com/products/6590161
+    "T5B",  # Transco Zone 5 South Basis .. https://www.ice.com/products/82270888
+    "IZB",  # Iroquois-Z2 Basis (Platts) .. https://www.ice.com/products/21587547
+    "TZS",  # TRANSCO_Z6_NY
+    "DOM",  # DOMINION_SOUTH
 
-    # Rockies/Northwest
-    "CRI", # 'CIG_MAINLINE'
+    # SOUTHWEST
+    "SCB",  # SOCAL_CG
+    "PGE",  # PG&E_CG
 
-    # TODO:
-    # "NMC",  # Michcon Basis Future .. https://www.ice.com/products/6590140
-    # "DGD",  # Chicago Basis Future .. https://www.ice.com/products/6590132
-    # "AEC",  # AB NIT Basis Future .. https://www.ice.com/products/6590123
-
-    # # POWER
-    'PMI',  # PJM Western Hub RT Peak (1 MW) .. https://www.ice.com/products/6590369/PJM-Western-Hub-Real-Time-Peak-1-MW-Fixed-Price-Future
-    'ERN',  # PJM Western Hub RT Peak (1 MW) .. https://www.ice.com/products/6590369/PJM-Western-Hub-Real-Time-Peak-1-MW-Fixed-Price-Future
+    # ROCKIES/NORTHWEST
+    "CRI",  # CIG_MAINLINE
 ]
 
+# Power products: included for completeness but tracked separately.
+POWER_PRODUCTS: list[str] = [
+    "PMI",  # PJM Western Hub RT Peak (1 MW)
+    "ERN",  # ERCOT North 345 kV Hub RT Peak
+]
+
+ICE_PRODUCTS: list[str] = GAS_PRODUCTS # + POWER_PRODUCTS
+
+
 STRIP_MAPPING = {
-    1: "F",
-    2: "G",
-    3: "H",
-    4: "J",
-    5: "K",
-    6: "M",
-    7: "N",
-    8: "Q",
-    9: "U",
-    10: "V",
-    11: "X",
-    12: "Z",
+    1: "F", 2: "G", 3: "H", 4: "J", 5: "K", 6: "M",
+    7: "N", 8: "Q", 9: "U", 10: "V", 11: "X", 12: "Z",
 }
 
-"""
-"""
+# Minimum fraction of expected symbols that must return data for a run to be
+# considered healthy.  Below this the run is logged as degraded.
+COMPLETENESS_THRESHOLD = 0.70
+
+
+# -- Helpers ------------------------------------------------------------------
 
 def get_relevant_strips(
     contract_year: int,
@@ -126,6 +122,8 @@ def _build_ice_symbol(
     return f"{ice_product} {strip}{str(contract_year)[-2:]}{suffix}"
 
 
+# -- Pipeline stages ----------------------------------------------------------
+
 def _pull(
     symbol: str,
     data_type: str = "Settlement",
@@ -134,8 +132,9 @@ def _pull(
     end_date: datetime | None = None,
     date_col: str = utils.DEFAULT_DATE_COLUMN,
     date_format: str = utils.DEFAULT_DATE_FORMAT,
+    max_retries: int = 3,
 ) -> pd.DataFrame:
-    return utils.get_timeseries(
+    return utils.get_timeseries_with_retry(
         symbol=symbol,
         data_type=data_type,
         granularity=granularity,
@@ -143,6 +142,7 @@ def _pull(
         end_date=end_date,
         date_col=date_col,
         date_format=date_format,
+        max_retries=max_retries,
     )
 
 
@@ -151,10 +151,14 @@ def _format(
     date_col: str = utils.DEFAULT_DATE_COLUMN,
     date_format: str = utils.DEFAULT_DATE_FORMAT,
 ) -> pd.DataFrame:
+    # keep_zeros=True: for basis futures, zero is a legitimate settlement
+    # (location at parity with HH). Dropping zeros created artificial nulls
+    # in downstream pivot queries. This was the primary root cause of gaps.
     return utils.format_timeseries(
         df=df,
         date_col=date_col,
         date_format=date_format,
+        keep_zeros=True,
     )
 
 
@@ -172,6 +176,35 @@ def _upsert(
     )
 
 
+# -- Completeness audit -------------------------------------------------------
+
+def _audit_completeness(
+    expected: set[str],
+    returned: set[str],
+    label: str,
+) -> dict:
+    """Compare expected vs returned symbols and return an audit dict."""
+    missing = expected - returned
+    coverage = len(returned) / len(expected) if expected else 1.0
+    if missing:
+        logger.warning(
+            f"[{label}] Missing {len(missing)}/{len(expected)} symbols: "
+            f"{sorted(missing)}"
+        )
+    else:
+        logger.info(f"[{label}] Full coverage: {len(returned)}/{len(expected)} symbols")
+    return {
+        "label": label,
+        "expected": len(expected),
+        "returned": len(returned),
+        "missing_count": len(missing),
+        "missing_symbols": sorted(missing),
+        "coverage_pct": round(coverage * 100, 1),
+    }
+
+
+# -- Main orchestrator --------------------------------------------------------
+
 def main(
     data_type: str = "Settlement",
     granularity: str = "D",
@@ -184,6 +217,8 @@ def main(
     months_forward: int = 36,
     include_expired: bool = False,
     specific_strips: list[str] | None = None,
+    max_retries: int = 3,
+    completeness_threshold: float = COMPLETENESS_THRESHOLD,
 ) -> pd.DataFrame:
     current_date = datetime.now()
     contract_start_year = contract_start_year or current_date.year
@@ -200,16 +235,21 @@ def main(
     )
     run.start()
 
-    frames: list[pd.DataFrame] = []
     total_rows = 0
     pulled_contracts = 0
     skipped_contracts = 0
+    failed_symbols: list[str] = []
+    returned_symbols: set[str] = set()
+    expected_symbols: set[str] = set()
+    audits: list[dict] = []
+
     try:
         logger.header(API_SCRAPE_NAME)
         logger.info(
             f"Pulling contracts from {contract_start_year} to {contract_end_year}"
         )
         logger.info(f"Date range: {start_date.date()} to {end_date.date()}")
+        logger.info(f"Retry policy: {max_retries} attempts per symbol")
 
         for contract_year in range(contract_start_year, contract_end_year + 1):
             if specific_strips:
@@ -227,11 +267,14 @@ def main(
                 continue
 
             logger.section(
-                f"Year {contract_year}: {', '.join(strip for strip, _, _ in strips_to_pull)}"
+                f"Year {contract_year}: "
+                f"{', '.join(strip for strip, _, _ in strips_to_pull)}"
             )
 
             for strip, _, strip_name in strips_to_pull:
                 strip_batch: list[pd.DataFrame] = []
+                strip_expected: set[str] = set()
+                strip_returned: set[str] = set()
 
                 for ice_product in ICE_PRODUCTS:
                     symbol = _build_ice_symbol(
@@ -239,34 +282,38 @@ def main(
                         strip=strip,
                         contract_year=contract_year,
                     )
-                    try:
-                        logger.info(
-                            f"Pulling {symbol} "
-                            f"(product={ice_product}, strip={strip_name}, year={contract_year})"
-                        )
-                        df = _pull(
-                            symbol=symbol,
-                            data_type=data_type,
-                            granularity=granularity,
-                            start_date=start_date,
-                            end_date=end_date,
-                            date_col=date_col,
-                            date_format=date_format,
-                        )
-                        df = _format(df=df, date_col=date_col, date_format=date_format)
+                    expected_symbols.add(symbol)
+                    strip_expected.add(symbol)
 
-                        if df.empty:
-                            logger.warning(f"No data returned for {symbol}")
-                            skipped_contracts += 1
-                            continue
+                    logger.info(
+                        f"Pulling {symbol} "
+                        f"(product={ice_product}, strip={strip_name}, "
+                        f"year={contract_year})"
+                    )
 
-                        strip_batch.append(df)
-                        frames.append(df)
-                        total_rows += len(df)
-                        pulled_contracts += 1
-                    except Exception as exc:
-                        logger.error(f"Failed to pull {symbol}: {exc}")
+                    df = _pull(
+                        symbol=symbol,
+                        data_type=data_type,
+                        granularity=granularity,
+                        start_date=start_date,
+                        end_date=end_date,
+                        date_col=date_col,
+                        date_format=date_format,
+                        max_retries=max_retries,
+                    )
+                    df = _format(df=df, date_col=date_col, date_format=date_format)
+
+                    if df.empty:
+                        logger.warning(f"No data returned for {symbol}")
                         skipped_contracts += 1
+                        failed_symbols.append(symbol)
+                        continue
+
+                    strip_batch.append(df)
+                    strip_returned.add(symbol)
+                    returned_symbols.add(symbol)
+                    total_rows += len(df)
+                    pulled_contracts += 1
 
                 # Flush batch at strip boundary
                 if strip_batch:
@@ -280,24 +327,70 @@ def main(
                         )
                     except Exception as exc:
                         logger.warning(
-                            f"Batch upsert failed for {strip_name} {contract_year}: "
-                            f"{exc} — falling back to per-contract upserts"
+                            f"Batch upsert failed for {strip_name} "
+                            f"{contract_year}: {exc} -- falling back to "
+                            f"per-contract upserts"
                         )
                         for batch_df in strip_batch:
                             try:
                                 _upsert(df=batch_df, table_name=API_SCRAPE_NAME)
                             except Exception as inner_exc:
                                 sym = batch_df["symbol"].iloc[0]
-                                logger.error(f"Fallback upsert failed for {sym}: {inner_exc}")
+                                logger.error(
+                                    f"Fallback upsert failed for {sym}: "
+                                    f"{inner_exc}"
+                                )
 
-        run.success(
-            rows_processed=total_rows,
-            metadata={
-                "contracts_pulled": pulled_contracts,
-                "contracts_skipped": skipped_contracts,
-            },
+                # Per-strip audit
+                audit = _audit_completeness(
+                    expected=strip_expected,
+                    returned=strip_returned,
+                    label=f"{strip_name} {contract_year}",
+                )
+                audits.append(audit)
+
+        # -- Overall completeness audit ----------------------------------------
+        overall_coverage = (
+            len(returned_symbols) / len(expected_symbols)
+            if expected_symbols else 1.0
         )
-        return utils.combine_frames(frames, date_col=date_col)
+
+        logger.section("Completeness Summary")
+        logger.info(
+            f"Overall: {len(returned_symbols)}/{len(expected_symbols)} symbols "
+            f"({overall_coverage:.1%})"
+        )
+        logger.info(
+            f"Pulled: {pulled_contracts} | Skipped: {skipped_contracts}"
+        )
+
+        if failed_symbols:
+            logger.warning(
+                f"{len(failed_symbols)} failed symbols: "
+                f"{failed_symbols[:20]}{'...' if len(failed_symbols) > 20 else ''}"
+            )
+
+        metadata = {
+            "contracts_pulled": pulled_contracts,
+            "contracts_skipped": skipped_contracts,
+            "overall_coverage_pct": round(overall_coverage * 100, 1),
+            "failed_symbols_count": len(failed_symbols),
+            "failed_symbols_sample": failed_symbols[:10],
+        }
+
+        if overall_coverage < completeness_threshold:
+            logger.warning(
+                f"DEGRADED RUN: coverage {overall_coverage:.1%} is below "
+                f"threshold {completeness_threshold:.0%}"
+            )
+            metadata["degraded"] = True
+
+        run.success(rows_processed=total_rows, metadata=metadata)
+
+        # Return empty frame instead of accumulating everything in memory.
+        # The data is already in PostgreSQL. Callers that need the combined
+        # frame for testing can query the DB directly.
+        return utils.empty_timeseries_frame(date_col=date_col)
 
     except Exception as exc:
         logger.exception(f"Pipeline failed: {exc}")
@@ -310,4 +403,3 @@ def main(
 
 if __name__ == "__main__":
     main()
-

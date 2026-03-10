@@ -70,3 +70,39 @@ models:
         description: '{{ doc("eia_col_other") }}'
       - name: unknown
         description: '{{ doc("eia_col_unknown") }}'
+
+  - name: staging_v1_eia_ng_consumption_by_end_use_monthly
+    description: '{{ doc("eia_nat_gas_consumption_staging") }}'
+    columns:
+      - name: year
+        description: '{{ doc("eia_ng_col_year") }}'
+        tests:
+          - not_null
+      - name: month
+        description: '{{ doc("eia_ng_col_month") }}'
+        tests:
+          - not_null
+      - name: area_name_standardized
+        description: '{{ doc("eia_ng_col_area_name_standardized") }}'
+        tests:
+          - not_null
+      - name: consumption_unit
+        description: '{{ doc("eia_ng_col_consumption_unit") }}'
+        tests:
+          - not_null
+      - name: lease_and_plant_fuel
+        description: '{{ doc("eia_ng_col_lease_and_plant_fuel") }}'
+      - name: pipeline_and_distribution_use
+        description: '{{ doc("eia_ng_col_pipeline_and_distribution_use") }}'
+      - name: volumes_delivered_to_consumers
+        description: '{{ doc("eia_ng_col_volumes_delivered_to_consumers") }}'
+      - name: residential
+        description: '{{ doc("eia_ng_col_residential") }}'
+      - name: commercial
+        description: '{{ doc("eia_ng_col_commercial") }}'
+      - name: industrial
+        description: '{{ doc("eia_ng_col_industrial") }}'
+      - name: vehicle_fuel
+        description: '{{ doc("eia_ng_col_vehicle_fuel") }}'
+      - name: electric_power
+        description: '{{ doc("eia_ng_col_electric_power") }}'

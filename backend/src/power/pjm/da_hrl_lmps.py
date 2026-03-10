@@ -42,8 +42,12 @@ def _pull(
         First Available: 6/1/2000 00:00
     """
 
-    url: str = f"https://api.pjm.com/api/v1/da_hrl_lmps?rowCount=50000&startRow=1&datetime_beginning_ept={start_date}%20to%20{end_date}&type=hub&format=csv&subscription-key={secrets.PJM_API_KEY}"
+    url: str = f"https://api.pjm.com/api/v1/da_hrl_lmps?rowCount=50000&startRow=1&datetime_beginning_ept={start_date}%20to%20{end_date}&type=hub&format=csv&subscription-key=0e3e44aa6bde4d5da1699fda4511235e"
     response = requests.get(url)
+
+    # return empty DataFrame if API returns no data
+    if not response.text.strip():
+        return pd.DataFrame()
 
     # read data
     df = pd.read_csv(StringIO(response.text))
@@ -79,7 +83,7 @@ def _upsert(
 
 def main(
         start_date: datetime = (datetime.now() - relativedelta(days=7)),
-        end_date: datetime = (datetime.now() + relativedelta(days=1)),
+        end_date: datetime = (datetime.now()),
         delta: relativedelta = relativedelta(days=1),
     ):
 
@@ -101,8 +105,8 @@ def main(
 
             # dates
             params = {
-                "start_date": current_date.strftime("%a %b %d %y 00:00"),
-                "end_date": current_date.strftime("%a %b %d %y 23:00"),
+                "start_date": current_date.strftime("%Y-%m-%d 00:00"),
+                "end_date": current_date.strftime("%Y-%m-%d 23:00"),
             }
 
             # pull
@@ -113,9 +117,12 @@ def main(
             )
 
             # upsert
-            logger.section(f"Upserting {len(df)} rows...")
-            _upsert(df)
-            logger.success(f"Successfully pulled and upserted data for {params['start_date']} to {params['end_date']}!")
+            if df.empty:
+                logger.section(f"No data returned for {params['start_date']} to {params['end_date']}, skipping upsert.")
+            else:
+                logger.section(f"Upserting {len(df)} rows...")
+                _upsert(df)
+                logger.success(f"Successfully pulled and upserted data for {params['start_date']} to {params['end_date']}!")
 
             # increment
             current_date += delta

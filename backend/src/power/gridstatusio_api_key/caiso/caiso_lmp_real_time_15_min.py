@@ -94,7 +94,7 @@ def _upsert(
         table_name: str = API_SCRAPE_NAME,
     ):
 
-    primary_keys = ['interval_start_utc', 'interval_end_utc', 'interval_start_local', 'interval_end_local', 'market', 'location', 'location_type']
+    primary_keys = ['interval_start_local', 'interval_start_utc', 'interval_end_local', 'interval_end_utc', 'market', 'location', 'location_type']
 
     data_types = azure_postgresql.get_table_dtypes(database=database, schema=schema, table_name=table_name)
 

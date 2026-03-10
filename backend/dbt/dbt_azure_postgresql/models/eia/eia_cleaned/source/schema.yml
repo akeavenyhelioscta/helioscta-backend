@@ -52,3 +52,25 @@ models:
         description: "Wind generation (MW)."
       - name: wind_with_integrated_battery_storage
         description: "Wind with integrated battery storage generation (MW)."
+
+  - name: source_v1_eia_nat_gas_consumption_end_use
+    description: '{{ doc("eia_nat_gas_consumption_end_use_source_model") }}'
+    columns:
+      - name: period
+        description: '{{ doc("eia_ng_col_period") }}'
+        tests:
+          - not_null
+      - name: area_name
+        description: '{{ doc("eia_ng_col_area_name") }}'
+        tests:
+          - not_null
+      - name: process_name
+        description: '{{ doc("eia_ng_col_process_name") }}'
+        tests:
+          - not_null
+      - name: units
+        description: '{{ doc("eia_ng_col_consumption_unit") }}'
+        tests:
+          - not_null
+      - name: value
+        description: '{{ doc("eia_ng_col_consumption") }}'

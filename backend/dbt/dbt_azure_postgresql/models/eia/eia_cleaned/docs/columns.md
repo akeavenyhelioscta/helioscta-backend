@@ -131,3 +131,83 @@ natural_gas_mw / thermal_mw. NULL when thermal_mw is zero.
 Coal share of thermal generation (0–1 ratio). Computed as
 coal_mw / thermal_mw. NULL when thermal_mw is zero.
 {% enddocs %}
+
+
+{% docs eia_ng_col_period %}
+Raw reporting period from the EIA API in `YYYY-MM` format. Parsed into `year`
+and `month` integer columns in staging.
+{% enddocs %}
+
+{% docs eia_ng_col_year %}
+Calendar year of the consumption observation, parsed from the `period` field.
+{% enddocs %}
+
+{% docs eia_ng_col_month %}
+Calendar month (1–12) of the consumption observation, parsed from the `period` field.
+{% enddocs %}
+
+{% docs eia_ng_col_area_name %}
+Raw geographic area name from the EIA API. Uses mixed conventions: full state names
+for some states (e.g., `CALIFORNIA`), `USA-XX` postal codes for others (e.g., `USA-AL`),
+and `U.S.` for the national aggregate.
+{% enddocs %}
+
+{% docs eia_ng_col_area_name_standardized %}
+Standardized geographic area name. State postal codes are expanded to full uppercase
+names (e.g., `USA-AL` → `ALABAMA`), and `U.S.` is mapped to `US48`.
+{% enddocs %}
+
+{% docs eia_ng_col_process_name %}
+Raw EIA consumption category (e.g., `Residential Consumption`, `Electric Power Consumption`).
+Standardized in staging to shorter labels.
+{% enddocs %}
+
+{% docs eia_ng_col_consumption_unit %}
+Unit of measurement for consumption values. Expected value: `MMCF`
+(million cubic feet).
+{% enddocs %}
+
+{% docs eia_ng_col_consumption %}
+Raw consumption value from the EIA API, in the unit specified by `consumption_unit`.
+{% enddocs %}
+
+{% docs eia_ng_col_lease_and_plant_fuel %}
+Natural gas consumed as lease and plant fuel (MMCF). Gas used in the field for
+extraction operations and processing plant fuel.
+{% enddocs %}
+
+{% docs eia_ng_col_pipeline_and_distribution_use %}
+Natural gas consumed for pipeline and distribution operations (MMCF). Gas used to
+power compressor stations and other pipeline infrastructure.
+{% enddocs %}
+
+{% docs eia_ng_col_volumes_delivered_to_consumers %}
+Total natural gas volumes delivered to all end-use consumer sectors (MMCF).
+This is the sum of residential, commercial, industrial, vehicle fuel, and
+electric power consumption.
+{% enddocs %}
+
+{% docs eia_ng_col_residential %}
+Natural gas delivered to the residential sector (MMCF). Includes gas used for
+heating, cooking, and other household purposes.
+{% enddocs %}
+
+{% docs eia_ng_col_commercial %}
+Natural gas delivered to the commercial sector (MMCF). Includes gas used by
+non-manufacturing business establishments such as offices, hotels, and restaurants.
+{% enddocs %}
+
+{% docs eia_ng_col_industrial %}
+Natural gas delivered to the industrial sector (MMCF). Includes gas used for
+manufacturing, mining, and construction operations.
+{% enddocs %}
+
+{% docs eia_ng_col_vehicle_fuel %}
+Natural gas consumed as vehicle fuel (MMCF). Includes compressed natural gas (CNG)
+and liquefied natural gas (LNG) for transportation.
+{% enddocs %}
+
+{% docs eia_ng_col_electric_power %}
+Natural gas consumed by the electric power sector (MMCF). Includes gas burned at
+electric utilities and independent power producers for electricity generation.
+{% enddocs %}

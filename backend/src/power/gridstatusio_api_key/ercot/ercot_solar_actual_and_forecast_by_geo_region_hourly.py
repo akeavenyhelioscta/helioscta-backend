@@ -62,12 +62,16 @@ def _pull(
 
     client = gridstatusio.GridStatusClient(secrets.GRIDSTATUS_API_KEY)
 
-    df = client.get_dataset(
-        dataset="ercot_solar_actual_and_forecast_by_geo_region_hourly",
-        start=start_date.strftime("%Y-%m-%d"),
-        end=end_date.strftime("%Y-%m-%d"),
-        timezone="US/Central",
-    )
+    try:
+        df = client.get_dataset(
+            dataset="ercot_solar_actual_and_forecast_by_geo_region_hourly",
+            start=start_date.strftime("%Y-%m-%d"),
+            end=end_date.strftime("%Y-%m-%d"),
+            timezone="US/Central",
+        )
+    except ValueError:
+        logger.warning(f"No data returned for {start_date} to {end_date}")
+        return pd.DataFrame()
 
     return df
 
@@ -79,13 +83,7 @@ def _upsert(
         table_name: str = API_SCRAPE_NAME,
     ):
 
-    primary_key_candidates = ['interval_start_local', 'interval_start_utc', 'interval_end_local', 'interval_end_utc', 'publish_time_local', 'publish_time_utc']
-    primary_keys = [col for col in primary_key_candidates if col in df.columns]
-    if not primary_keys:
-        raise ValueError(
-            f"No valid primary keys found for {schema}.{table_name}. "
-            f"Expected one of {primary_key_candidates}, got columns={df.columns.tolist()}"
-        )
+    primary_keys = ['interval_start_local', 'interval_start_utc', 'interval_end_local', 'interval_end_utc', 'publish_time_local', 'publish_time_utc']
 
     data_types = azure_postgresql.get_table_dtypes(
         database = database,
@@ -127,6 +125,10 @@ def main(
 
             logger.section(f"Pulling data for {start_date} to {end_date}...")
             df = _pull(start_date=start_date, end_date=end_date)
+
+            if df.empty:
+                logger.warning(f"No data returned for {start_date} to {end_date}, skipping.")
+                continue
 
             # format
             logger.section(f"Formatting data...")

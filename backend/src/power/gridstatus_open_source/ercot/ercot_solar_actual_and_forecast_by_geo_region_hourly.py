@@ -107,10 +107,16 @@ def _pull(
     ):
 
     iso = gridstatus.Ercot()
-    df = iso.get_solar_actual_and_forecast_by_geographical_region_hourly(
-        date=start_date.strftime("%Y-%m-%d"),
-        end=end_date.strftime("%Y-%m-%d"),
-    )
+    try:
+        df = iso.get_solar_actual_and_forecast_by_geographical_region_hourly(
+            date=start_date.strftime("%Y-%m-%d"),
+            end=end_date.strftime("%Y-%m-%d"),
+        )
+    except ValueError as e:
+        if "No objects to concatenate" in str(e):
+            logger.warning(f"No data returned from ERCOT for {start_date} to {end_date}")
+            return pd.DataFrame()
+        raise
 
     return df
 
@@ -170,6 +176,10 @@ def main(
 
             logger.section(f"Pulling data for {start_date} to {end_date}...")
             df = _pull(start_date=start_date, end_date=end_date)
+
+            if df.empty:
+                logger.warning(f"No data available for {start_date} to {end_date}, skipping.")
+                continue
 
             # format
             logger.section(f"Formatting data...")

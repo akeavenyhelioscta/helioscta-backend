@@ -30,7 +30,7 @@ HOURLY_SPINE AS (
         d.date::DATE AS date,
         h.hour_ending::INTEGER AS hour_ending,
         CASE
-            WHEN h.hour_ending <= 10 THEN d.date
+            WHEN h.hour_ending < 10 THEN d.date
             ELSE (d.date + INTERVAL '1 day')::DATE
         END AS gas_day,
         d.date::DATE AS trade_date

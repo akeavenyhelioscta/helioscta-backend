@@ -26,3 +26,8 @@ def _load_main(script_name: str):
 @flow(name="future_contracts_v1_2025_dec_16", retries=2, retry_delay_seconds=60, log_prints=True)
 def future_contracts_v1_2025_dec_16(**kwargs):
     return _load_main("future_contracts_v1_2025_dec_16")(**kwargs)
+
+
+@flow(name="future_contracts_v2_2026_mar_10", retries=2, retry_delay_seconds=60, log_prints=True)
+def future_contracts_v2_2026_mar_10(**kwargs):
+    return _load_main("future_contracts_v2_2026_mar_10")(**kwargs)

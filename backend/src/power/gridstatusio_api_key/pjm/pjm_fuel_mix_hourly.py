@@ -70,10 +70,7 @@ def _upsert(
         table_name: str = API_SCRAPE_NAME,
     ):
 
-    primary_key_candidates = ['interval_start_local', 'interval_start_utc', 'interval_end_local', 'interval_end_utc']
-    primary_keys = [col for col in primary_key_candidates if col in df.columns]
-    if not primary_keys:
-        raise ValueError(f"No primary key columns found in DataFrame. Expected one of: {primary_key_candidates}")
+    primary_keys = ['interval_start_local', 'interval_start_utc', 'interval_end_local', 'interval_end_utc']
 
     data_types = azure_postgresql.get_table_dtypes(database=database, schema=schema, table_name=table_name)
 
@@ -89,8 +86,8 @@ def _upsert(
 
 
 def main(
-        start_date: datetime = datetime(2023, 12, 5),
-        end_date: datetime = datetime(2023, 12, 7),
+        start_date: datetime = (datetime.now() - timedelta(days=5)),
+        end_date: datetime = datetime.now(),
     ):
 
 

@@ -102,7 +102,12 @@ def run_script_main_only(module) -> tuple[bool, str]:
     if hasattr(main_func, "fn"):
         main_func = main_func.fn
     with suppress_output():
-        main_func()
+        result = main_func()
+    if result is not None:
+        if isinstance(result, int):
+            return True, f"PASS  ({result} rows)"
+        if hasattr(result, "__len__"):
+            return True, f"PASS  ({len(result)} rows)"
     return True, "PASS"
 
 

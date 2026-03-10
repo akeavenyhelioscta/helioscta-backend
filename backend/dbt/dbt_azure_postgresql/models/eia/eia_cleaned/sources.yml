@@ -8,3 +8,5 @@ sources:
     tables:
       - name: fuel_type_hrl_gen_v3_2026_mar_09
         description: '{{ doc("eia_930_source") }}'
+      - name: nat_gas_consumption_end_use_v2_2025_dec_28
+        description: '{{ doc("eia_nat_gas_consumption_end_use_source") }}'

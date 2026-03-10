@@ -75,13 +75,7 @@ def _upsert(
         table_name: str = API_SCRAPE_NAME,
     ):
 
-    primary_key_candidates = ['interval_start_local', 'interval_start_utc', 'interval_end_local', 'interval_end_utc']
-    primary_keys = [col for col in primary_key_candidates if col in df.columns]
-    if not primary_keys:
-        raise ValueError(
-            f"No valid primary keys found for {schema}.{table_name}. "
-            f"Expected one of {primary_key_candidates}, got columns={df.columns.tolist()}"
-        )
+    primary_keys = ['interval_start_local', 'interval_start_utc', 'interval_end_local', 'interval_end_utc']
 
     data_types = azure_postgresql.get_table_dtypes(
         database = database,

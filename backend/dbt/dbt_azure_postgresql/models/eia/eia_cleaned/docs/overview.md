@@ -63,3 +63,51 @@ Eastern Prevailing Time (America/New_York) using PostgreSQL
 for reference.
 
 {% enddocs %}
+
+
+{% docs eia_nat_gas_overview %}
+
+# EIA Natural Gas Consumption by End Use
+
+Monthly state-level natural gas consumption data from the EIA Natural Gas API,
+broken down by end-use sector.
+
+## Data Source
+
+| Source | Description | Ingestion |
+|--------|-------------|-----------|
+| **EIA Natural Gas API** | Monthly consumption by end-use category for all US states | Python scrape (`backend/src/eia/`) into `eia` schema |
+
+## Geographic Coverage
+
+- **US48** — Lower 48 aggregate
+- **50 US states** + District of Columbia
+
+## End-Use Categories
+
+- **Lease and Plant Fuel** — Field extraction and processing plant fuel
+- **Pipeline & Distribution Use** — Compressor stations and pipeline infrastructure
+- **Volumes Delivered to Consumers** — Total end-use deliveries
+- **Residential** — Household heating, cooking, etc.
+- **Commercial** — Offices, hotels, restaurants, etc.
+- **Industrial** — Manufacturing, mining, construction
+- **Vehicle Fuel** — CNG/LNG for transportation
+- **Electric Power** — Utility and independent power producer generation
+
+## Pipeline Architecture
+
+```
+source/          Raw EIA table extraction (ephemeral)
+  |
+  v
+utils/           Area name standardization lookup (ephemeral)
+  |
+  v
+staging/         Area join, consumption type standardization,
+                 pivot to columns (ephemeral)
+  |
+  v
+marts/           Monthly consumption view (view)
+```
+
+{% enddocs %}

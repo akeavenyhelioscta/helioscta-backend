@@ -1,17 +1,15 @@
-import io
-import requests
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
 
 import pandas as pd
 
-from backend import secrets
 from backend.utils import (
     azure_postgresql_utils as azure_postgresql,
     logging_utils,
     pipeline_run_logger,
 )
+from backend.src.power.isone import isone_api_utils as isone_api
 
 # SCRAPE
 API_SCRAPE_NAME = "seven_day_capacity_forecast"
@@ -23,32 +21,6 @@ logger = logging_utils.init_logging(
     log_to_file=True,
     delete_if_no_errors=True,
 )
-
-"""
-"""
-
-def _make_request(url) -> requests.Response:
-    """"""
-
-    attempt = 0
-    while attempt < 3:
-        with requests.Session() as s:
-            # make first get request to get cookies set
-            s.get("https://www.iso-ne.com/isoexpress/web/reports/operations/-/tree/gen-fuel-mix")
-
-            response = s.get(url)
-            content_type = response.headers["Content-Type"]
-            logger.info(f"Pulling from ... {url}")
-
-            if response.status_code == 200 and content_type == "text/csv":
-                break
-
-            attempt += 1
-
-    if response.status_code != 200 or content_type != "text/csv":
-        raise RuntimeError(f"Failed to get data from {url}")
-
-    return response
 
 
 def _format(
@@ -96,11 +68,17 @@ def _format(
     # reindex
     df = df[["forecast_execution_date", "date"] + [col for col in df.columns if col not in ["forecast_execution_date", "date"]]]
 
+    # validate expected columns exist
+    expected_cols = ["forecast_execution_date", "date"]
+    missing = [c for c in expected_cols if c not in df.columns]
+    if missing:
+        raise ValueError(f"Missing expected columns after formatting: {missing}. Got: {df.columns.tolist()}")
+
     return df
 
 
 def _pull(
-        start_date: datetime = datetime.now() + timedelta(days=1),
+        start_date: datetime = None,
     ) -> pd.DataFrame:
     """
     Seven-Day Capacity Forecast
@@ -109,19 +87,19 @@ def _pull(
     Example:
     >>> https://www.iso-ne.com/transform/csv/sdf?start=20240822"
     """
+    if start_date is None:
+        start_date = datetime.now() + timedelta(days=1)
 
     # build url
-    url: str = f"https://www.iso-ne.com/transform/csv/sdf?start={start_date.strftime('%Y%m%d')}"
+    url = f"https://www.iso-ne.com/transform/csv/sdf?start={start_date.strftime('%Y%m%d')}"
 
     # get response
-    response: requests.Response = _make_request(url=url)
+    response = isone_api.make_request(url=url, logger=logger)
 
     # pull data
-    df = pd.read_csv(
-        io.StringIO(response.content.decode("utf8")),
+    df = isone_api.parse_csv_response(
+        response,
         skiprows=[0, 1, 2, 3, 4, 5, 7, 12, 27, 28],
-        skipfooter=1,
-        engine="python",
     )
 
     # format
@@ -146,27 +124,32 @@ def _upsert(
         )
 
     data_types = azure_postgresql.get_table_dtypes(
-        database = database,
-        schema = schema,
-        table_name = table_name,
+        database=database,
+        schema=schema,
+        table_name=table_name,
+        columns=df.columns.tolist(),
     )
 
     azure_postgresql.upsert_to_azure_postgresql(
-        database = database,
-        schema = schema,
-        table_name = table_name,
-        df = df,
-        columns = df.columns.tolist(),
-        data_types = data_types,
-        primary_key = primary_keys,
+        database=database,
+        schema=schema,
+        table_name=table_name,
+        df=df,
+        columns=df.columns.tolist(),
+        data_types=data_types,
+        primary_key=primary_keys,
     )
 
 
 def main(
-        start_date: datetime = (datetime.now() - relativedelta(days=1)),
-        end_date: datetime = (datetime.now() + relativedelta(days=1)),
+        start_date: datetime = None,
+        end_date: datetime = None,
         delta: relativedelta = relativedelta(days=1),
     ):
+    if start_date is None:
+        start_date = datetime.now() - relativedelta(days=3)
+    if end_date is None:
+        end_date = datetime.now() + relativedelta(days=1)
 
     run = pipeline_run_logger.PipelineRunLogger(
         pipeline_name=API_SCRAPE_NAME,
@@ -177,25 +160,36 @@ def main(
     )
     run.start()
 
+    total_rows = 0
+    dfs = []
+
     try:
         logger.header(f"{API_SCRAPE_NAME}")
 
         current_date = start_date
         while current_date <= end_date:
+            try:
+                logger.section(f"Pulling data for {current_date}...")
+                df = _pull(
+                    start_date=current_date,
+                )
 
-            logger.section(f"Pulling data for {current_date}...")
-            df = _pull(
-                start_date=current_date,
-            )
+                logger.section(f"Upserting {len(df)} rows...")
+                _upsert(df)
+                total_rows += len(df)
+                dfs.append(df)
 
-            logger.section(f"Upserting {len(df)} rows...")
-            _upsert(df)
+                logger.success(f"Successfully pulled and upserted data for {current_date}!")
 
-            logger.success(f"Successfully pulled and upserted data for {current_date}!")
+            except Exception as e:
+                logger.warning(f"Skipping {current_date}: {e}")
 
             current_date += delta
 
-        run.success(rows_processed=len(df))
+        if total_rows == 0:
+            raise RuntimeError("No data was successfully processed across all dates")
+
+        run.success(rows_processed=total_rows)
 
     except Exception as e:
 
@@ -207,11 +201,8 @@ def main(
     finally:
         logging_utils.close_logging()
 
-    if 'df' in locals() and df is not None:
-        return df
+    return pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
 
-"""
-"""
 
 if __name__ == "__main__":
     df = main()

@@ -21,3 +21,42 @@ represents one hour of generation for one balancing authority, broken down by
 **Ingestion:** Python script in `backend/src/eia/` upserts into Azure PostgreSQL.
 
 {% enddocs %}
+
+
+{% docs eia_nat_gas_consumption_end_use_source %}
+
+Raw EIA natural gas consumption by end use, ingested from the EIA Open Data API.
+
+Data is stored in the `eia` schema as `nat_gas_consumption_end_use_v2_2025_dec_28`.
+Each row represents one month of consumption for one geographic area and one
+end-use category.
+
+**Raw columns:**
+- `period` — Reporting period in `YYYY-MM` format
+- `duoarea` — EIA area code (not used in downstream models)
+- `area_name` — Geographic area name (state or national)
+- `product` — EIA product code (not used)
+- `product_name` — Product description (not used)
+- `process` — EIA process code (not used)
+- `process_name` — Consumption category (e.g., `Residential Consumption`)
+- `series` — EIA series identifier (not used)
+- `series_description` — Series description (not used)
+- `units` — Unit of measurement (`MMCF`)
+- `value` — Consumption value
+- `created_at` / `updated_at` — Ingestion timestamps (not used)
+
+**Primary key:** `period` + `area_name` + `process_name`
+
+**Ingestion:** Python script in `backend/src/eia/` upserts into Azure PostgreSQL.
+
+{% enddocs %}
+
+
+{% docs eia_nat_gas_consumption_end_use_source_model %}
+
+Ephemeral extraction of the raw EIA natural gas consumption end-use table.
+Selects and casts the five columns needed for downstream transformations:
+`period`, `area_name`, `process_name`, `units`, and `value`.
+
+{% enddocs %}
+

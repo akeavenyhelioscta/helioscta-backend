@@ -53,10 +53,11 @@ DAILY AS (
         trade_date
 
         {% for c in columns %}
-            ,AVG(CASE WHEN hour_ending = 10 THEN {{ c.col }} END) AS {{ c.col }}
+            ,AVG({{ c.col }}) AS {{ c.col }}
         {% endfor %}
 
     FROM HOURLY
+    WHERE hour_ending = 10
     GROUP BY gas_day, trade_date
 ),
 
