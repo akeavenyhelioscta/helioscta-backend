@@ -15,6 +15,7 @@ Public U.S. energy data from the EIA Open Data API. Currently covers hourly gene
 | Script | Table | Description | Source Endpoint | dbt Views |
 |--------|-------|-------------|-----------------|-----------|
 | [fuel_type_hrl_gen_v3_2026_mar_09](scrapes/eia-scrapes.md#hourly-generation-by-fuel-type) | `eia.fuel_type_hrl_gen_v3_2026_mar_09` | Hourly electricity generation by fuel type and respondent | `/electricity/rto/fuel-type-data` | `eia_930_hourly`, `eia_930_daily` |
+| [nat_gas_consumption_end_use](scrapes/eia-scrapes.md#natural-gas-consumption-by-end-use) | `eia.nat_gas_consumption_end_use_v2_2025_dec_28` | Monthly natural gas consumption by end-use sector and state | `/natural-gas/cons/sum` | `eia_natural_gas_consumption_by_end_use_monthly` |
 | [weekly_underground_storage](scrapes/eia-scrapes.md#weekly-natural-gas-underground-storage) | `eia.weekly_underground_storage` | Weekly natural gas underground storage by region | `/natural-gas/stor/wkly` | None (raw) |
 
 ## Fuel Type Hourly Generation -- Detail
@@ -50,19 +51,23 @@ Track weekly natural gas in underground storage by region. This is a closely wat
 
 ## dbt Cleaned Views
 
-EIA-930 generation data now has a full dbt pipeline (`eia_cleaned` schema):
+EIA data has full dbt pipelines in the `eia_cleaned` schema:
 
 | View | Description |
 |------|-------------|
 | `eia_930_hourly` | Hourly generation by respondent, converted UTC→EST, with composite metrics (total, renewables, thermal) |
 | `eia_930_daily` | Daily average generation by respondent with thermal % breakdowns |
+| `eia_natural_gas_consumption_by_end_use_monthly` | Monthly state-level natural gas consumption pivoted by end-use sector |
 
-Pipeline: `source → utils (respondent lookup) → staging (UTC→EST, normalization) → marts (hourly + daily views)`
+Pipelines:
+- **EIA-930:** `source → utils (respondent lookup) → staging (UTC→EST, normalization) → marts (hourly + daily views)`
+- **NG Consumption:** `source → utils (area name lookup) → staging (standardize + pivot) → marts (monthly view)`
 
 ## Known Caveats
 
 - EIA API uses pagination (5,000 row limit per request); scripts handle this automatically
 - Weekly gas storage is still consumed as a raw table (no dbt views)
+- NG consumption data uses mixed area naming conventions (full names, postal codes); standardized via lookup in dbt
 
 ## Owner
 

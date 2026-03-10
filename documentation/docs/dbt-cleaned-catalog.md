@@ -112,6 +112,7 @@ Click any link in the Source Scrape or dbt View columns for details.
 |---|---|---|---|---|---|---|
 | `eia_930_hourly` | Hourly electricity generation by fuel type across all U.S. regions (60+ BAs), converted to EST | "How much gas-fired generation is running in PJM right now?" | [EIA Scrapes](domains/eia/scrapes/eia-scrapes.md#hourly-generation-by-fuel-type) | [eia_930_hourly](domains/eia/dbt-views/eia-cleaned.md#eia_930_hourly) | Hourly (~1-hr lag) | TBD |
 | `eia_930_daily` | Daily average generation by fuel type and respondent with thermal % breakdowns | "What was yesterday's average gas vs coal generation in ERCOT?" | [EIA Scrapes](domains/eia/scrapes/eia-scrapes.md#hourly-generation-by-fuel-type) | [eia_930_daily](domains/eia/dbt-views/eia-cleaned.md#eia_930_daily) | Hourly (~1-hr lag) | TBD |
+| `eia_natural_gas_consumption_by_end_use_monthly` | Monthly state-level natural gas consumption by end-use sector (residential, commercial, industrial, electric power, etc.) | "How much natural gas did Texas consume for electric power last month vs residential?" | [EIA Scrapes](domains/eia/scrapes/eia-scrapes.md#natural-gas-consumption-by-end-use) | [eia_natural_gas_consumption_by_end_use_monthly](domains/eia/dbt-views/eia-cleaned.md#eia_natural_gas_consumption_by_end_use_monthly) | Monthly | TBD |
 | `eia.weekly_underground_storage` | Weekly natural gas in underground storage by region | "How does this week's gas storage compare to last year?" | [EIA Scrapes](domains/eia/scrapes/eia-scrapes.md#weekly-natural-gas-underground-storage) | None (raw table) | Weekly (Thursday) | TBD |
 
 ---
@@ -137,10 +138,10 @@ Click any link in the Source Scrape or dbt View columns for details.
 | Genscape | `genscape_cleaned` | 2 | Fully cleaned |
 | Positions | `positions_cleaned` | 8 | Fully cleaned |
 | Trades | `trades_cleaned` | 6 | Fully cleaned |
-| EIA | `eia_cleaned` | 2 | EIA-930 hourly + daily cleaned; storage raw |
+| EIA | `eia_cleaned` | 3 | EIA-930 hourly + daily, NG consumption by end use; storage raw |
 | ICE | `ice_python_cleaned` | 3 | BALMO, next-day gas hourly + daily |
 | Utils | `dbt` | 2 | Date spines; NERC holidays pending |
-| **Total** | | **51 views + 1 raw** | |
+| **Total** | | **52 views + 1 raw** | |
 
 ---
 

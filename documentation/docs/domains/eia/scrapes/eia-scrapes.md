@@ -96,6 +96,53 @@ Tracks weekly natural gas in underground storage by region. This is one of the m
 
 ---
 
+## Natural Gas Consumption by End Use
+
+| Field | Value |
+|-------|-------|
+| **Script** | `backend/src/eia/` (TBD) |
+| **Source** | EIA Open Data API v2 (`/natural-gas/cons/sum`) |
+| **Target Table** | `eia.nat_gas_consumption_end_use_v2_2025_dec_28` |
+| **Schema** | `eia` |
+| **dbt Views** | `eia_cleaned.eia_natural_gas_consumption_by_end_use_monthly` |
+| **Trigger** | Scheduled (Prefect) |
+| **Default Pull Window** | Full history |
+| **Freshness** | Monthly (~2-month lag from EIA) |
+| **Owner** | TBD |
+
+### Business Purpose
+
+Monthly state-level natural gas consumption broken down by end-use sector. Answers questions like "How much gas did Texas consume for electric power vs residential heating last month?" Key for understanding seasonal demand patterns and sector-level trends.
+
+### Data Captured
+
+| Field | Description |
+|-------|-------------|
+| `period` | Reporting month in `YYYY-MM` format |
+| `area_name` | Geographic area (state or national aggregate) |
+| `process_name` | End-use category (e.g., `Residential Consumption`, `Electric Power Consumption`) |
+| `units` | Unit of measurement (`MMCF`) |
+| `value` | Consumption volume |
+
+### End-Use Categories
+
+- **Lease and Plant Fuel** — Gas used in extraction and processing
+- **Pipeline & Distribution Use** — Compressor stations and pipeline infrastructure
+- **Volumes Delivered to Consumers** — Total end-use deliveries
+- **Residential** — Household heating, cooking, etc.
+- **Commercial** — Offices, hotels, restaurants
+- **Industrial** — Manufacturing, mining, construction
+- **Vehicle Fuel** — CNG/LNG for transportation
+- **Electric Power** — Utility and IPP generation
+
+### Known Caveats
+
+- EIA uses mixed area naming: full state names for some (e.g., `CALIFORNIA`), postal codes for others (`USA-AL`), and `U.S.` for national aggregate
+- Monthly data has ~2-month reporting lag
+- All values in MMCF (million cubic feet)
+
+---
+
 ## Form 860 (Generator Attributes)
 
 | Field | Value |

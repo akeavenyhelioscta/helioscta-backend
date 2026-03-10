@@ -63,7 +63,7 @@ def _get_timestamp_columns(
     df["publish_time_utc"] = publish_time_utc.dt.strftime(timestamp_format)
 
     # drop time
-    df = df.drop(columns=[time_column, interval_start_column, interval_end_column])
+    df = df.drop(columns=[time_column, interval_start_column, interval_end_column, publish_column])
 
     # After creating the timestamp columns, reorder the columns
     timestamp_columns = ['interval_start_local', 'interval_start_utc', 'interval_end_local', 'interval_end_utc', 'publish_time_local', 'publish_time_utc']
@@ -124,16 +124,7 @@ def _upsert(
         table_name: str = API_SCRAPE_NAME,
     ):
 
-    primary_key_candidates = ['interval_start_local', 'interval_start_utc', 'interval_end_local', 'interval_end_utc', 'publish_time_local', 'publish_time_utc']
-    primary_keys = [col for col in primary_key_candidates if col in df.columns]
-    if not primary_keys:
-        raise ValueError(f"No primary key columns found in DataFrame. Expected one of: {primary_key_candidates}")
-
-    data_types = azure_postgresql.get_table_dtypes(
-        database = database,
-        schema = schema,
-        table_name = table_name,
-    )
+    primary_keys = ['interval_start_local', 'interval_start_utc', 'interval_end_local', 'interval_end_utc', 'publish_time_local', 'publish_time_utc']
 
     azure_postgresql.upsert_to_azure_postgresql(
         database = database,
@@ -141,7 +132,6 @@ def _upsert(
         table_name = table_name,
         df = df,
         columns = df.columns.tolist(),
-        data_types = data_types,
         primary_key = primary_keys,
     )
 

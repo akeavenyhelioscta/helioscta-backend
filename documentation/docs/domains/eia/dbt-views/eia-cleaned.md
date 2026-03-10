@@ -29,3 +29,15 @@ All views are materialized in the `eia_cleaned` schema.
 | **Use Cases** | Daily generation trend analysis, thermal mix monitoring |
 | **Refresh** | View -- refreshes on query |
 | **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/eia/eia_cleaned/.docs/eia_930_daily.sql) |
+
+### eia_natural_gas_consumption_by_end_use_monthly
+
+| Field | Value |
+|-------|-------|
+| **Business Definition** | Monthly state-level natural gas consumption pivoted by end-use sector (residential, commercial, industrial, electric power, pipeline, lease/plant fuel, vehicle fuel) |
+| **Grain** | One row per year x month x area_name_standardized |
+| **Primary Keys** | `year`, `month`, `area_name_standardized` |
+| **Upstream** | `staging_v1_eia_ng_consumption_by_end_use_monthly` |
+| **Use Cases** | Seasonal gas demand analysis by sector, state-level consumption trends, residential vs electric power demand comparison |
+| **Refresh** | View -- refreshes on query |
+| **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/eia/eia_cleaned/marts/eia_natural_gas_consumption_by_end_use_monthly.sql) |
