@@ -99,6 +99,11 @@ const sidebars = {
             },
             {
               type: "doc",
+              id: "domains/power/scrapes/ercot-scrapes",
+              label: "ERCOT",
+            },
+            {
+              type: "doc",
               id: "domains/power/scrapes/gridstatus-overview",
               label: "GridStatus",
             },

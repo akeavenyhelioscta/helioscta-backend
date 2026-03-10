@@ -23,7 +23,7 @@ $triggers = foreach ($triggerTime in $triggerTimes) {
 }
 
 Register-ScheduledTask `
-    -TaskName "EIA All Scripts Scheduled" `
+    -TaskName "EIA (All Scripts)" `
     -Action $action `
     -Trigger $triggers `
     -TaskPath "\helioscta-backend\EIA\" `

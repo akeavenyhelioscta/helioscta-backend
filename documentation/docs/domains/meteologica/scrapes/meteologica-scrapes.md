@@ -118,11 +118,11 @@ usa_{iso}_{region}_{type}_power_{category}_forecast_hourly.py
 
 ```bash
 # List all scripts
-python backend/src/meteologica/run.py --list
+python backend/src/meteologica/runs.py --list
 
 # Run all scripts
-python backend/src/meteologica/run.py all
+python backend/src/meteologica/runs.py all
 
 # Run specific script by number
-python backend/src/meteologica/run.py 5
+python backend/src/meteologica/runs.py 5
 ```

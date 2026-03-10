@@ -35,12 +35,15 @@ Electricity market data across 7 U.S. ISOs. Covers load, LMPs, fuel mix, outages
 | real_time_dispatched_reserves | `pjm.real_time_dispatched_reserves_v1_2025_08_13` | Real-time dispatched reserves | TBD |
 | long_term_outages | `pjm.long_term_outages` | Long-term outage schedule | TBD |
 
-### ERCOT Direct API (8 scripts)
+### ERCOT Direct API (9 scripts)
+
+See [ERCOT Scrapes](scrapes/ercot-scrapes.md) for full details including endpoints, primary keys, and operator instructions.
 
 | Script | Table | Data | Freshness |
 |--------|-------|------|-----------|
 | actual_system_load | `ercot.actual_system_load` | Actual system-wide load | Same-day |
 | seven_day_load_forecast | `ercot.seven_day_load_forecast` | 7-day system load forecast | Multiple revisions/day |
+| dam_stlmnt_pnt_prices | `ercot.dam_stlmnt_pnt_prices` | DAM settlement point prices | T+0 |
 | settlement_point_prices | `ercot.settlement_point_prices` | Settlement point prices (LMPs) | Same-day |
 | seven_day_wind_forecast | `ercot.seven_day_wind_forecast` | 7-day system wind forecast | Multiple revisions/day |
 | seven_day_wind_forecast_by_region | `ercot.seven_day_wind_forecast_by_region` | 7-day wind forecast by region | Multiple revisions/day |

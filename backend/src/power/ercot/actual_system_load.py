@@ -1,5 +1,3 @@
-import json
-import requests
 import time
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -13,9 +11,11 @@ from backend.utils import (
     logging_utils,
     pipeline_run_logger,
 )
+from backend.src.power.ercot import ercot_api_utils as ercot_api
 
 # SCRAPE
 API_SCRAPE_NAME = "actual_system_load"
+ENDPOINT = "np6-346-cd/act_sys_load_by_fzn"
 
 # logging
 logger = logging_utils.init_logging(
@@ -26,61 +26,9 @@ logger = logging_utils.init_logging(
 )
 
 """
+Actual System Load by Forecast Zone:
+https://apiexplorer.ercot.com/api-details#api=pubapi-apim-api&operation=getData_5
 """
-
-def _get_authentication_headers(
-        username: str = secrets.ERCOT_USERNAME,
-        passcode: str = secrets.ERCOT_PASSCODE,
-        api_key: str = secrets.ERCOT_API_KEY,
-    ) -> dict:
-
-    response = requests.post(f"https://ercotb2c.b2clogin.com/ercotb2c.onmicrosoft.com/B2C_1_PUBAPI-ROPC-FLOW/oauth2/v2.0/token?username={username}&password={passcode}&grant_type=password&scope=openid+fec253ea-0d06-4272-a5e6-b478baeecd70+offline_access&client_id=fec253ea-0d06-4272-a5e6-b478baeecd70&response_type=id_token")
-
-    if response.status_code == 200:
-        access_token = response.json().get("access_token")
-
-        headers: dict = {
-            'accept': 'application/json',
-            'Ocp-Apim-Subscription-Key': f'{secrets.ERCOT_API_KEY}',
-            'Authorization': f'{access_token}',
-        }
-        return headers
-
-    else:
-        logger.error(f"Failed to authenticate: {response.status_code} - {response.text}")
-        raise Exception(f"Failed to authenticate: {response.status_code} - {response.text}")
-
-
-def _make_request(
-        endpoint: str,
-        params: dict,
-        base_url: str = "https://api.ercot.com/api/public-reports",
-        max_retries: int = 30,
-        retry_delay: int = 5,
-    ) -> requests.Response:
-
-    headers: dict = _get_authentication_headers()
-    url = f"{base_url}/{endpoint}"
-
-    for attempt in range(max_retries):
-        response = requests.get(url, headers=headers, params=params)
-
-        try:
-            response_json = response.content.decode('utf-8')
-            response_dict = json.loads(response_json)
-
-            if response_dict.get("data") is not None:
-                logger.info(f"Response is available from {url}")
-                return response
-
-            logger.info(f"Attempt {attempt + 1}/{max_retries}: Data not yet available. Retrying in {retry_delay} seconds...")
-            time.sleep(retry_delay)
-
-        except (json.JSONDecodeError, KeyError) as e:
-            logger.warning(f"Attempt {attempt + 1}/{max_retries}: Error processing response: {e}")
-            time.sleep(retry_delay)
-
-    raise Exception(f"Failed to get valid response after {max_retries} attempts")
 
 
 def _format(
@@ -105,12 +53,7 @@ def _format(
 def _pull(
         start_date: datetime = (datetime.now() - timedelta(days=1)),
         end_date: datetime = (datetime.now() - timedelta(days=1)),
-        endpoint: str = "np6-346-cd/act_sys_load_by_fzn",
     ) -> pd.DataFrame:
-    """
-    Actual System Load by Forecast Zone:
-    https://apiexplorer.ercot.com/api-details#api=pubapi-apim-api&operation=getData_5
-    """
 
     params = {
         'operatingDayFrom': start_date.strftime('%Y-%m-%d'),
@@ -118,11 +61,10 @@ def _pull(
         'DSTFlag': "false",
     }
 
-    response = _make_request(endpoint, params)
+    response = ercot_api.make_request(ENDPOINT, params, logger=logger)
+    df = ercot_api.parse_response(response)
 
-    columns = [field['name'] for field in response.json()['fields']]
-    data = response.json()['data']
-    df = pd.DataFrame(data, columns=columns)
+    logger.info(f"Rows pulled: {len(df)}")
 
     df = _format(df)
 
@@ -178,24 +120,44 @@ def main(
 
     try:
         logger.header(f"{API_SCRAPE_NAME}")
+        logger.info(f"Endpoint: {ENDPOINT}")
+        logger.info(f"Operating day window: {start_date.strftime('%Y-%m-%d')} to {end_date.strftime('%Y-%m-%d')}")
 
+        total_rows = 0
         current_date = start_date
         while current_date <= end_date:
 
-            logger.section(f"Pulling data for {current_date}...")
+            t0 = time.time()
+            logger.section(f"Pulling data for {current_date.strftime('%Y-%m-%d')}...")
             df = _pull(
                 start_date=current_date,
-                end_date=current_date + delta,
+                end_date=current_date,
             )
+            pull_duration = time.time() - t0
 
+            t1 = time.time()
             logger.section(f"Upserting {len(df)} rows...")
             _upsert(df)
+            upsert_duration = time.time() - t1
 
-            logger.success(f"Successfully pulled and upserted data for {current_date}!")
+            run.log_stage(
+                stage_name=f"pull_{current_date.strftime('%Y-%m-%d')}",
+                rows=len(df),
+                duration_seconds=round(pull_duration, 2),
+            )
+            run.log_stage(
+                stage_name=f"upsert_{current_date.strftime('%Y-%m-%d')}",
+                rows=len(df),
+                duration_seconds=round(upsert_duration, 2),
+            )
+
+            total_rows += len(df)
+            logger.success(f"Date {current_date.strftime('%Y-%m-%d')}: {len(df)} rows pulled and upserted")
 
             current_date += delta
 
-        run.success(rows_processed=len(df) if 'df' in locals() else 0)
+        logger.info(f"Total rows processed: {total_rows}")
+        run.success(rows_processed=total_rows)
 
     except Exception as e:
 

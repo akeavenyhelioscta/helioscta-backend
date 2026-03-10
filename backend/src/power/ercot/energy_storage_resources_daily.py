@@ -14,6 +14,7 @@ from backend.utils import (
 
 # SCRAPE
 API_SCRAPE_NAME = "energy_storage_resources_daily"
+ENDPOINT_URL = "https://www.ercot.com/api/1/services/read/dashboards/energy-storage-resources.json"
 
 # logging
 logger = logging_utils.init_logging(
@@ -24,28 +25,18 @@ logger = logging_utils.init_logging(
 )
 
 """
+ERCOT Dashboard API — Energy Storage Resources (no OAuth required).
+Returns previous-day and current-day battery storage data.
 """
 
+
 def _get_json(url, retries=None, **kwargs):
-    """
-    Makes a get request to the given url and returns the json response. Optionally
-    retries the request if it fails.
-
-    Args:
-        url (str): The URL to request
-        retries (int): The number of retries to attempt if the request fails. The
-            total tries will be 1 + retries
-        **kwargs: Additional keyword arguments to pass to requests.get
-
-    Returns:
-        dict: The JSON response from the request if successful. Otherwise, raises
-            a requests.RequestException
-    """
+    """Makes a GET request and returns JSON. Retries with exponential backoff."""
     max_attempts = 1 if retries is None else retries + 1
     attempt = 0
     while attempt < max_attempts:
         try:
-            logger.info(f"Requesting {url} with {kwargs}")
+            logger.info(f"Requesting {url}")
             r = requests.get(url, **kwargs)
             r.raise_for_status()
             return r.json()
@@ -54,15 +45,16 @@ def _get_json(url, retries=None, **kwargs):
             if attempt >= max_attempts:
                 raise
             wait_time = 2 ** (attempt - 1)
-            logger.error(f"Request failed with {e}. Retrying in {wait_time} seconds...")
+            logger.warning(
+                f"Attempt {attempt}/{max_attempts}: Request failed: {e}. "
+                f"Retrying in {wait_time}s..."
+            )
             time.sleep(wait_time)
 
 
 def _format(
         df: pd.DataFrame,
     ) -> pd.DataFrame:
-    """
-    """
 
     def _format_timestamp(date_str, str_format: str):
         return datetime.strptime(f"{date_str}", str_format).astimezone(timezone.utc)
@@ -75,22 +67,22 @@ def _format(
 
     # General formatting
     df.reset_index(drop=True, inplace=True)
-    df.columns = df.columns.str.upper()
+    df.columns = df.columns.str.lower()
     df.columns = df.columns.str.replace(' ', '_')
     df.columns = df.columns.str.replace('-', '_')
 
     # DTYPES
-    df["TIMESTAMP"] = df.apply(lambda df: _format_timestamp(df["TIMESTAMP"], "%Y-%m-%d %H:%M:%S%z"), axis=1)
-    df["DATE"] = df.apply(lambda df: _format_date(df["TIMESTAMP"], "%Y-%m-%d %H:%M:%S%z"), axis=1)
-    df["TIME"] = df.apply(lambda df: _format_time(df["TIMESTAMP"], "%Y-%m-%d %H:%M:%S%z"), axis=1)
-    df['DATETIME'] = pd.to_datetime(df['DATE'].astype(str) + ' ' + df['TIME'].astype(str))
-    df['TOTALCHARGING'] = df['TOTALCHARGING'].astype(float)
-    df['TOTALDISCHARGING'] = df['TOTALDISCHARGING'].astype(float)
-    df['NETOUTPUT'] = df['NETOUTPUT'].astype(float)
+    df["timestamp"] = df.apply(lambda df: _format_timestamp(df["timestamp"], "%Y-%m-%d %H:%M:%S%z"), axis=1)
+    df["date"] = df.apply(lambda df: _format_date(df["timestamp"], "%Y-%m-%d %H:%M:%S%z"), axis=1)
+    df["time"] = df.apply(lambda df: _format_time(df["timestamp"], "%Y-%m-%d %H:%M:%S%z"), axis=1)
+    df['datetime'] = pd.to_datetime(df['date'].astype(str) + ' ' + df['time'].astype(str))
+    df['totalcharging'] = df['totalcharging'].astype(float)
+    df['totaldischarging'] = df['totaldischarging'].astype(float)
+    df['netoutput'] = df['netoutput'].astype(float)
 
     # Select Cols
-    keys = ['TIMESTAMP', 'DATETIME', 'DATE', 'TIME']
-    values = ['TOTALCHARGING', 'TOTALDISCHARGING', 'NETOUTPUT']
+    keys = ['timestamp', 'datetime', 'date', 'time']
+    values = ['totalcharging', 'totaldischarging', 'netoutput']
     df = df.reindex(columns=keys+values)
 
     # Sort
@@ -104,15 +96,13 @@ def _format(
 
 def _pull(
     ) -> pd.DataFrame:
-    """Get energy storage resources.
-    Always returns data from previous and current day"""
+    """Get energy storage resources. Always returns previous and current day data."""
 
-    BASE = "https://www.ercot.com/api/1/services/read/dashboards"
-    url = BASE + "/energy-storage-resources.json"
-
-    data = _get_json(url)
+    data = _get_json(ENDPOINT_URL)
 
     df = pd.DataFrame(data["previousDay"]["data"] + data["currentDay"]["data"])
+
+    logger.info(f"Rows pulled: {len(df)}")
 
     return df
 
@@ -124,7 +114,7 @@ def _upsert(
         table_name: str = API_SCRAPE_NAME,
     ):
 
-    primary_key_candidates = ["TIMESTAMP"]
+    primary_key_candidates = ["timestamp"]
     primary_keys = [col for col in primary_key_candidates if col in df.columns]
     if not primary_keys:
         raise ValueError(
@@ -162,17 +152,28 @@ def main():
 
     try:
         logger.header(f"{API_SCRAPE_NAME}")
+        logger.info(f"Endpoint: {ENDPOINT_URL}")
 
-        logger.section(f"Pulling data...")
+        t0 = time.time()
+        logger.section("Pulling data...")
         df = _pull()
+        pull_duration = time.time() - t0
+        run.log_stage(stage_name="pull", rows=len(df), duration_seconds=round(pull_duration, 2))
 
-        logger.section(f"Formatting data...")
+        if df.empty:
+            logger.warning("No data returned from ERCOT dashboard API")
+
+        logger.section("Formatting data...")
         df = _format(df)
 
+        t1 = time.time()
         logger.section(f"Upserting {len(df)} rows...")
         _upsert(df)
+        upsert_duration = time.time() - t1
+        run.log_stage(stage_name="upsert", rows=len(df), duration_seconds=round(upsert_duration, 2))
 
-        logger.success(f"Successfully pulled and upserted data!")
+        logger.info(f"Total rows processed: {len(df)}")
+        logger.success("Successfully pulled and upserted data!")
 
         run.success(rows_processed=len(df))
 

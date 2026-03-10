@@ -184,8 +184,8 @@ MAX_REVISIONS AS (
 -------------------------------------------------------------
 -------------------------------------------------------------
 
-GENSCAPE_PROD_FORECAST_FINAL AS (
-    SELECT  
+FINAL AS (
+    SELECT
 
         year
         ,month
@@ -224,11 +224,11 @@ GENSCAPE_PROD_FORECAST_FINAL AS (
         ,south_louisiana_oil_rig_count
         ,south_louisiana_gas_rig_count
 
-        -- 'South Texas'
-        ,(south_texas_production + east_texas_production) as texas_production
-        ,(south_texas_dry_gas_production_yoy + east_texas_dry_gas_production_yoy) as texas_dry_gas_production_yoy
-        ,(south_texas_oil_rig_count + east_texas_oil_rig_count) as texas_oil_rig_count
-        ,(south_texas_gas_rig_count + east_texas_gas_rig_count) as texas_gas_rig_count
+        -- 'Texas' (composite: south_texas + east_texas)
+        ,(COALESCE(south_texas_production, 0) + COALESCE(east_texas_production, 0)) as texas_production
+        ,(COALESCE(south_texas_dry_gas_production_yoy, 0) + COALESCE(east_texas_dry_gas_production_yoy, 0)) as texas_dry_gas_production_yoy
+        ,(COALESCE(south_texas_oil_rig_count, 0) + COALESCE(east_texas_oil_rig_count, 0)) as texas_oil_rig_count
+        ,(COALESCE(south_texas_gas_rig_count, 0) + COALESCE(east_texas_gas_rig_count, 0)) as texas_gas_rig_count
         -- 'South Texas'
         ,south_texas_production
         ,south_texas_dry_gas_production_yoy
@@ -340,5 +340,5 @@ GENSCAPE_PROD_FORECAST_FINAL AS (
     FROM MAX_REVISIONS
 )
 
-SELECT * FROM GENSCAPE_PROD_FORECAST_FINAL
-ORDER BY date asc, report_date desc
+SELECT * FROM FINAL
+ORDER BY date ASC, report_date DESC

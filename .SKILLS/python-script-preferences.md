@@ -80,6 +80,21 @@ def _upsert(
     )
 ```
 
+## File Naming Conventions
+
+| File type | Required name | Example |
+|-----------|--------------|---------|
+| Runner | `runs.py` (plural, **not** `run.py`) | `backend/src/power/ercot/runs.py` |
+| Flows | `flows.py` | `backend/src/power/ercot/flows.py` |
+| API helpers / utilities | `{source}_api_utils.py` | `ercot_api_utils.py`, `genscape_api_utils.py` |
+| General utilities | `{source}_utils.py` or `{domain}_utils.py` | `wsi_utils.py`, `ice_utils.py` |
+
+### Rules
+
+- **All runner files must be `runs.py`** — never `run.py`. Existing `run.py` files should be renamed to `runs.py` when touched.
+- **All utility/helper files must end with `_utils`** — never bare `utils.py`. Prefix with the source or domain name (e.g., `ercot_api_utils.py`, not `utils.py`).
+- **API helper modules** specifically use the pattern `{source}_api_utils.py` (e.g., `ercot_api_utils.py`, `genscape_api_utils.py`).
+
 ## Folder Orchestration Files
 
 Every source subfolder should include both:
@@ -92,7 +107,7 @@ Use `backend/src/power/pjm/` as the canonical structure for both files.
 For `backend/src/wsi`, orchestration is subfolder-only. Do not add or retain
 module-level orchestration files at:
 
-- `backend/src/wsi/run.py`
+- `backend/src/wsi/runs.py`
 - `backend/src/wsi/flows.py`
 
 ## No Prefect in Scripts

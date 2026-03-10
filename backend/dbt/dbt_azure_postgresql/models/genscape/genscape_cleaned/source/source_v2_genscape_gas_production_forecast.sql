@@ -5,10 +5,13 @@
 }}
 
 -------------------------------------------------------------
+-- Source: Genscape Gas Production Forecast
+-- Pivots raw item-value pairs into typed metric columns.
+-- Grain: 1 row per report_date x date x region
 -------------------------------------------------------------
 
 WITH GENSCAPE_PROD_FORECAST AS (
-    SELECT  
+    SELECT
 
         reportdate::DATE as report_date
 
@@ -21,18 +24,14 @@ WITH GENSCAPE_PROD_FORECAST AS (
         ,item
         ,value
 
-    -- from genscape.gas_production_forecast_v2_2025_09_23
     FROM {{ source('genscape_v2', 'gas_production_forecast_v2_2025_09_23') }}
 ),
-
--- SELECT * FROM GENSCAPE_PROD_FORECAST
--- ORDER BY report_date DESC, year desc, month desc, region desc
 
 -------------------------------------------------------------
 -------------------------------------------------------------
 
 GENSCAPE_PROD_FORECAST_ITEMS AS (
-    SELECT  
+    SELECT
 
         report_date
 
@@ -42,8 +41,6 @@ GENSCAPE_PROD_FORECAST_ITEMS AS (
 
         ,region
 
-        -- ,item
-        -- ,value
         ,SUM(CASE WHEN item = 'Production' THEN value END) as production
         ,SUM(CASE WHEN item = 'Dry Gas Production YoY' THEN value END) as dry_gas_production_yoy
         ,SUM(CASE WHEN item = 'Oil Rig Count' THEN value END) as oil_rig_count
@@ -52,9 +49,13 @@ GENSCAPE_PROD_FORECAST_ITEMS AS (
         ,SUM(CASE WHEN item = 'Wet Gas Production Actual' THEN value END) as wet_gas_production_actual
         ,SUM(CASE WHEN item = 'Wet Gas Production' THEN value END) as wet_gas_production
 
-    from GENSCAPE_PROD_FORECAST
+    FROM GENSCAPE_PROD_FORECAST
     GROUP BY report_date, year, month, date, region
+),
+
+FINAL AS (
+    SELECT * FROM GENSCAPE_PROD_FORECAST_ITEMS
 )
 
-SELECT * FROM GENSCAPE_PROD_FORECAST_ITEMS
-ORDER BY report_date DESC, year desc, month desc, region desc
+SELECT * FROM FINAL
+ORDER BY report_date DESC, year DESC, month DESC, region DESC

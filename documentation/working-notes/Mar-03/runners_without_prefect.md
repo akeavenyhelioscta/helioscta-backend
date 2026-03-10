@@ -25,9 +25,9 @@ Each `flows.py` uses `importlib.util` to lazy-load a script's `main()` and wraps
 | `gridstatusio_api_key/pjm/` | 4 |
 | `event_driven/pjm/` | 1 |
 
-### `run.py` (18 files)
+### `runs.py` (18 files)
 
-Each `run.py` provides an interactive CLI runner (`--list`, numbered selection, `all`) using `backend.utils.runner_utils`. Created in every subfolder that contains scripts. Top-level `backend/src/power/run.py` updated to exclude `run.py` and `flows.py` from discovery.
+Each `runs.py` provides an interactive CLI runner (`--list`, numbered selection, `all`) using `backend.utils.runner_utils`. Created in every subfolder that contains scripts. Top-level `backend/src/power/runs.py` updated to exclude `run.py`, `runs.py`, and `flows.py` from discovery.
 
 ## Prefect YAML Updates
 

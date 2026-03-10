@@ -39,6 +39,18 @@ Raw Genscape tables (genscape schema)
 | **Refresh** | View -- refreshes on query |
 | **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/genscape/genscape_cleaned/.docs/genscape_daily_pipeline_production.sql) |
 
+### genscape_daily_power_estimate
+
+| Field | Value |
+|-------|-------|
+| **Business Definition** | Cleaned daily power generation burn estimates by region and model type |
+| **Grain** | One row per gas_day x power_burn_variable x model_type_based_on_noms |
+| **Primary Keys** | `gas_day`, `power_burn_variable`, `model_type_based_on_noms` |
+| **Upstream** | `staging_v2_daily_power_estimate` |
+| **Use Cases** | Gas-to-power demand tracking, gas/power spread analysis |
+| **Refresh** | View -- refreshes on query |
+| **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/genscape/genscape_cleaned/.docs/genscape_daily_power_estimate.sql) |
+
 ---
 
 ## Staging Models
@@ -46,9 +58,11 @@ Raw Genscape tables (genscape schema)
 | Model | Purpose |
 |-------|---------|
 | `source_v2_genscape_gas_production_forecast` | Selects and casts from raw gas production forecast table |
-| `source_v2_daily_pipeline_production` | Selects and casts from raw daily pipeline production table |
-| `staging_v2_genscape_gas_production_forecast` | Cleans column names and data types |
-| `staging_v2_daily_pipeline_production` | Cleans column names and data types |
+| `source_v2_daily_pipeline_production` | Selects, casts, and computes composite regions from raw daily pipeline production table |
+| `source_v2_daily_power_estimate` | Selects and casts from raw daily power estimate table |
+| `staging_v2_genscape_gas_production_forecast` | Aggregates 67 regions into 22 geographic tiers, adds revision tracking |
+| `staging_v2_daily_pipeline_production` | Adds revision tracking to cleaned daily pipeline production |
+| `staging_v2_daily_power_estimate` | Renames columns and adds max model type window function |
 
 ## Known Limitations
 

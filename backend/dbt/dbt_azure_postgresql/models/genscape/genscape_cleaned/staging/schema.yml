@@ -70,6 +70,10 @@ models:
         description: "Daily dry gas production in Other Gulf Coast regions (MMCF/d)"
       - name: texas
         description: '{{ doc("genscape_dpp_col_texas") }}'
+      - name: east_texas
+        description: "Daily dry gas production in East Texas (MMCF/d)"
+      - name: south_texas
+        description: "Daily dry gas production in South Texas (MMCF/d)"
       - name: mid_con
         description: "Composite: oklahoma + kansas + arkansas (MMCF/d)"
       - name: oklahoma
@@ -79,10 +83,10 @@ models:
       - name: arkansas
         description: "Daily dry gas production in Arkansas (MMCF/d)"
       - name: permian
-        description: "Composite: permian_nm + permian_tx (MMCF/d)"
-      - name: permian_nm
+        description: "Composite: permian_new_mexico + permian_texas (MMCF/d)"
+      - name: permian_new_mexico
         description: "Daily dry gas production in Permian New Mexico (MMCF/d)"
-      - name: permian_tx
+      - name: permian_texas
         description: "Daily dry gas production in Permian Texas (MMCF/d)"
       - name: permian_flare_counts
         description: "Count of observed flaring events in the Permian Basin"
@@ -91,34 +95,50 @@ models:
       - name: san_juan
         description: '{{ doc("genscape_dpp_col_san_juan") }}'
       - name: rockies
-        description: "Composite: piceance_basin + denver_julesberg + north_dakota_and_montana + uinta_basin + green_wind_river_wyoming + powder_river_basin + other_rockies (MMCF/d)"
+        description: "Composite: piceance_basin + colorado_denver_julesberg + north_dakota_montana + utah_uinta + wyoming_green_wind_ot + wyoming_powder + other_rockies (MMCF/d)"
       - name: piceance_basin
         description: "Daily dry gas production in Piceance Basin, CO (MMCF/d)"
-      - name: denver_julesberg
-        description: "Daily dry gas production in Denver-Julesberg Basin (MMCF/d)"
-      - name: north_dakota_and_montana
+      - name: colorado_denver_julesberg
+        description: "Daily dry gas production in Colorado Denver-Julesberg Basin (MMCF/d)"
+      - name: north_dakota_montana
         description: "Daily dry gas production in North Dakota and Montana (MMCF/d)"
-      - name: uinta_basin
-        description: "Daily dry gas production in Uinta Basin, UT (MMCF/d)"
-      - name: green_wind_river_wyoming
-        description: "Daily dry gas production in Green/Wind River, WY (MMCF/d)"
-      - name: powder_river_basin
-        description: "Daily dry gas production in Powder River Basin, WY (MMCF/d)"
+      - name: utah_uinta
+        description: "Daily dry gas production in Utah Uinta Basin (MMCF/d)"
+      - name: wyoming_green_wind_ot
+        description: "Daily dry gas production in Wyoming Green/Wind River and Other (MMCF/d)"
+      - name: wyoming_powder
+        description: "Daily dry gas production in Wyoming Powder River Basin (MMCF/d)"
       - name: other_rockies
         description: "Daily dry gas production in Other Rockies regions (MMCF/d)"
       - name: west
         description: '{{ doc("genscape_dpp_col_west") }}'
       - name: east
-        description: "Composite: ohio + sw_pennsylvania + ne_pennsylvania + west_virginia + other_east (MMCF/d)"
+        description: "Composite: ohio + southwest_pennsylvania + northeast_pennsylvania + west_virginia + other_east_ga_il_in_md_nc_tn_ky_mi_ny_va (MMCF/d)"
       - name: ohio
         description: "Daily dry gas production in Ohio (MMCF/d)"
-      - name: sw_pennsylvania
+      - name: southwest_pennsylvania
         description: "Daily dry gas production in Southwest Pennsylvania (MMCF/d)"
-      - name: ne_pennsylvania
+      - name: northeast_pennsylvania
         description: "Daily dry gas production in Northeast Pennsylvania (MMCF/d)"
       - name: west_virginia
         description: "Daily dry gas production in West Virginia (MMCF/d)"
-      - name: other_east
-        description: "Daily dry gas production in Other East regions (MMCF/d)"
+      - name: other_east_ga_il_in_md_nc_tn_ky_mi_ny_va
+        description: "Daily dry gas production in Other East regions - GA, IL, IN, MD, NC, TN, KY, MI, NY, VA (MMCF/d)"
       - name: western_canada
         description: '{{ doc("genscape_dpp_col_western_canada") }}'
+
+  - name: staging_v2_daily_power_estimate
+    description: '{{ doc("genscape_daily_power_estimate_staging") }}'
+    columns:
+      - name: gasday
+        description: '{{ doc("genscape_dpe_col_gasday") }}'
+        tests:
+          - not_null
+      - name: power_burn_variable
+        description: '{{ doc("genscape_dpe_col_power_burn_variable") }}'
+        tests:
+          - not_null
+      - name: modeltype
+        description: '{{ doc("genscape_dpe_col_modeltype") }}'
+        tests:
+          - not_null

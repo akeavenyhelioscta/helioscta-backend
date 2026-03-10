@@ -10,34 +10,34 @@
 -- Grain: 1 row per date x report_date
 -------------------------------------------------------------
 
-WITH source AS (
+WITH SOURCE AS (
     SELECT * FROM {{ ref('source_v2_daily_pipeline_production') }}
 ),
 
 -------------------------------------------------------------
 -------------------------------------------------------------
 
-revisions AS (
+REVISIONS AS (
     SELECT
         *
         ,ROW_NUMBER() OVER (PARTITION BY date ORDER BY report_date) as revision
-    FROM source
+    FROM SOURCE
 ),
 
 -------------------------------------------------------------
 -------------------------------------------------------------
 
-max_revisions AS (
+MAX_REVISIONS AS (
     SELECT
         *
         ,MAX(revision) OVER (PARTITION BY date) AS max_revision
-    FROM revisions
+    FROM REVISIONS
 ),
 
 -------------------------------------------------------------
 -------------------------------------------------------------
 
-final AS (
+FINAL AS (
     SELECT
 
         date
@@ -61,6 +61,8 @@ final AS (
 
         -- texas
         ,texas
+        ,east_texas
+        ,south_texas
 
         -- mid_con
         ,mid_con
@@ -70,8 +72,8 @@ final AS (
 
         -- permian
         ,permian
-        ,permian_nm
-        ,permian_tx
+        ,permian_new_mexico
+        ,permian_texas
 
         -- permian_flare
         ,permian_flare_counts
@@ -83,11 +85,11 @@ final AS (
         -- rockies
         ,rockies
         ,piceance_basin
-        ,denver_julesberg
-        ,north_dakota_and_montana
-        ,uinta_basin
-        ,green_wind_river_wyoming
-        ,powder_river_basin
+        ,colorado_denver_julesberg
+        ,north_dakota_montana
+        ,utah_uinta
+        ,wyoming_green_wind_ot
+        ,wyoming_powder
         ,other_rockies
 
         -- west
@@ -96,16 +98,16 @@ final AS (
         -- east
         ,east
         ,ohio
-        ,sw_pennsylvania
-        ,ne_pennsylvania
+        ,southwest_pennsylvania
+        ,northeast_pennsylvania
         ,west_virginia
-        ,other_east
+        ,other_east_ga_il_in_md_nc_tn_ky_mi_ny_va
 
         -- western_canada
         ,western_canada
 
-    FROM max_revisions
+    FROM MAX_REVISIONS
 )
 
-SELECT * FROM final
+SELECT * FROM FINAL
 ORDER BY date DESC, report_date DESC

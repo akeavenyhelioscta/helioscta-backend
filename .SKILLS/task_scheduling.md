@@ -7,7 +7,7 @@ How to add or modify Windows Task Scheduler orchestration in
 
 - Adding a new `.ps1` task registration script
 - Changing cadence, task name, task path, or Python entrypoint for an existing scheduler
-- Introducing a new `run.py` or `runs.py` entrypoint that must be scheduled
+- Introducing a new `runs.py` entrypoint that must be scheduled
 
 ## Required Deliverables
 

@@ -35,7 +35,7 @@
 | Fully compliant endpoints | 2 | `temperature/hourly_forecast_temp_v4_2025_jan_12.py`, `weighted_temp_daily_forecast/weighted_temp_daily_forecast_city_v2_2026_jan_12.py` |
 | Partial endpoints | 4 | See Section 3 |
 | Missing endpoints | 20 | See Section 3 |
-| Runnable WSI pipelines | 14 | `backend/src/wsi/run.py` domain discovery |
+| Runnable WSI pipelines | 14 | `backend/src/wsi/runs.py` domain discovery |
 | `requests.get()` callsites without timeout | 7 | `backend/src/wsi/**` grep |
 | Request-level retries | 0 | No `Retry`, `HTTPAdapter`, or `tenacity` in WSI module |
 | Rate limiting controls | 0 | No `sleep`, semaphore, or limiter in WSI request loops |

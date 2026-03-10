@@ -54,6 +54,7 @@ All new PJM scripts must follow the canonical pattern established in [`backend/s
 2. Logging: `logging_utils.init_logging(...)` with per-script `logs/` directory.
 3. Run tracking: `pipeline_run_logger.PipelineRunLogger(...)` with `start()` / `success()` / `failure()`.
 4. Folder orchestration files: every data subfolder must include both `runs.py` and `flows.py`, following the structure used in `backend/src/power/pjm/`.
-5. WSI scope rule: orchestration must live at WSI domain subfolder level only (for example `backend/src/wsi/temperature/`); do not keep `backend/src/wsi/run.py` or `backend/src/wsi/flows.py`.
+5. WSI scope rule: orchestration must live at WSI domain subfolder level only (for example `backend/src/wsi/temperature/`); do not keep `backend/src/wsi/runs.py` or `backend/src/wsi/flows.py`.
+6. File naming: runner files must be `runs.py` (plural, not `run.py`), utility/helper files must end with `_utils` suffix (e.g., `ercot_api_utils.py`, not `utils.py`).
 6. No Prefect decorators in individual scripts - Prefect wrappers only in `flows.py`.
 7. No Slack integration code - use `PipelineRunLogger` for failure tracking.

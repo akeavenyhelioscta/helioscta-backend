@@ -26,7 +26,7 @@ Each domain subfolder contains:
 - `runs.py` - manual runner
 - `flows.py` - Prefect flow wrappers
 
-There is no module-level `backend/src/wsi/run.py` or `backend/src/wsi/flows.py`.
+There is no module-level `backend/src/wsi/runs.py` or `backend/src/wsi/flows.py`.
 
 ## Scripts and Target Tables
 

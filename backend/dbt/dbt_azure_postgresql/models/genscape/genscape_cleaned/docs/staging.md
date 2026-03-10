@@ -97,11 +97,11 @@ One row per **date x report_date** — each production date can have multiple re
 | `gulf_coast` | Composite | north_louisiana + south_louisiana + other_gulf_coast |
 | `texas` | Aggregate | Texas total |
 | `mid_con` | Composite | oklahoma + kansas + arkansas |
-| `permian` | Composite | permian_nm + permian_tx |
+| `permian` | Composite | permian_new_mexico + permian_texas |
 | `san_juan` | Aggregate | San Juan Basin |
 | `rockies` | Composite | 7 sub-basins |
 | `west` | Aggregate | Western US |
-| `east` | Composite | ohio + sw_pennsylvania + ne_pennsylvania + west_virginia + other_east |
+| `east` | Composite | ohio + southwest_pennsylvania + northeast_pennsylvania + west_virginia + other_east_ga_il_in_md_nc_tn_ky_mi_ny_va |
 | `western_canada` | Aggregate | Western Canada |
 | `permian_flare_counts` | Metric | Flaring event count |
 | `permian_flare_volume` | Metric | Flaring volume (MMCF/d) |
@@ -109,5 +109,33 @@ One row per **date x report_date** — each production date can have multiple re
 ### Output
 28 columns total: 2 date fields + 2 revision fields + 24 production/metric columns
 (11 aggregate/composite + 13 sub-regional).
+
+{% enddocs %}
+
+{% docs genscape_daily_power_estimate_staging %}
+
+## Daily Power Estimate — Staging
+
+Daily power generation burn estimates by region and model type.
+
+### Data Source
+- Ephemeral source model `source_v2_daily_power_estimate` which passes through
+  the raw pivoted table from the Genscape Pipeline Fundamentals API
+
+### Grain
+One row per **gas_day × power_burn_variable × model_type_based_on_noms**.
+
+### Key Columns
+
+| Column | Description |
+|--------|-------------|
+| `gas_day` | Gas flow day (renamed from `gasday`) |
+| `power_burn_variable` | Power burn metric name |
+| `model_type_based_on_noms` | Model type based on nomination data availability (renamed from `modeltype`) |
+| `max_model_type_based_on_noms` | Maximum model type for the same gas day and variable |
+| `conus`, `east`, `midwest`, `mountain`, `pacific`, `south_central` | Power burn values by US region |
+
+### Output
+5 key columns + 6 regional columns.
 
 {% enddocs %}

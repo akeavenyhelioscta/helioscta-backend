@@ -10,30 +10,32 @@ select
   ,south_louisiana
   ,other_gulf_coast
   ,texas
+  ,east_texas
+  ,south_texas
   ,mid_con
   ,oklahoma
   ,kansas
   ,arkansas
   ,permian
-  ,permian_nm
-  ,permian_tx
+  ,permian_new_mexico
+  ,permian_texas
   ,permian_flare_counts
   ,permian_flare_volume
   ,san_juan
   ,rockies
   ,piceance_basin
-  ,denver_julesberg
-  ,north_dakota_and_montana
-  ,uinta_basin
-  ,green_wind_river_wyoming
-  ,powder_river_basin
+  ,colorado_denver_julesberg
+  ,north_dakota_montana
+  ,utah_uinta
+  ,wyoming_green_wind_ot
+  ,wyoming_powder
   ,other_rockies
   ,west
   ,east
   ,ohio
-  ,sw_pennsylvania
-  ,ne_pennsylvania
+  ,southwest_pennsylvania
+  ,northeast_pennsylvania
   ,west_virginia
-  ,other_east
+  ,other_east_ga_il_in_md_nc_tn_ky_mi_ny_va
   ,western_canada
 from genscape_cleaned.genscape_daily_pipeline_production

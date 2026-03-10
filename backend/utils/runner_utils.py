@@ -165,8 +165,16 @@ def run_script(
 
     start = time.time()
     try:
-        with suppress_output():
+        # Redirect stdout/stderr during import to hide noisy library init
+        # messages, but do NOT touch logging.root level — raising it to
+        # CRITICAL+1 breaks Prefect's first-time module initialisation.
+        _old_out, _old_err = sys.stdout, sys.stderr
+        sys.stdout = io.StringIO()
+        sys.stderr = io.StringIO()
+        try:
             module = importlib.import_module(module_name)
+        finally:
+            sys.stdout, sys.stderr = _old_out, _old_err
 
         chosen = adapter or detect_adapter(module)
         success, detail = chosen(module)

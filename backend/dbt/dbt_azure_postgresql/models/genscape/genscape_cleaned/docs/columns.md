@@ -71,3 +71,18 @@ Pre-aggregated by Genscape.
 Daily dry gas production for Western Canada aggregate (MMCF/d).
 Pre-aggregated by Genscape.
 {% enddocs %}
+
+{% docs genscape_dpe_col_gasday %}
+The gas day for which the power burn estimate applies. Represents the
+24-hour gas flow day (typically 10:00 AM CT to 10:00 AM CT).
+{% enddocs %}
+
+{% docs genscape_dpe_col_power_burn_variable %}
+The power burn metric being reported. Derived from the Genscape API response
+columns (e.g., power burn volume, power burn estimate).
+{% enddocs %}
+
+{% docs genscape_dpe_col_modeltype %}
+The model type that produced the estimate (e.g., forecast vs actuals).
+Part of the primary key to differentiate model versions for the same gas day.
+{% enddocs %}

@@ -6,8 +6,8 @@
 
 ---------------------------
 -- PJM 2-Day Wind Forecast (all revisions)
--- Complete forecasts only (24h per forecast_date)
--- Grain: 1 row per forecast_execution_datetime Ã— forecast_date Ã— hour_ending
+-- Ranked by recency
+-- Grain: 1 row per forecast_execution_datetime × forecast_date × hour_ending
 ---------------------------
 
 WITH FORECAST AS (
@@ -18,19 +18,6 @@ WITH FORECAST AS (
         ,hour_ending
         ,wind_forecast
     FROM {{ ref('source_v1_gridstatus_pjm_wind_forecast_hourly') }}
-),
-
----------------------------
--- COMPLETENESS: 24 hours per (forecast_execution_datetime, forecast_date)
----------------------------
-
-COMPLETENESS AS (
-    SELECT
-        *
-        ,COUNT(*) OVER (
-            PARTITION BY forecast_execution_datetime, forecast_date
-        ) AS hour_count
-    FROM FORECAST
 ),
 
 ---------------------------
@@ -49,8 +36,7 @@ FORECAST_RANK AS (
 
     FROM (
         SELECT DISTINCT forecast_execution_datetime, forecast_date
-        FROM COMPLETENESS
-        WHERE hour_count = 24
+        FROM FORECAST
     ) sub
 ),
 
@@ -62,20 +48,19 @@ FINAL AS (
     SELECT
         r.forecast_rank
 
-        ,c.forecast_execution_datetime
-        ,c.forecast_execution_date
+        ,f.forecast_execution_datetime
+        ,f.forecast_execution_date
 
-        ,(c.forecast_date + INTERVAL '1 hour' * (c.hour_ending - 1)) AS forecast_datetime
-        ,c.forecast_date
-        ,c.hour_ending
+        ,(f.forecast_date + INTERVAL '1 hour' * (f.hour_ending - 1)) AS forecast_datetime
+        ,f.forecast_date
+        ,f.hour_ending
 
-        ,c.wind_forecast
+        ,f.wind_forecast
 
-    FROM COMPLETENESS c
+    FROM FORECAST f
     JOIN FORECAST_RANK r
-        ON c.forecast_execution_datetime = r.forecast_execution_datetime
-        AND c.forecast_date = r.forecast_date
-    WHERE c.hour_count = 24
+        ON f.forecast_execution_datetime = r.forecast_execution_datetime
+        AND f.forecast_date = r.forecast_date
 )
 
 SELECT * FROM FINAL

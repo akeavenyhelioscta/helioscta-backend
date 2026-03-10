@@ -1,5 +1,5 @@
 $condaPath = "$env:USERPROFILE\miniconda3\Scripts\activate.bat"
-$runScript = "C:\Users\AidanKeaveny\Documents\github\helioscta-backend\backend\src\power\gridstatus_open_source\pjm\run.py"
+$runScript = "C:\Users\AidanKeaveny\Documents\github\helioscta-backend\backend\src\power\gridstatus_open_source\pjm\runs.py"
 
 $action = New-ScheduledTaskAction `
     -Execute "cmd.exe" `

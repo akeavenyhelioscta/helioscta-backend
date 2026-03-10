@@ -105,4 +105,4 @@ The paid API (`gridstatusio_api_key/`) covers the same ISOs with similar scripts
 
 - Open source and paid API may have slightly different field names or data availability
 - PJM data exists in both PJM direct API and GridStatus -- GridStatus versions serve as backup/cross-validation
-- Each ISO subfolder has its own `run.py` and `flows.py` for orchestration
+- Each ISO subfolder has its own `runs.py` and `flows.py` for orchestration

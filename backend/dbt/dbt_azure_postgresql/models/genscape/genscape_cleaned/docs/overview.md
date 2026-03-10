@@ -16,8 +16,9 @@ production forecast data into analysis-ready staging models for the HeliosCTA tr
 ```
 source/          Raw API table — item/value pairs (ephemeral)
     ↓            Pivots items into typed metric columns
-staging/         Regional aggregations + revision tracking (view)
+staging/         Regional aggregations + revision tracking (ephemeral)
     ↓            Aggregates 67 raw regions into 22 geographic tiers
+marts/           Analysis-ready view
 ```
 
 ## Geographic Hierarchy
@@ -77,7 +78,7 @@ pipeline production data into analysis-ready staging and mart models for the Hel
 
 | Source | Description | Ingestion |
 |--------|-------------|-----------|
-| **Genscape Daily Pipeline Production** | Daily dry gas production estimates by region from pipeline flow monitoring | Stored in `genscape.daily_pipeline_production` |
+| **Genscape Daily Pipeline Production** | Daily dry gas production estimates by region from pipeline flow monitoring | Stored in `genscape.daily_pipeline_production_v2_2026_mar_10` |
 
 ## Pipeline Architecture
 
@@ -101,11 +102,11 @@ The raw data arrives pre-pivoted with 22 regional columns. The source model comp
 | **Gulf Coast** | north_louisiana + south_louisiana + other_gulf_coast |
 | **Texas** | Pre-aggregated by Genscape |
 | **Mid-Continent** | oklahoma + kansas + arkansas |
-| **Permian** | permian_nm + permian_tx |
+| **Permian** | permian_new_mexico + permian_texas |
 | **San Juan** | Pre-aggregated by Genscape |
-| **Rockies** | piceance_basin + denver_julesberg + north_dakota_and_montana + uinta_basin + green_wind_river_wyoming + powder_river_basin + other_rockies |
+| **Rockies** | piceance_basin + colorado_denver_julesberg + north_dakota_montana + utah_uinta + wyoming_green_wind_ot + wyoming_powder + other_rockies |
 | **West** | Pre-aggregated by Genscape |
-| **East** | ohio + sw_pennsylvania + ne_pennsylvania + west_virginia + other_east |
+| **East** | ohio + southwest_pennsylvania + northeast_pennsylvania + west_virginia + other_east_ga_il_in_md_nc_tn_ky_mi_ny_va |
 | **Western Canada** | Pre-aggregated by Genscape |
 
 ## Metrics
@@ -123,5 +124,42 @@ tracks revisions via:
 - `revision` — sequential number (1 = oldest report for a given date)
 - `max_revision` — total number of revisions available
 - `report_date` — when the production estimate was reported
+
+{% enddocs %}
+
+{% docs genscape_daily_power_estimate_overview %}
+
+# Genscape Daily Power Estimate
+
+This dbt module transforms raw Genscape (now part of Wood Mackenzie) daily power
+burn estimate data into analysis-ready staging and mart models for the HeliosCTA trading desk.
+
+## Data Source
+
+| Source | Description | Ingestion |
+|--------|-------------|-----------|
+| **Genscape Daily Power Estimate** | Daily power generation burn estimates by region from the Pipeline Fundamentals API | Stored in `genscape.daily_power_estimate` |
+
+## Pipeline Architecture
+
+```
+source/          Raw table — pivoted regional columns (ephemeral)
+    ↓            Pass-through with type preservation
+staging/         Analysis-ready pass-through (ephemeral)
+    ↓
+marts/           Consumer-facing view
+```
+
+## Grain
+
+One row per **gas_day × power_burn_variable × model_type_based_on_noms**.
+
+## Key Columns
+
+- `gas_day` — the gas flow day (renamed from `gasday`)
+- `power_burn_variable` — the metric being reported
+- `model_type_based_on_noms` — the model type based on nomination data availability (renamed from `modeltype`)
+- `max_model_type_based_on_noms` — maximum model type for the same gas day and variable
+- `conus`, `east`, `midwest`, `mountain`, `pacific`, `south_central` — power burn values by US region
 
 {% enddocs %}
