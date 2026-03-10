@@ -143,6 +143,11 @@ const sidebars = {
               id: "domains/power/dbt-views/spp-cleaned",
               label: "SPP",
             },
+            {
+              type: "doc",
+              id: "domains/power/dbt-views/isone-cleaned",
+              label: "ISO-NE",
+            },
           ],
         },
       ],

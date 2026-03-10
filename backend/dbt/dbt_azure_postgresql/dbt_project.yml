@@ -145,6 +145,16 @@ models:
         marts:
           +materialized: view
 
+      isone_cleaned:
+        +schema: isone_cleaned
+        +materialized: ephemeral
+        source:
+          +materialized: ephemeral
+        staging:
+          +materialized: ephemeral
+        marts:
+          +materialized: view
+
     # ── WSI ────────────────────────────────────────────────────────────────────
     wsi:
       wsi_cleaned:
