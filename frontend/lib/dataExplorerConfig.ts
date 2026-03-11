@@ -8,6 +8,7 @@ export const ALLOWED_SCHEMAS = [
   "dbt_pjm_v1_2026_feb_19",
   "positions_and_trades_v1_2026_feb_03",
   "logging",
+  "gas_ebbs",
 ] as const;
 
 export type AllowedSchema = (typeof ALLOWED_SCHEMAS)[number];

@@ -1,0 +1,103 @@
+source_family: standalone
+
+defaults:
+  datetime_formats:
+    - "%m/%d/%Y %I:%M:%S %p"
+    - "%m/%d/%Y %I:%M %p"
+    - "%m/%d/%Y %H:%M:%S"
+    - "%m/%d/%Y"
+    - "%m/%d/%y"
+    - "%b %d %Y %I:%M %p"
+    - "%b %d, %Y %I:%M %p"
+    - "%Y-%m-%d"
+    - "%Y-%m-%dT%H:%M:%S"
+
+pipelines:
+  iroquois:
+    listing_url: "https://iol.iroquois.com/Infopost/Pages/Default.php"
+
+  gulf_south:
+    listing_url: "https://www.gasquest.com/informational-posting"
+
+  southern_star:
+    listing_url: "https://csimain.southernstar.com/dashboard"
+    notes: "Requires login"
+
+  texas_gas:
+    listing_url: "http://infopost.txgt.com"
+
+  sabine:
+    listing_url: "http://www.sabinepipeline.com"
+
+  empire:
+    listing_url: "https://informationalpostings.natfuel.com/empire/infopost/"
+
+  national_fuel:
+    listing_url: "https://informationalpostings.natfuel.com/supply/infopost/"
+
+  enable_gas:
+    listing_url: "http://pipelines.enablemidstream.com/EGT.html"
+
+  enable_mrt:
+    listing_url: "http://pipelines.enablemidstream.com/MRT.html"
+
+  enterprise_hios:
+    listing_url: "http://ebb.starwebgas.com/ebbSTG/EbbMain.asp?sPipelineCode=HIOS"
+
+  enterprise_petal:
+    listing_url: "http://ebb.starwebgas.com/ebbSTG/EbbMain.asp?sPipelineCode=PGS"
+
+  kern_river:
+    listing_url: "http://www.services.kernrivergas.com"
+    notes: "DNS issues reported"
+
+  wbi_energy:
+    listing_url: "http://transmission.wbienergy.com"
+
+  alliance:
+    listing_url: "http://ips.alliance-pipeline.com"
+
+  florida_southeast:
+    listing_url: "https://fsc.nexteraenergyresources.com/ptms"
+    notes: "Trellis-based"
+
+  black_marlin:
+    listing_url: "http://www.blackmarlin.williamsenergy.com"
+    notes: "Williams-related"
+
+  mountainwest:
+    listing_url: "http://www.questarpipeline.com/index.php"
+
+  mountainwest_overthrust:
+    listing_url: "http://www.questarpipeline.com/indexOTP.php"
+
+  paiute:
+    listing_url: "http://www.paiutepipeline.com/"
+
+  boardwalk_storage:
+    listing_url: "https://www.bwpipelines.com/"
+    notes: "Boardwalk/GasQuest"
+
+  dcp_cimarron:
+    listing_url: "http://ebb.dcpmidstream.com/Cimarron"
+
+  dcp_dauphin:
+    listing_url: "http://ebb.dcpmidstream.com/DIGP"
+
+  vector:
+    listing_url: "http://www.vector-pipeline.com/informational-postings/"
+
+  stingray:
+    listing_url: "http://stingray.mcpoperating.com/informational-postings/notices/"
+
+  ko_transmission:
+    listing_url: "http://www.kotransmission.com/"
+
+  westgas:
+    listing_url: "http://www1.xcelenergy.com/webebb/html/wgis.asp"
+
+  white_river_hub:
+    listing_url: "http://www.whiteriverhub.com/InformationalPostings/"
+
+  oneok_oktex:
+    listing_url: "http://www.oneok.com/okt"

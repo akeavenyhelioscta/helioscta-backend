@@ -4,8 +4,9 @@ import { useState, useCallback } from "react";
 import CatalogBrowser from "./CatalogBrowser";
 import SqlEditor from "./SqlEditor";
 import ForecastComparison from "./ForecastComparison";
+import GasEbbDashboard from "./GasEbbDashboard";
 
-type Tab = "catalog" | "workbench" | "forecasts";
+type Tab = "catalog" | "workbench" | "forecasts" | "gas-ebbs";
 
 export default function DataExplorer() {
   const [activeTab, setActiveTab] = useState<Tab>("catalog");
@@ -61,6 +62,19 @@ export default function DataExplorer() {
             <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 rounded-full" />
           )}
         </button>
+        <button
+          onClick={() => setActiveTab("gas-ebbs")}
+          className={`relative px-4 py-2.5 text-sm font-medium transition-colors ${
+            activeTab === "gas-ebbs"
+              ? "text-white"
+              : "text-gray-500 hover:text-gray-300"
+          }`}
+        >
+          Gas EBBs
+          {activeTab === "gas-ebbs" && (
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 rounded-full" />
+          )}
+        </button>
       </div>
 
       {/* Tab content */}
@@ -71,6 +85,7 @@ export default function DataExplorer() {
         <SqlEditor key={workbenchKey} initialSql={workbenchSql} />
       )}
       {activeTab === "forecasts" && <ForecastComparison />}
+      {activeTab === "gas-ebbs" && <GasEbbDashboard />}
     </div>
   );
 }

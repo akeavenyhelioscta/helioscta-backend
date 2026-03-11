@@ -1,0 +1,24 @@
+source_family: tallgrass
+
+defaults:
+  base_url: "http://pipeline.tallgrassenergylp.com"
+  listing_url: "http://pipeline.tallgrassenergylp.com"
+  datetime_formats:
+    - "%m/%d/%Y %I:%M:%S %p"
+    - "%m/%d/%Y %I:%M %p"
+    - "%m/%d/%Y %H:%M:%S"
+    - "%m/%d/%Y"
+  # NOTE: Tallgrass likely requires Selenium for JS rendering.
+
+pipelines:
+  rockies_express:
+    pipeline_label: "REX"
+
+  ruby:
+    pipeline_label: "Ruby"
+
+  tallgrass_interstate:
+    pipeline_label: "Tallgrass Interstate"
+
+  trailblazer:
+    pipeline_label: "Trailblazer"

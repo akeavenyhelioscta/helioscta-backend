@@ -7,12 +7,10 @@ import ClearStreetIntradayTrades from "@/components/positions/ClearStreetIntrada
 import MarexAllocatedTrades from "@/components/positions/MarexAllocatedTrades";
 import NavProductCodeMatching from "@/components/positions/NavProductCodeMatching";
 import GroupedPositions from "@/components/positions/GroupedPositions";
-import PipelineRuns from "@/components/positions/PipelineRuns";
 import PositionFiles from "@/components/positions/PositionFiles";
 import WorkflowStatus from "@/components/positions/WorkflowStatus";
 import NavTradeBreaks from "@/components/trade-breaks/NavTradeBreaks";
-import ScrapeMonitoring from "@/components/monitoring/ScrapeMonitoring";
-import DataExplorer from "@/components/data-explorer/DataExplorer";
+import GasEbbDashboard from "@/components/data-explorer/GasEbbDashboard";
 
 const SECTION_META: Record<ActiveSection, { title: string; subtitle: string; footer: string }> = {
   "dashboard": {
@@ -45,26 +43,16 @@ const SECTION_META: Record<ActiveSection, { title: string; subtitle: string; foo
     subtitle: "NAV positions with unmatched exchange codes requiring product code mapping.",
     footer: "NAV product code matching | Source: Azure PostgreSQL",
   },
-  "pipeline-runs": {
-    title: "Pipeline Runs",
-    subtitle: "Lifecycle events for all pipeline runs, categorized by success and errors.",
-    footer: "Pipeline runs | Source: logging.pipeline_runs",
-  },
-  "scrape-monitoring": {
-    title: "Scrape Monitoring",
+  "gas-ebbs": {
+    title: "Gas EBBs",
     subtitle:
-      "Health and freshness monitoring across power, positions/trades, and WSI scrape pipelines.",
-    footer: "Scrape monitoring | Sources: logging.pipeline_runs + generated scrape catalog",
+      "Gas pipeline EBB notice dashboard using canonical gas_ebbs notice tables.",
+    footer: "Gas EBBs | Sources: gas_ebbs.notices + gas_ebbs.notice_snapshots",
   },
   "nav-trade-breaks": {
     title: "NAV Trade Breaks",
     subtitle: "Trade breaks identified from NAV SFTP feed requiring review and resolution.",
     footer: "NAV trade breaks | Source: Azure PostgreSQL",
-  },
-  "data-explorer": {
-    title: "Data Explorer",
-    subtitle: "Browse database schemas, tables, and columns. Write SQL queries and visualize results.",
-    footer: "Data Explorer | Source: Azure PostgreSQL",
   },
 };
 
@@ -105,10 +93,8 @@ export default function HomePageClient() {
                 <PositionFiles />
               </div>
             )}
-            {activeSection === "pipeline-runs" && <PipelineRuns />}
-            {activeSection === "scrape-monitoring" && <ScrapeMonitoring />}
+            {activeSection === "gas-ebbs" && <GasEbbDashboard />}
             {activeSection === "nav-trade-breaks" && <NavTradeBreaks />}
-            {activeSection === "data-explorer" && <DataExplorer />}
           </div>
           <p className="mt-6 text-center text-xs text-gray-600">{meta.footer}</p>
         </main>

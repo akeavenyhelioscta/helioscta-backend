@@ -1,0 +1,32 @@
+source_family: williams
+
+defaults:
+  notice_types:
+    - "critical"
+    - "non-critical"
+  datetime_formats:
+    - "%m/%d/%Y %I:%M:%S %p"
+    - "%m/%d/%Y %I:%M %p"
+    - "%m/%d/%Y %H:%M:%S"
+    - "%m/%d/%Y"
+    - "%m/%d/%y"
+    - "%b %d, %Y %I:%M %p"
+    - "%b %d, %Y"
+  # listing_url is not used directly — _get_listing_sources() builds per notice_type
+  listing_url: "http://www.1line.williams.com"
+
+pipelines:
+  transco:
+    base_url: "http://www.1line.williams.com/Transco"
+
+  northwest:
+    base_url: "http://www.1line.williams.com/Northwest"
+
+  gulfstream:
+    base_url: "http://www.1line.gulfstreamgas.com"
+
+  discovery:
+    base_url: "http://discovery.williams.com"
+
+  pine_needle:
+    base_url: "http://pineneedle.williams.com"

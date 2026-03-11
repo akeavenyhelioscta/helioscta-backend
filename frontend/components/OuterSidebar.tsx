@@ -2,9 +2,17 @@
 
 import { useState } from "react";
 
-export type TopLevelSection = "positions" | "data-explorer";
+export type TopLevelSection = "positions" | "gas-ebbs";
 
-export type ActiveSection = "dashboard" | "grouped-positions" | "clear-street-trades" | "clear-street-intraday-trades" | "marex-allocated-trades" | "nav-product-code-matching" | "pipeline-runs" | "scrape-monitoring" | "nav-trade-breaks" | "data-explorer";
+export type ActiveSection =
+  | "dashboard"
+  | "grouped-positions"
+  | "clear-street-trades"
+  | "clear-street-intraday-trades"
+  | "marex-allocated-trades"
+  | "nav-product-code-matching"
+  | "nav-trade-breaks"
+  | "gas-ebbs";
 
 interface OuterSidebarProps {
   topLevel: TopLevelSection;
@@ -40,10 +48,10 @@ const TOP_LEVEL_ITEMS: TopLevelItem[] = [
     iconColor: "text-blue-400",
   },
   {
-    id: "data-explorer",
-    label: "Explorer",
-    iconPath: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4",
-    iconColor: "text-purple-400",
+    id: "gas-ebbs",
+    label: "Gas EBBs",
+    iconPath: "M3 12h4m10 0h4M12 3v4m0 10v4M7.05 7.05l2.83 2.83m4.24 4.24l2.83 2.83m0-9.9l-2.83 2.83m-4.24 4.24L7.05 16.95M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+    iconColor: "text-cyan-400",
   },
 ];
 
@@ -110,34 +118,17 @@ const POSITIONS_SECTIONS: NavSection[] = [
       },
     ],
   },
-  {
-    title: "Backend",
-    items: [
-      {
-        id: "scrape-monitoring",
-        label: "Scrape Monitoring",
-        iconPath: "M3 12h4m10 0h4M12 3v4m0 10v4M7.05 7.05l2.83 2.83m4.24 4.24l2.83 2.83m0-9.9l-2.83 2.83m-4.24 4.24L7.05 16.95M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-        iconColor: "text-cyan-400",
-      },
-      {
-        id: "pipeline-runs",
-        label: "Pipeline Runs",
-        iconPath: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4",
-        iconColor: "text-teal-400",
-      },
-    ],
-  },
 ];
 
-const DATA_EXPLORER_SECTIONS: NavSection[] = [
+const GAS_EBBS_SECTIONS: NavSection[] = [
   {
-    title: "Data",
+    title: "Gas EBBs",
     items: [
       {
-        id: "data-explorer",
-        label: "Data Explorer",
-        iconPath: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4",
-        iconColor: "text-purple-400",
+        id: "gas-ebbs",
+        label: "Notice Dashboard",
+        iconPath: "M3 12h4m10 0h4M12 3v4m0 10v4M7.05 7.05l2.83 2.83m4.24 4.24l2.83 2.83m0-9.9l-2.83 2.83m-4.24 4.24L7.05 16.95M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+        iconColor: "text-cyan-400",
       },
     ],
   },
@@ -145,13 +136,18 @@ const DATA_EXPLORER_SECTIONS: NavSection[] = [
 
 const DEFAULT_SECTION: Record<TopLevelSection, ActiveSection> = {
   positions: "dashboard",
-  "data-explorer": "data-explorer",
+  "gas-ebbs": "gas-ebbs",
+};
+
+const TOP_LEVEL_PANEL_LABEL: Record<TopLevelSection, string> = {
+  positions: "Positions",
+  "gas-ebbs": "Gas EBBs",
 };
 
 export default function OuterSidebar({ topLevel, onTopLevelChange, activeSection, onSectionChange }: OuterSidebarProps) {
   const [expanded, setExpanded] = useState(true);
 
-  const sections = topLevel === "positions" ? POSITIONS_SECTIONS : topLevel === "data-explorer" ? DATA_EXPLORER_SECTIONS : [];
+  const sections = topLevel === "positions" ? POSITIONS_SECTIONS : topLevel === "gas-ebbs" ? GAS_EBBS_SECTIONS : [];
 
   return (
     <aside className="flex border-r border-gray-800 bg-[#0b0d14]">
@@ -213,7 +209,7 @@ export default function OuterSidebar({ topLevel, onTopLevelChange, activeSection
         <div className="flex flex-col w-64">
           <div className="px-3 py-4">
             <span className="text-xs font-bold uppercase tracking-widest text-gray-500">
-              {topLevel}
+              {TOP_LEVEL_PANEL_LABEL[topLevel]}
             </span>
           </div>
           <nav className="flex-1 px-2 py-2">

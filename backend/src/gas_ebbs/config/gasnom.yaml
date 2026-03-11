@@ -1,0 +1,30 @@
+source_family: gasnom
+
+defaults:
+  base_url: "http://www.gasnom.com/ip"
+  listing_url: "http://www.gasnom.com/ip"
+  datetime_formats:
+    - "%m/%d/%Y %I:%M:%S %p"
+    - "%m/%d/%Y %I:%M %p"
+    - "%m/%d/%Y %H:%M:%S"
+    - "%m/%d/%Y"
+    - "%Y-%m-%d"
+
+pipelines:
+  southern_pines:
+    path: "SOUTHERNPINES"
+
+  cameron_interstate:
+    path: "cameron"
+
+  golden_pass:
+    path: "goldenpass"
+
+  golden_triangle:
+    path: "goldentriangle"
+
+  mississippi_hub:
+    path: "mississippihub"
+
+  la_storage:
+    path: "lastorage"

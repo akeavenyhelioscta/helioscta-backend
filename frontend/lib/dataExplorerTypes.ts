@@ -48,3 +48,95 @@ export interface QueryRequest {
 }
 
 export type ChartType = "line" | "bar" | "area" | "scatter" | "forecast";
+
+export type GasEbbTimingState =
+  | "active"
+  | "upcoming"
+  | "ended"
+  | "open_ended"
+  | "unknown";
+
+export interface GasEbbKpiSummary {
+  activeNotices: number;
+  upcomingNotices: number;
+  affectedPipelines: number;
+  highSeverityActive: number;
+  totalNotices: number;
+  latestScrapeAt: string | null;
+}
+
+export interface GasEbbHeroSummary {
+  sourceFamilies: number;
+  pipelines: number;
+  totalNotices: number;
+}
+
+export interface GasEbbNoticesOverTimePoint {
+  date: string;
+  notices: number;
+}
+
+export interface GasEbbCategoryPoint {
+  noticeCategory: string;
+  notices: number;
+}
+
+export interface GasEbbPipelinePoint {
+  pipelineName: string;
+  notices: number;
+}
+
+export interface GasEbbSourceFamilyPoint {
+  sourceFamily: string;
+  notices: number;
+}
+
+export interface GasEbbNoticeRow {
+  sourceFamily: string;
+  pipelineName: string;
+  noticeIdentifier: string;
+  noticeType: string;
+  noticeSubtype: string;
+  subject: string;
+  noticeStatus: string;
+  postedDatetime: string;
+  effectiveDatetime: string;
+  endDatetime: string;
+  responseDatetime: string;
+  detailUrl: string;
+  noticeCategory: string;
+  severity: number;
+  scrapedAt: string;
+  postedTs: string | null;
+  effectiveTs: string | null;
+  endTs: string | null;
+  timingState: GasEbbTimingState;
+  isActiveHeuristic: boolean;
+  isUpcoming: boolean;
+}
+
+export interface GasEbbTimelineRow {
+  sourceFamily: string;
+  pipelineName: string;
+  noticeIdentifier: string;
+  subject: string;
+  noticeCategory: string;
+  severity: number;
+  effectiveTs: string | null;
+  endTs: string | null;
+  timingState: GasEbbTimingState;
+}
+
+export interface GasEbbDashboardResponse {
+  asOf: string;
+  hero: GasEbbHeroSummary;
+  kpis: GasEbbKpiSummary;
+  charts: {
+    noticesOverTime: GasEbbNoticesOverTimePoint[];
+    byCategory: GasEbbCategoryPoint[];
+    byPipeline: GasEbbPipelinePoint[];
+    bySourceFamily: GasEbbSourceFamilyPoint[];
+  };
+  notices: GasEbbNoticeRow[];
+  timeline: GasEbbTimelineRow[];
+}

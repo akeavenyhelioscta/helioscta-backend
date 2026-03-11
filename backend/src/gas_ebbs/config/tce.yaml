@@ -1,0 +1,49 @@
+source_family: tce
+
+defaults:
+  base_url: "https://www.tceconnects.com/infopost"
+  # listing_url is not used directly — _get_listing_sources() builds per pipeline/notice type
+  listing_url: "https://www.tceconnects.com/infopost"
+  notice_types:
+    - "critical"
+    - "non-critical"
+  datetime_formats:
+    - "%m/%d/%Y %I:%M:%S %p"
+    - "%m/%d/%Y %I:%M %p"
+    - "%m/%d/%Y %H:%M:%S"
+    - "%m/%d/%Y"
+    - "%m/%d/%y"
+
+pipelines:
+  anr:
+    pipe_code: "ANR"
+
+  anr_storage:
+    pipe_code: "ANRS"
+
+  bison:
+    pipe_code: "BISON"
+
+  blue_lake:
+    pipe_code: "BLGS"
+
+  columbia_gas:
+    pipe_code: "TCO"
+
+  columbia_gulf:
+    pipe_code: "CGUL"
+
+  crossroads:
+    pipe_code: "CROSS"
+
+  hardy_storage:
+    pipe_code: "HARDY"
+
+  millennium:
+    pipe_code: "MILL"
+
+  northern_border:
+    pipe_code: "NBPL"
+
+  portland_natural_gas:
+    pipe_code: "PNGTS"

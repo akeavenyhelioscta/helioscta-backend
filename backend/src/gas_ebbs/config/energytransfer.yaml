@@ -1,0 +1,51 @@
+source_family: energytransfer
+
+defaults:
+  notice_types:
+    - "CRI"
+    - "NON"
+  datetime_formats:
+    - "%m/%d/%Y %I:%M:%S %p"
+    - "%m/%d/%Y %I:%M %p"
+    - "%m/%d/%Y %H:%M:%S"
+    - "%m/%d/%Y"
+    - "%m/%d/%y"
+  # listing_url is not used directly — _get_listing_sources() builds per notice_type
+  listing_url: "https://energytransfer.com"
+
+pipelines:
+  florida_gas:
+    subdomain: "fgttransfer"
+    pipe_code: "fgt"
+
+  panhandle_eastern:
+    subdomain: "peplmessenger"
+    pipe_code: "pepl"
+
+  transwestern:
+    subdomain: "twtransfer"
+    pipe_code: "tw"
+
+  trunkline_gas:
+    subdomain: "tgcmessenger"
+    pipe_code: "tgc"
+
+  sea_robin:
+    subdomain: "sermessenger"
+    pipe_code: "ser"
+
+  tiger:
+    subdomain: "tigertransfer"
+    pipe_code: "tgr"
+
+  fayetteville_express:
+    subdomain: "feptransfer"
+    pipe_code: "fep"
+
+  trunkline_lng:
+    subdomain: "tlngmessenger"
+    pipe_code: "tlng"
+
+  southwest_gas_storage:
+    subdomain: "swgsmessenger"
+    pipe_code: "swgs"
