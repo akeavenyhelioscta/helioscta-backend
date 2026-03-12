@@ -54,8 +54,10 @@ Click any link in the Source Scrape or dbt View columns for details.
 | `wdd_normals` | 10-year and 30-year average degree days by calendar day (TABLE) | "Is this week's weather warmer or colder than normal?" | [WSI Scrapes](domains/wsi/scrapes/wsi-scrapes.md#historical-observations) | [wdd_normals](domains/wsi/dbt-views/wsi-cleaned.md#wdd_normals) | Rebuilt on dbt run | TBD |
 | `wdd_forecast_models` | Degree day forecasts from individual weather models (GFS, ECMWF) ranked by recency | "What is the GFS model saying about heating demand next week?" | [WSI Scrapes](domains/wsi/scrapes/wsi-scrapes.md#weighted-degree-day-forecasts) (5 model scripts) | [wdd_forecast_models](domains/wsi/dbt-views/wsi-cleaned.md#wdd_forecast_models) | 2-4x daily | TBD |
 | `wdd_forecast_wsi` | WSI's best-estimate blended degree day forecast, ranked by recency | "What is the best weather forecast for gas and power demand?" | [WSI Scrapes](domains/wsi/scrapes/wsi-scrapes.md#wsi-blended-wdd-forecast) | [wdd_forecast_wsi](domains/wsi/dbt-views/wsi-cleaned.md#wdd_forecast_wsi) | 2-4x daily | TBD |
+| `temp_observed_hourly` | Hourly observed temperature and weather conditions by weather station | "What was the actual temperature at each PJM station yesterday?" | [WSI Scrapes](domains/wsi/scrapes/wsi-scrapes.md#historical-observations) | [temp_observed_hourly](domains/wsi/dbt-views/wsi-cleaned.md#temp_observed_hourly) | Daily | TBD |
+| `temp_forecast_hourly` | Hourly temperature forecast by weather station with normal and feels-like | "What is the forecast temperature at each station for today?" | [WSI Scrapes](domains/wsi/scrapes/wsi-scrapes.md#hourly-forecasts) | [temp_forecast_hourly](domains/wsi/dbt-views/wsi-cleaned.md#temp_forecast_hourly) | 2-4x daily | TBD |
 
-> **Note:** WSI also provides hourly temperature forecasts, city-level forecasts, and natural gas BCF forecasts as raw tables. See the [WSI overview](domains/wsi/overview.md) for the full inventory.
+> **Note:** WSI also provides city-level forecasts and natural gas BCF forecasts as raw tables. See the [WSI overview](domains/wsi/overview.md) for the full inventory.
 
 ---
 
@@ -134,14 +136,14 @@ Click any link in the Source Scrape or dbt View columns for details.
 |--------|--------|------------|--------|
 | Power (PJM) | `pjm_cleaned` | 21 | Fully cleaned |
 | Meteologica | `meteologica_cleaned` | 3 | PJM only; other ISOs raw |
-| WSI (Weather) | `wsi_cleaned` | 4 | Degree days cleaned |
+| WSI (Weather) | `wsi_cleaned` | 6 | Degree days + hourly temps cleaned |
 | Genscape | `genscape_cleaned` | 2 | Fully cleaned |
 | Positions | `positions_cleaned` | 8 | Fully cleaned |
 | Trades | `trades_cleaned` | 6 | Fully cleaned |
 | EIA | `eia_cleaned` | 3 | EIA-930 hourly + daily, NG consumption by end use; storage raw |
 | ICE | `ice_python_cleaned` | 3 | BALMO, next-day gas hourly + daily |
 | Utils | `dbt` | 2 | Date spines; NERC holidays pending |
-| **Total** | | **52 views + 1 raw** | |
+| **Total** | | **54 views + 1 raw** | |
 
 ---
 

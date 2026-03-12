@@ -386,3 +386,25 @@ models:
         description: '{{ doc("col_hour_ending") }}'
         tests:
           - not_null
+
+  - name: pjm_dates_daily
+    description: '{{ doc("pjm_mart_dates_daily") }}'
+    columns:
+      - name: date
+        description: '{{ doc("col_date") }}'
+        tests:
+          - not_null
+          - unique
+
+  - name: pjm_dates_hourly
+    description: '{{ doc("pjm_mart_dates_hourly") }}'
+    columns:
+      - name: datetime
+        description: "Hourly timestamp."
+        tests:
+          - not_null
+          - unique
+      - name: hour_ending
+        description: '{{ doc("col_hour_ending") }}'
+        tests:
+          - not_null

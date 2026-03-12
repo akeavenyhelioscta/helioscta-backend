@@ -86,7 +86,7 @@ COMBINED_WITH_ICE_XL AS (
                 )
 
             -- POWER OPTIONS (e.g. PMI Z25P50-IUS)
-            WHEN exchange_name = 'IFED' AND is_option = TRUE AND exchange_code = 'PMI' THEN
+            WHEN exchange_name = 'IFED' AND is_option = TRUE THEN
                 CONCAT(
                     exchange_code,
                     ' ',
@@ -111,7 +111,7 @@ COMBINED_WITH_ICE_XL AS (
         ,(CASE
 
             -- POWER OPTIONS (e.g. PMI Z25P50-IUS)
-            WHEN exchange_name = 'IFED' AND is_option = TRUE AND exchange_code_underlying = 'PMI' THEN
+            WHEN exchange_name = 'IFED' AND is_option = TRUE THEN
                 CONCAT(
                     exchange_code_underlying,
                     ' ',

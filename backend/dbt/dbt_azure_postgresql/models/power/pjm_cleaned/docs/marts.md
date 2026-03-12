@@ -93,3 +93,11 @@ Hourly PJM solar forecast mart by `forecast_rank x forecast_date x hour_ending`.
 {% docs pjm_mart_wind_forecast_hourly %}
 Hourly PJM wind forecast mart by `forecast_rank x forecast_date x hour_ending`.
 {% enddocs %}
+
+{% docs pjm_mart_dates_daily %}
+Daily PJM date dimension mart with year, month, summer/winter season, EIA week, on-peak/off-peak flags, weekend and NERC holiday indicators.
+{% enddocs %}
+
+{% docs pjm_mart_dates_hourly %}
+Hourly PJM date dimension mart with year, month, summer/winter season, EIA week, hour ending, peak/off-peak period, weekend and NERC holiday indicators.
+{% enddocs %}

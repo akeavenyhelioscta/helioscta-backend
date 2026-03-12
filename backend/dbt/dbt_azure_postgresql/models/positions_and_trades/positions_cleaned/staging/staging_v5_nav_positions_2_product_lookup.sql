@@ -97,7 +97,7 @@ NAV_DESCRIPTION AS (
                     TO_CHAR(TO_DATE(contract_yyyymm, 'YYYYMM'), 'MON YY'), ' ',
                     exchange_name, ' ',
                     marex_product, ' ',
-                    CAST(ROUND(strike_price::NUMERIC, 2) AS VARCHAR), ' '
+                    TO_CHAR(strike_price::NUMERIC, 'FM999990.00'), ' '
                 ))
 
             -- SHORT TERM

@@ -25,9 +25,11 @@ SELECT * FROM (
     
     -- GAS - OPTIONS - ICE
     (NULL, 'PHE', 'NG', 'GAS_OPTIONS', 'HENRY_HUB',                'ICE PHE', 'HENRY PENULT FIXED'),
+    (NULL, 'PHE', 'NG', 'GAS_OPTIONS', 'HENRY_HUB',                'ICE HH EQ', 'HENRY PENULT FIXED'),
+    (NULL, 'PHE', 'NG', 'GAS_OPTIONS', 'HENRY_HUB',                'NATURAL GAS CLEARPORT', 'HENRY PENULT FIXED'),
     
     -- GAS - OPTIONS - CME
-    ('NG', 'LN',  'NG', 'GAS_OPTIONS', 'HENRY_HUB',                'NYM EUR NATURAL GAS', 'EUR NAT GAS'),
+    ('NG', 'LN',  'NG', 'GAS_OPTIONS', 'HENRY_HUB',                 'NYM EUR NATURAL GAS', 'EUR NAT GAS'),
     ('NGW', 'LN1', 'NG', 'GAS_OPTIONS', 'HENRY_HUB',                'NATURAL GAS FINANCIAL Week 1', 'NAT GAS FIN WKLY WK1'),
     ('NGW', 'LN2', 'NG', 'GAS_OPTIONS', 'HENRY_HUB',                'NATURAL GAS FINANCIAL Week 2', 'NAT GAS FIN WKLY WK2'),
     ('NGW', 'LN3', 'NG', 'GAS_OPTIONS', 'HENRY_HUB',                'NATURAL GAS FINANCIAL Week 3', 'NAT GAS FIN WKLY WK3'),
@@ -40,13 +42,13 @@ SELECT * FROM (
     (NULL, 'G4', 'NG', 'GAS_OPTIONS', 'HENRY_HUB',                 'NATURAL GAS 1M CSO', 'NAT GAS FINAN 1 MNTH SPRD'),
     
     -- PJM RT
-    (NULL, 'PDP', NULL, 'SHORT_TERM_POWER', 'PJM',                 'ICE PJM WH RTD', 'PJM WH REAL T PEAK DAILY'),
-    (NULL, 'PWA', NULL, 'SHORT_TERM_POWER', 'PJM',                 'ICE PWA', 'PJM W HUB RT PEAK DAILY'),
-    (NULL, 'DDP', NULL, 'SHORT_TERM_POWER', 'PJM',                 NULL, 'PJM AEP DAYTHUB PEAK DLY'),
+    (NULL, 'PDP', NULL, 'SHORT_TERM_POWER', 'PJM',                   'ICE PJM WH RTD', 'PJM WH REAL T PEAK DAILY'),
+    (NULL, 'PWA', NULL, 'SHORT_TERM_POWER', 'PJM',                   'ICE PWA', 'PJM W HUB RT PEAK DAILY'),
+    (NULL, 'DDP', NULL, 'SHORT_TERM_POWER', 'PJM',                   NULL, 'PJM AEP DAYTHUB PEAK DLY'),
     
     -- PJM DA
-    (NULL, 'PDA', NULL, 'SHORT_TERM_POWER', 'PJM',                  'ICE PJMWHPKDAY', 'PJM WEST DAY AHEAD PK DA'),
-    (NULL, 'PJL', NULL, 'SHORT_TERM_POWER', 'PJM',                  'ICE PJL', 'PJM WST HUB D APDM FP FU'),
+    (NULL, 'PDA', NULL, 'POWER_FUTURES', 'PJM',                      'ICE PJMWHPKDAY', 'PJM WEST DAY AHEAD PK DA'),
+    (NULL, 'PJL', NULL, 'POWER_FUTURES', 'PJM',                      'ICE PJL', 'PJM WST HUB D APDM FP FU'),
     
     -- PJM: PMI
     (NULL, 'PMI', 'PMI', 'POWER_FUTURES', 'PJM',                    'ICE PJM MINI', 'PJM WST HUB REAL PEAK FIXED'),

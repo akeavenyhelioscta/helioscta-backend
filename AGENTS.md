@@ -22,6 +22,7 @@ Project-specific conventions and preferences for Codex.
 | Task Scheduling | [.SKILLS/task_scheduling.md](.SKILLS/task_scheduling.md) | Windows Task Scheduler PowerShell runner conventions, bulk registration rules, and required docs updates |
 | Scheduled vs Event-Driven | [.SKILLS/scheduled_vs_event_driven.md](.SKILLS/scheduled_vs_event_driven.md) | Prompt template and decision framework for API scrape orchestration |
 | Documentation | [.SKILLS/documentation.md](.SKILLS/documentation.md) | Docusaurus site conventions: theme, nav structure, content templates, QA checklist |
+| TODO Tracking | [.SKILLS/todo-preferences.md](.SKILLS/todo-preferences.md) | TODO directory structure, tags, and conventions for tracking work and bugs |
 
 ## API Orchestration Decision Standard
 

@@ -60,7 +60,7 @@ WITH MAREX_POSITIONS as (
         ,dplsttrdt::VARCHAR::DATE as last_trade_date
 
         -- DESCRIPTION
-        ,TRIM(dpsdsc)::VARCHAR as marex_description
+        ,REGEXP_REPLACE(TRIM(dpsdsc), '(\d+\.\d{2})\d+\s*$', '\1')::VARCHAR as marex_description
 
         -- BUY/SELL, QTY, LOTS
         ,CASE

@@ -34,3 +34,19 @@ sources:
       # NOTE: aifs_ens table does not exist yet — uncomment when deployed
       # - name: aifs_ens_wdd_day_forecast_v1_2026_feb_12
       #   description: 'AIFS ensemble model daily WDD forecast.'
+
+      # ── Hourly Forecast Temperatures ─────────────────────────
+      - name: hourly_forecast_temp_v4_2025_jan_12
+        description: >
+          Hourly temperature forecast from WSI GetHourlyForecast API. One row per
+          local_time x station with temperature, feels-like, dewpoint, cloud cover,
+          wind, precipitation, and GHI irradiance forecasts.
+          PK: (local_time, region, site_id, station_name).
+
+      # ── Hourly Observed Temperatures ───────────────────────────
+      - name: hourly_observed_temp_v2_20250722
+        description: >
+          Hourly observed weather station data from WSI GetHistoricalObservations
+          (HISTORICAL_HOURLY_OBSERVED). One row per date x hour x station with
+          temperature, dewpoint, cloud cover, wind, heat index, wind chill,
+          relative humidity, and precipitation. PK: (date, hour, region, site_id, station_name).

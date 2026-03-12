@@ -1,6 +1,6 @@
 # WSI Cleaned dbt Views
 
-All views are in the `wsi_cleaned` schema. Covers weighted degree day (WDD) data from WSI (The Weather Company).
+All views are in the `wsi_cleaned` schema. Covers weighted degree day (WDD) data and hourly station-level temperature observations and forecasts from WSI (The Weather Company).
 
 ## Architecture
 
@@ -57,6 +57,30 @@ Raw WSI tables (wsi schema)
 | **Refresh** | View -- refreshes on query |
 | **SQL** | [GitHub](https://github.com/helioscta/helioscta-backend/blob/main/backend/dbt/dbt_azure_postgresql/models/wsi/wsi_cleaned/.docs/wdd_forecasts_daily.sql) |
 
+### temp_observed_hourly
+
+| Field | Value |
+|-------|-------|
+| **Business Definition** | Hourly observed weather station temperatures and conditions (temperature, dewpoint, cloud cover, wind, humidity, precipitation) |
+| **Grain** | One row per datetime x region x site_id x station_name |
+| **Primary Keys** | `date`, `hour_ending`, `region`, `site_id`, `station_name` |
+| **Upstream** | `source_v1_hourly_observed_temp` → `staging_v1_temp_observed_hourly` |
+| **Key Columns** | `datetime`, `date`, `hour_ending`, `region`, `site_id`, `station_name`, `temperature`, `dewpoint`, `cloud_cover_pct`, `wind_direction`, `wind_speed`, `heat_index`, `wind_chill`, `relative_humidity`, `precipitation` |
+| **Use Cases** | Historical temperature analysis, weather vs normal comparisons, load-weather regression |
+| **Refresh** | View -- refreshes on query |
+
+### temp_forecast_hourly
+
+| Field | Value |
+|-------|-------|
+| **Business Definition** | Hourly temperature forecasts by weather station with temperature, feels-like, dewpoint, cloud cover, wind, precipitation, and GHI irradiance |
+| **Grain** | One row per local_time x region x site_id x station_name |
+| **Primary Keys** | `local_time`, `region`, `site_id`, `station_name` |
+| **Upstream** | `source_v1_hourly_forecast_temp` → `staging_v1_temp_forecast_hourly` |
+| **Key Columns** | `local_time`, `date`, `hour_ending`, `region`, `site_id`, `station_name`, `temperature`, `temperature_diff`, `temperature_normal`, `dewpoint`, `cloud_cover_pct`, `feels_like_temperature`, `wind_speed`, `ghi_irradiance` |
+| **Use Cases** | Forward temperature outlook, feels-like temperature for load forecasting, solar irradiance analysis |
+| **Refresh** | View -- refreshes on query |
+
 ---
 
 ## Data Quality
@@ -64,3 +88,4 @@ Raw WSI tables (wsi schema)
 - Schema tests defined in `schema.yml` for primary keys (`dbt_utils.unique_combination_of_columns`) and not-null constraints
 - `wdd_normals_daily` uses a unique combination test on (`mm_dd`, `region`, `period`)
 - `wdd_forecasts_daily` validates `accepted_values` on `model` (GFS_OP, GFS_ENS, ECMWF_OP, ECMWF_ENS, WSI) and `cycle` (00Z, 12Z)
+- `temp_observed_hourly` and `temp_forecast_hourly` have `not_null` tests on all grain columns (`datetime`/`local_time`, `date`, `hour_ending`, `region`, `site_id`, `station_name`)

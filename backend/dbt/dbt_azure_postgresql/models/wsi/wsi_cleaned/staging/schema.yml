@@ -46,3 +46,108 @@ models:
         description: 'Maximum day span for this forecast execution partition. Always 15 after filtering.'
         tests:
           - not_null
+
+  - name: staging_v1_temp_forecast_hourly
+    description: >
+      Derives date and hour from local_time. Passes through all source columns
+      with clean aliases. Grain: local_time x region x site_id x station_name.
+    columns:
+      - name: local_time
+        description: 'Forecast target timestamp in local prevailing timezone.'
+        tests:
+          - not_null
+      - name: date
+        description: 'Forecast target date (derived from local_time).'
+        tests:
+          - not_null
+      - name: hour_ending
+        description: 'Forecast target hour ending (0–23, derived from local_time).'
+        tests:
+          - not_null
+      - name: region
+        description: 'WSI geographic region grouping for the weather station.'
+        tests:
+          - not_null
+      - name: site_id
+        description: 'WSI unique weather station identifier.'
+        tests:
+          - not_null
+      - name: station_name
+        description: 'Human-readable weather station name.'
+        tests:
+          - not_null
+      - name: temperature
+        description: 'Forecast temperature (°F).'
+      - name: temperature_diff
+        description: 'Forecast temperature difference from normal (°F).'
+      - name: temperature_normal
+        description: 'Normal temperature for the forecasted hour (°F).'
+      - name: dewpoint
+        description: 'Forecast dewpoint temperature (°F).'
+      - name: cloud_cover_pct
+        description: 'Forecast cloud cover percentage.'
+      - name: feels_like_temperature
+        description: 'Forecast feels-like temperature (°F).'
+      - name: feels_like_temperature_diff
+        description: 'Forecast feels-like temperature difference from normal (°F).'
+      - name: precipitation
+        description: 'Forecast precipitation amount.'
+      - name: wind_direction
+        description: 'Forecast wind direction in degrees (0–360).'
+      - name: wind_speed
+        description: 'Forecast wind speed (mph).'
+      - name: ghi_irradiance
+        description: 'Forecast global horizontal irradiance.'
+      - name: created_at
+        description: 'Row creation timestamp from ingestion pipeline.'
+      - name: updated_at
+        description: 'Row last-updated timestamp from ingestion pipeline.'
+
+  - name: staging_v1_temp_observed_hourly
+    description: >
+      Adds a combined datetime column (date + hour interval) as the first column.
+      Passes through all source columns with clean typing enforced upstream.
+      Grain: datetime x region x site_id x station_name.
+    columns:
+      - name: datetime
+        description: 'Combined observation timestamp (date + hour interval).'
+        tests:
+          - not_null
+      - name: date
+        description: 'Observation date.'
+        tests:
+          - not_null
+      - name: hour_ending
+        description: 'Observation hour ending (0–23).'
+        tests:
+          - not_null
+      - name: region
+        description: 'WSI geographic region grouping for the weather station.'
+        tests:
+          - not_null
+      - name: site_id
+        description: 'WSI unique weather station identifier.'
+        tests:
+          - not_null
+      - name: station_name
+        description: 'Human-readable weather station name.'
+        tests:
+          - not_null
+      - name: temperature
+        description: 'Observed temperature (°F).'
+      - name: dewpoint
+        description: 'Observed dewpoint temperature (°F).'
+      - name: cloud_cover_pct
+        description: 'Observed cloud cover percentage (0–100).'
+      - name: wind_direction
+        description: 'Observed wind direction in degrees (0–360).'
+      - name: wind_speed
+        description: 'Observed wind speed (mph).'
+      - name: heat_index
+        description: 'Computed heat index (°F).'
+      - name: wind_chill
+        description: 'Computed wind chill (°F).'
+      - name: relative_humidity
+        description: 'Observed relative humidity percentage.'
+      - name: precipitation
+        description: 'Observed precipitation amount.'

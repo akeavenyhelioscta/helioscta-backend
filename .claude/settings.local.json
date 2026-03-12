@@ -61,7 +61,13 @@
       "Bash(bash:*)",
       "Bash(git mv:*)",
       "Bash(dbt parse:*)",
-      "mcp__azure-postgres__query"
+      "mcp__azure-postgres__query",
+      "Bash(git filter-branch:*)",
+      "Bash(git stash:*)",
+      "Bash(git for-each-ref:*)",
+      "Bash(git add:*)",
+      "Bash(find /c/Users/AidanKeaveny/Documents/github/helioscta-backend/documentation/docs -type f \\\\\\( -name \"*.md\" -o -name \"*.mdx\" \\\\\\) 2>/dev/null | head -30)",
+      "Bash(find /c/Users/AidanKeaveny/Documents/github/helioscta-backend/documentation/docs -type f \\\\\\( -name \"*.md\" -o -name \"*.mdx\" \\\\\\) 2>/dev/null | grep -i wsi)"
     ]
   }
 }
